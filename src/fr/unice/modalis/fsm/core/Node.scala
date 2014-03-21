@@ -1,7 +1,6 @@
 package fr.unice.modalis.fsm.core
 
 import fr.unice.modalis.fsm.actions.StateAction
-import fr.unice.modalis.fsm.core.Node;
 
 /**
  * Node class

@@ -2,7 +2,7 @@ import fr.unice.modalis.fsm.core._
 
 import fr.unice.modalis.fsm.condition.TickCondition
 import fr.unice.modalis.fsm.condition.TrueCondition
-import fr.unice.modalis.fsm.algo.Utils
+import fr.unice.modalis.fsm.algo.FSMAlgo
 
 object TestFSM extends App {
 
