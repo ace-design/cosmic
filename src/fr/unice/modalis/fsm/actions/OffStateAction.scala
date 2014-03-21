@@ -1,6 +1,6 @@
 package fr.unice.modalis.fsm.actions
 
-class OffAction extends Action {
+class OffStateAction extends StateAction {
 
   override def toString():String = "OFF"
 }

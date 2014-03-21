@@ -1,6 +1,6 @@
 package fr.unice.modalis.fsm.actions
 
-class EmitAction(url:String, port:Int) extends Action {
+class EmitStateAction(url:String, port:Int) extends StateAction {
 	val endpointURL: String = url
 	val endpointPort: Int = port
 	
