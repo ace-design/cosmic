@@ -9,4 +9,6 @@ import fr.unice.modalis.fsm.condition.ConditionType._
  */
 class TickCondition(freq:Int) extends Condition {
 	val frequency:Int = freq
+	
+	override def toString():String = "TICK: " + freq
 }

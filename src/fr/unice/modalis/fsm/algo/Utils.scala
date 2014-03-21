@@ -1,8 +1,7 @@
 package fr.unice.modalis.fsm.algo
 
-import fr.unice.modalis.fsm.Transition
 import fr.unice.modalis.fsm.condition.TickCondition
-import fr.unice.modalis.fsm.Node
+import fr.unice.modalis.fsm.core._
 
 
 /**
