@@ -16,7 +16,8 @@ object TestFSM extends App {
   val t3:Transition = new Transition(n3, n1, new TrueCondition)
   
   val fsm:Behavior = new Behavior(n1, Set[Node](n1,n2,n3), Set[Transition](t1,t2,t3))
-  
-  println(fsm)
+
+  println(FSMAlgo.develop(t1))
+
   
 }

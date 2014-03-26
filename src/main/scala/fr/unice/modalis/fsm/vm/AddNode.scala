@@ -1,6 +1,5 @@
 package fr.unice.modalis.fsm.vm
 
-
 import fr.unice.modalis.fsm.core.Behavior
 import fr.unice.modalis.fsm.core.Node
 

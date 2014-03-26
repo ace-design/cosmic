@@ -6,11 +6,13 @@ import fr.unice.modalis.fsm.actions.StateAction
  * Node class
  * This class represents a FSM node with actions attached 
  */
-class Node(nodeName: String, actionsSet:Set[StateAction] = null) {
-	
+class Node(nodeName: String, actionsSet:Set[StateAction]) {
+
+  def this(nodeName:String) = this(nodeName, Set[StateAction]())
+
 	// Node properties
 	val name = nodeName
-	def actions = if (actionsSet == null) Set[StateAction]() else actionsSet
+	val actions = actionsSet
 	
 	/**
 	 * Add an action for the current Node

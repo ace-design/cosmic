@@ -1,6 +1,6 @@
 package fr.unice.modalis.fsm.core
 
-import fr.unice.modalis.fsm.exceptions.NodeNotFoundException
+import fr.unice.modalis.fsm.exceptions.{NotAnIDLENodeException, NodeNotFoundException}
 
 /**
  * A user's behavior

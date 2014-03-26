@@ -15,6 +15,6 @@ object Scenario1 extends App {
 		val t2:Transition = new Transition(n2 ,n1, new TrueCondition)
 
 		val heatingRegulation:Behavior = new Behavior(n1).addNode(n2).addTransition(t1).addTransition(t2)
-		
+		println(heatingRegulation)
 
 }
