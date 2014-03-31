@@ -67,7 +67,6 @@ class Behavior (entry:Node, nodesSet:Set[Node], transitionSet:Set[Transition]) {
 	
 	override def toString():String = "FSM: Nodes=" + nodes + " Transitions=" + transitions
 
-
 			/**
 			 * Step function (Play a deterministic automate - no condition checking. Useful for debug)
 			 */
