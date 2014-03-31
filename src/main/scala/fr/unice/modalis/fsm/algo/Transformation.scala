@@ -11,9 +11,9 @@ import fr.unice.modalis.fsm.exceptions.IncompatibleDevelopConditionException
 /**
  * This object contains algorithms used to transform behaviors
  */
-object FSMAlgo {
+object Transformation {
 		  
-	def develop(t: Transition):Set[Action] = {
+	def develop(t: Transition):List[Action] = {
 	  
 	  val currentSource: Node = t.source
 	  val currentDestination: Node = t.destination
@@ -43,7 +43,7 @@ object FSMAlgo {
 	    case _ => throw new IncompatibleDevelopConditionException("Impossible to develop " + t)
 	  }
 	  
-	  actions.toSet
+	  actions.toList
 	  }
 	  
 }

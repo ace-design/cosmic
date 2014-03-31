@@ -2,7 +2,8 @@ import fr.unice.modalis.fsm.core._
 
 import fr.unice.modalis.fsm.condition.TickCondition
 import fr.unice.modalis.fsm.condition.TrueCondition
-import fr.unice.modalis.fsm.algo.FSMAlgo
+import fr.unice.modalis.fsm.algo.Transformation
+import fr.unice.modalis.fsm.vm.VirtualMachine
 
 object TestFSM extends App {
 
@@ -17,7 +18,8 @@ object TestFSM extends App {
   
   val fsm:Behavior = new Behavior(n1, Set[Node](n1,n2,n3), Set[Transition](t1,t2,t3))
 
-  println(FSMAlgo.develop(t1))
+
+  //FSMAlgo.develop(t1)
 
   
 }
