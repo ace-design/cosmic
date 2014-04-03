@@ -28,7 +28,7 @@ class ToGraphvizTest extends Specification{
       val t = new Transition(a,b, new TickCondition(1))
       val t2 = new Transition(b,a, new TrueCondition)
       val behavior = new Behavior(a).addNode(b).addTransition(t).addTransition(t2)
-      val resultConvert = ToGraphviz.convert(behavior).replaceAll("\\s","").replaceAll("\\n","").trim
+      val resultConvert = ToGraphviz.generateCode(behavior).replaceAll("\\s","").replaceAll("\\n","").trim
       val expected = """digraph finite_state_machine {
         #rankdir=LR;
         #size="8,5"

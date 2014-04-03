@@ -1,3 +1,4 @@
+import fr.unice.modalis.fsm.converter.ToGraphviz
 import fr.unice.modalis.fsm.core._
 
 import fr.unice.modalis.fsm.condition.TickCondition
@@ -19,6 +20,11 @@ object TestFSM extends App {
   val fsm:Behavior = new Behavior(n1, Set[Node](n1,n2,n3), Set[Transition](t1,t2,t3))
 
 
+  val actions = Transformation.developBehavior(fsm)
+  println(actions)
+
+  val newBehavior = VirtualMachine.apply(fsm, actions)
+  println(ToGraphviz.generateCode(newBehavior))
   //FSMAlgo.develop(t1)
 
   

@@ -2,6 +2,7 @@ package fr.unice.modalis.fsm.converter
 
 import fr.unice.modalis.fsm.core.{Node, Transition, Behavior}
 import fr.unice.modalis.fsm.condition.{TrueCondition, TickCondition}
+import scala.sys.process._
 
 /**
  * Graphviz translator
@@ -13,7 +14,7 @@ object ToGraphviz {
    * @param b Behavior
    * @return A graphviz script
    */
-  def convert(b: Behavior):String = {
+  def generateCode(b: Behavior):String = {
     val s = new StringBuilder
     s.append(generateHeader)
     s.append(generateNodeShape("doublecircle"))
@@ -45,5 +46,4 @@ object ToGraphviz {
   { n.name }
 
   def generateFooter() = "}\n"
-
 }
