@@ -4,8 +4,6 @@ import fr.unice.modalis.fsm.core._
 import scala.collection.mutable.ArrayBuffer
 import fr.unice.modalis.fsm.vm._
 import fr.unice.modalis.fsm.condition.TickCondition
-import fr.unice.modalis.fsm.exceptions.IncompatibleDevelopConditionException
-
 
 
 /**
