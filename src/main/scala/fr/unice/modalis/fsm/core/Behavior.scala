@@ -14,13 +14,10 @@ class Behavior (entry:Node, nodesSet:Set[Node], transitionSet:Set[Transition]) {
 	val nodes = nodesSet
 	val transitions = transitionSet
 
-	// FSM Entry point
-	val entryPoint:Node = entry
+	val entryPoint:Node = entry 	// FSM Entry point
 
-	// FSM Current Node (init: entry point)
-	//var currentNode:Node = entry
 
-	/**
+  /**
 	* Add a node
 	* @param node node to add
 	* @return A new behavior with the node added
@@ -66,13 +63,5 @@ class Behavior (entry:Node, nodesSet:Set[Node], transitionSet:Set[Transition]) {
 	}
 	
 	override def toString():String = "FSM: Nodes=" + nodes + " Transitions=" + transitions
-
-			/**
-			 * Step function (Play a deterministic automate - no condition checking. Useful for debug)
-			 */
-			/*def step:Unit=
-		{ val possibleTransition = transitions.filter(x => x.source.equals(currentNode))
-		currentNode = possibleTransition.head.destination
-		}*/
 
 }

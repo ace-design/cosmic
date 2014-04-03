@@ -13,6 +13,57 @@ import fr.unice.modalis.fsm.exceptions.IncompatibleDevelopConditionException
  */
 object Transformation {
 
+  /**
+   * Factorize a behavior
+   * @param b Behavior
+   * @return An actions list to factorize the behavior
+   */
+  def factorize(b:Behavior):List[Action] = {
+    factorize_int(b, b.entryPoint, b.entryPoint, ArrayBuffer[Action](), 0)
+
+   }
+
+  /**
+   * Internal factorization
+   * @param behavior Behavior to factorize
+   * @param currentNode Current node
+   * @param origin Last significant node (ie != IDLE node)
+   * @param actions Current action list
+   * @param counter Time counter since last significant node
+   * @return An action list to factorize the behavior
+   */
+  private def factorize_int(behavior:Behavior, currentNode:Node, origin:Node, actions:ArrayBuffer[Action], counter:Int):List[Action]=
+  {
+
+    // STEP 0 : Identify transition
+    val transition:Transition = behavior.transitions.filter(t => t.source.equals(currentNode)).head
+
+    // STEP 1a : If transition destination == entrypoint : finish
+    if (transition.destination.name.equals(behavior.entryPoint.name)){
+      actions.toList
+    } else
+    {
+      // STEP 2a : Identify transition condition type
+      transition.condition match {
+        case TickCondition(n) => // STEP 3a: Tick condition : Seem to be factorizable
+        {
+          if (transition.destination.actions == null || transition.destination.actions.size == 0) // STEP 3a1: IDLE node : factorizable =)
+            // STEP 3a2: RECURSE on next node
+            factorize_int(behavior, transition.destination, origin, actions ++= Array(new DeleteTransition(transition), new DeleteNode(transition.destination)), counter + n)
+          else // STEP 3a2 : Not IDLE node : just loop
+            factorize_int(behavior, transition.destination, transition.destination, actions ++= Array(new DeleteTransition(transition), new AddTransition(new Transition(origin, transition.destination, new TickCondition(counter)))), counter + n)
+        }
+
+        case _ => // STEP 2b : Other condition : Not factorizable
+        {
+          if (counter > 0) // STEP 2b1 : Previous nodes have been factorized : create the new transition
+            factorize_int(behavior, transition.destination, transition.destination, actions ++= Array(new AddTransition(new Transition(origin, transition.destination, new TickCondition(counter)))), 0)
+          else // Step 2b2 : No previous nodes have been factorized
+            factorize_int(behavior, transition.destination, transition.destination, actions, counter)
+        }
+      }
+    }
+  }
 
   /**
    * Develop a behavior

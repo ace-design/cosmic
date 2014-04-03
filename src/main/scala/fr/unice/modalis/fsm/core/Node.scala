@@ -17,7 +17,7 @@ class Node(nodeName: String, actionsSet:Set[StateAction]) {
 	/**
 	 * Add an action for the current Node
 	 * @param action Action to add
-	 * @return new 
+	 * @return new node with actions added
 	 */
 	def addAction(action:StateAction):Node = new Node(name, actionsSet + action)
 	
