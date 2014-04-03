@@ -20,6 +20,5 @@ object HeatingRegulation extends App {
 		val heatingRegulation:Behavior = new Behavior(n1).addNode(n2).addTransition(t1).addTransition(t2)
 		println(heatingRegulation)
 
-    // Compute actions to develop t1 transition
-    val actions = Transformation.develop(t1)
+
 }

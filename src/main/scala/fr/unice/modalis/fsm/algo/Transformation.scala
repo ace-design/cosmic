@@ -51,7 +51,7 @@ object Transformation {
             // STEP 3a2: RECURSE on next node
             factorize_int(behavior, transition.destination, origin, actions ++= Array(new DeleteTransition(transition), new DeleteNode(transition.destination)), counter + n)
           else // STEP 3a2 : Not IDLE node : just loop
-            factorize_int(behavior, transition.destination, transition.destination, actions ++= Array(new DeleteTransition(transition), new AddTransition(new Transition(origin, transition.destination, new TickCondition(counter)))), counter + n)
+            factorize_int(behavior, transition.destination, transition.destination, actions ++= Array(new DeleteTransition(transition), new AddTransition(new Transition(origin, transition.destination, new TickCondition(counter +n)))), 0)
         }
 
         case _ => // STEP 2b : Other condition : Not factorizable
@@ -70,9 +70,9 @@ object Transformation {
    * @param b Behavior
    * @return An actions list to develop the behavior
    */
-	def developBehavior(b: Behavior):List[Action] = {
+	def develop(b: Behavior):List[Action] = {
     val setActions = ArrayBuffer[Action]()
-    b.transitions.foreach(t => setActions ++= develop(t))
+    b.transitions.foreach(t => setActions ++= develop_int(t))
     setActions.toList
   }
 
@@ -81,7 +81,7 @@ object Transformation {
    * @param t Transition
    * @return An actions list to develop the transition
    */
-	def develop(t: Transition):List[Action] = {
+	private def develop_int(t: Transition):List[Action] = {
 	  
 	  val currentSource: Node = t.source
 	  val currentDestination: Node = t.destination
