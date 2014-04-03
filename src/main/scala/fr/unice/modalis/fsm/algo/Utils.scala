@@ -6,7 +6,7 @@ package fr.unice.modalis.fsm.algo
 object Utils {
 
   /**
-   * Compute gcd
+   * Compute the gcd
    * @param a a
    * @param b b
    * @return The greatest common divisor between a and b
@@ -14,7 +14,7 @@ object Utils {
   def gcd(a: Int, b: Int):Int=if (b==0) a.abs else gcd(b, a%b)
 
   /**
-   * Compute lcd
+   * Compute the lcd
    * @param a a
    * @param b b
    * @return The least commin divisor between a and b
