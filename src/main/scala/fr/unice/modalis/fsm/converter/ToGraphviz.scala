@@ -16,22 +16,22 @@ object ToGraphviz {
   def convert(b: Behavior):String = {
     val s = new StringBuilder
     s.append(generateHeader)
-    s.append(generateNode("doublecircle"))
-    s.append(generateNodeCode(b.entryPoint) + "\n")
-    s.append(generateNode("circle"))
+    s.append(generateNodeShape("doublecircle"))
+    s.append(generateNodeCode(b.entryPoint) + ";\n")
+    s.append(generateNodeShape("circle"))
     b.transitions.foreach(t => s.append(generateTransitionCode(t)))
     s.append(generateFooter)
 
     s.toString()
   }
 
-  private def generateNode(shape:String) = "node [shape = " + shape + "]; \n"
+  def generateNodeShape(shape:String) = "node [shape = " + shape + "]; \n"
 
-  private def generateHeader()=
+  def generateHeader()=
   {
     "digraph finite_state_machine { rankdir=LR; size=\"8,5\"\n"
   }
-  private def generateTransitionCode(t: Transition) =
+  def generateTransitionCode(t: Transition) =
   {
     val tname = t.condition match {
       case TickCondition(n) => "t%" + n +"==0"
@@ -41,9 +41,9 @@ object ToGraphviz {
     }
     t.source.name + "->" + t.destination.name + " [ label = \"" + tname + "\"];\n"}
 
-  private def generateNodeCode(n: Node) =
+  def generateNodeCode(n: Node) =
   { n.name }
 
-  private def generateFooter() = "}\n"
+  def generateFooter() = "}\n"
 
 }
