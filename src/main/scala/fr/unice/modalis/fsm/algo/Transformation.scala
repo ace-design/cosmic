@@ -11,6 +11,27 @@ import fr.unice.modalis.fsm.condition.TickCondition
  */
 object Transformation {
 
+  def compose(b1:SimpleTemporalBehavior, b2:SimpleTemporalBehavior):Behavior =
+  {
+    val setActions = ArrayBuffer[Action]()
+
+    val composedPeriod = Utils.lcm(b1.tickPeriod, b2.tickPeriod)
+    val blankAutomata = Utils.generateDevelopedTemporalBlankAutomata(composedPeriod)
+
+    for (i <- 1 to composedPeriod) {
+      if (i % (b1.tickPeriod) == 0)
+        setActions += new AddActions(blankAutomata.nodeAt(i-1), b1.actionNode.actions)
+
+      if (i % (b2.tickPeriod) == 0)
+        setActions += new AddActions(blankAutomata.nodeAt(i-1), b2.actionNode.actions)
+    }
+
+    val actions = setActions.toList
+    println(actions)
+    VirtualMachine.apply(blankAutomata, actions)
+
+
+  }
   /**
    * Factorize a behavior
    * @param b Behavior

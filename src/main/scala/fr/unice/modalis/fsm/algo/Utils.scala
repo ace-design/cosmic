@@ -1,5 +1,8 @@
 package fr.unice.modalis.fsm.algo
 
+import fr.unice.modalis.fsm.core.{Node, SimpleTemporalBehavior, Behavior}
+import fr.unice.modalis.fsm.vm.VirtualMachine
+
 /**
  * Utils methods
  */
@@ -31,4 +34,14 @@ object Utils {
       case a::b::Nil => lcm(a,b)
       case a::b::tail => lcmm(lcm(a,b)::tail)
     }
+
+  /**
+   * Compute a new developed temporal automata
+   * @param freq Frequency
+   * @return An automata with freq+1 states and freq transitions
+   */
+  def generateDevelopedTemporalBlankAutomata(freq:Int):Behavior = {
+    val b = new SimpleTemporalBehavior(new Node("A"), new Node("B"), freq)
+    VirtualMachine.apply(b, Transformation.develop(b))
+  }
 }

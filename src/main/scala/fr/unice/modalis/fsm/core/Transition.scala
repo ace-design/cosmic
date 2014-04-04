@@ -12,4 +12,6 @@ class Transition(src: Node, dst: Node, cond: Condition) {
 	val condition: Condition = cond
 	
 	override def toString():String = "{" + source + "=>" + destination + "," + condition + "}"
+
+
 }

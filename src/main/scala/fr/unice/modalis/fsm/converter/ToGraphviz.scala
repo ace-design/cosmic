@@ -2,7 +2,6 @@ package fr.unice.modalis.fsm.converter
 
 import fr.unice.modalis.fsm.core.{Node, Transition, Behavior}
 import fr.unice.modalis.fsm.condition.{TrueCondition, TickCondition}
-import scala.sys.process._
 
 /**
  * Graphviz translator

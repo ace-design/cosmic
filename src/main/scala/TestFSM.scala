@@ -19,17 +19,7 @@ object TestFSM extends App {
   val t3:Transition = new Transition(n3, n1, new TrueCondition)
   
   val fsm:Behavior = new Behavior(n1, Set[Node](n1,n2,n3), Set[Transition](t1,t2,t3))
+
   println(ToGraphviz.generateCode(fsm))
-
-  val developActions = Transformation.develop(fsm)
-  val developedFsm = VirtualMachine.apply(fsm, developActions)
-
-  println(ToGraphviz.generateCode(developedFsm))
-
-  val factorizeActions = Transformation.factorize(developedFsm)
-  println(factorizeActions)
-  val factorizedFsm = VirtualMachine.apply(developedFsm, factorizeActions)
-
-  println(ToGraphviz.generateCode(factorizedFsm))
   
 }

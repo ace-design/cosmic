@@ -10,7 +10,8 @@ import fr.unice.modalis.fsm.core.Node
 case class AddNode(n:Node) extends Action {
   
 	override def make(b: Behavior):Behavior = b.addNode(n)
-	
+
+  override def toString():String = "{Addnode node=" + n + "}"
 
   
 }

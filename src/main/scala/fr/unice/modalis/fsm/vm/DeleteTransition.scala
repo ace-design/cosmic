@@ -10,4 +10,5 @@ import fr.unice.modalis.fsm.core.Behavior
 case class DeleteTransition(t: Transition) extends Action{
   override def make(b: Behavior):Behavior = b.deleteTransition(t)
 
+  override def toString():String = "{Delete transition=" + t + "}"
 }

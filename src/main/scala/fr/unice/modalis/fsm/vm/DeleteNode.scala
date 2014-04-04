@@ -9,4 +9,6 @@ import fr.unice.modalis.fsm.core.Node
  */
 case class DeleteNode(n: Node) extends Action {
 	override def make(b: Behavior):Behavior = b.deleteNode(n)
+
+  override def toString():String = "{Delete node=" + n + "}"
 }
