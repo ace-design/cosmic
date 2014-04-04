@@ -27,7 +27,6 @@ object Transformation {
     }
 
     val actions = setActions.toList
-    println(actions)
     VirtualMachine.apply(blankAutomata, actions)
 
 
