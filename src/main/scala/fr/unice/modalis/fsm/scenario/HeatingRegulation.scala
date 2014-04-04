@@ -12,7 +12,7 @@ object HeatingRegulation extends App {
 	 * Frequency: 3 minutes (180s)
 	 */ 
 		val n1:Node = new Node("Start", null)
-		val n2:Node = new Node("Emit", Set[StateAction](new EmitStateAction("datacollector", 8080)))
+		val n2:Node = new Node("Emit", scala.collection.mutable.Set[StateAction](new EmitStateAction("datacollector", 8080)))
 
 		val t1:Transition = new Transition(n1, n2, new TickCondition(2))
 		val t2:Transition = new Transition(n2 ,n1, new TrueCondition)

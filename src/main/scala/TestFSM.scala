@@ -10,8 +10,8 @@ import fr.unice.modalis.fsm.vm.VirtualMachine
 object TestFSM extends App {
 
   val n1:Node = new Node("A")
-  val n2:Node = new Node("B").addAction(new OffStateAction)
-  val n3:Node = new Node("C").addAction(new OffStateAction)
+  val n2:Node = new Node("B"); n2.addAction(new OffStateAction)
+  val n3:Node = new Node("C"); n3.addAction(new OffStateAction)
 
   
   val t1:Transition = new Transition(n1,n2, new TickCondition(2))

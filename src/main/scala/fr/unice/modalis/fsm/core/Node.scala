@@ -1,7 +1,7 @@
 package fr.unice.modalis.fsm.core
 
 import fr.unice.modalis.fsm.actions.StateAction
-
+import scala.collection.mutable.Set
 /**
  * Node class
  * This class represents a FSM node with actions attached 
@@ -17,9 +17,8 @@ class Node(nodeName: String, actionsSet:Set[StateAction]) {
 	/**
 	 * Add an action for the current Node
 	 * @param action Action to add
-	 * @return new node with actions added
 	 */
-	def addAction(action:StateAction):Node = new Node(name, actionsSet + action)
+	def addAction(action:StateAction):Unit = actions.add(action)
 	
 	/**
 	 * Print the node's name

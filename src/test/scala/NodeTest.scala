@@ -2,6 +2,7 @@ import fr.unice.modalis.fsm.actions.{EmitStateAction, OffStateAction, StateActio
 import fr.unice.modalis.fsm.condition.TickCondition
 import fr.unice.modalis.fsm.core.Node
 import org.specs2.mutable.Specification
+import scala.collection.mutable.Set
 
 /**
  * Created by Cyril Cecchinel on 24/03/2014.
@@ -13,12 +14,12 @@ class NodeTest extends Specification{
       node.name mustEqual "A"
     }
 
-    "must be immutable" in {
+    "must be mutable" in {
       val node = new Node("Emit", Set[StateAction](new EmitStateAction("datacollector", 8080)))
       val action:StateAction = new OffStateAction
-      val newNode = node.addAction(action)
+      node.addAction(action)
 
-      node.actions + action mustEqual newNode.actions
+      node.actions.size mustEqual 2
 
     }
 
@@ -29,8 +30,8 @@ class NodeTest extends Specification{
 
     "allow adding actions from a idle node" in {
       val node = new Node("Idle")
-      val newNode = node.addAction(new OffStateAction)
-      newNode.actions.size mustEqual 1
+      node.addAction(new OffStateAction)
+      node.actions.size mustEqual 1
     }
   }
 }

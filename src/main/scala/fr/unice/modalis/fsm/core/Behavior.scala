@@ -40,8 +40,9 @@ class Behavior (entry:Node, nodesSet:Set[Node], transitionSet:Set[Transition]) {
 		new Behavior(entry, nodes - node, newTransitions)
 	}
 
-  def addAction(node: Node, action:StateAction):Behavior = {
-    val newNode = node.addAction(action)
+  def addAction(node: Node, action:StateAction):Unit = {
+    node.addAction(action)
+    /*val newNode = node.addAction(action)
 
     val newTransitions = ArrayBuffer[Transition]()
     // Transitions linked to this node
@@ -55,7 +56,7 @@ class Behavior (entry:Node, nodesSet:Set[Node], transitionSet:Set[Transition]) {
     var newBehavior = deleteNode(node).addNode(newNode)
     newTransitions.foreach(t => newBehavior = newBehavior.addTransition(t))
 
-    newBehavior
+    newBehavior*/
   }
 
 	/**
