@@ -4,9 +4,11 @@ import fr.unice.modalis.fsm.exceptions.NodeNotFoundException
 import fr.unice.modalis.fsm.condition.{TrueCondition, TickCondition}
 import fr.unice.modalis.fsm.actions.StateAction
 import scala.collection.mutable.ArrayBuffer
+import fr.unice.modalis.fsm.vm.VirtualMachine
+import fr.unice.modalis.fsm.algo.Transformation
 
 /**
- * A user's behavior
+ * A user behavior
  * @constructor create a behavior with a given entry node
  * @constructor create a behavior with a given entry node, a set of nodes and a set of transitions
  */
@@ -27,6 +29,17 @@ class Behavior (entry:Node, nodesSet:Set[Node], transitionSet:Set[Transition]) {
 	* 
 	*/
 	def addNode(node: Node):Behavior = new Behavior(entry, nodes + node, transitions)
+
+  /**
+   * Add nodes
+   * @param nodesL Nodes list
+   * @return A new behavior with the nodes added
+   */
+  def addNodes(nodesL: List[Node]) = {
+    var processedBehavior:Behavior = this
+    nodesL.foreach(n => processedBehavior = processedBehavior.addNode(n))
+    processedBehavior
+  }
 
 	/**
 	 * Delete a node (+ transitions from/to this node)
@@ -57,7 +70,19 @@ class Behavior (entry:Node, nodesSet:Set[Node], transitionSet:Set[Transition]) {
 		else
 			throw new NodeNotFoundException()
 	}
-	
+
+  /**
+   * Add transition links
+   * @param transitionsL transitions list
+   * @return A new behavior with the transitions added
+   */
+  def addTransitions(transitionsL: List[Transition]):Behavior =
+  {
+    var processedBehavior:Behavior = this
+    transitionsL.foreach(t => processedBehavior = processedBehavior.addTransition(t))
+    processedBehavior
+  }
+
 	/**
 	 * Delete a transition link
 	 * @param  transition transition to be deleted
@@ -75,7 +100,7 @@ class Behavior (entry:Node, nodesSet:Set[Node], transitionSet:Set[Transition]) {
    */
   def nodeAt(t:Int):Node = {
     var currentNode:Node = this.entryPoint
-    for (i <- 0 to t)
+    for (i <- 1 to t)
     {
       val possibleTransition:Transition = transitions.filter(x => x.source.equals(currentNode)).head
       possibleTransition.condition match {
@@ -87,6 +112,23 @@ class Behavior (entry:Node, nodesSet:Set[Node], transitionSet:Set[Transition]) {
     currentNode
   }
 
+  /**
+   * Get the behavior period
+   * @return Behavior period
+   */
+  def period():Int = {
+    var i:Int = 1
+    while(!VirtualMachine.apply(this, Transformation.develop(this)).nodeAt(i).equals(entryPoint))
+      i += 1
+    i
+  }
+
+  /**
+   * Compose behavior
+   * @param b Behavior to be composed with
+   * @return Composed behavior
+   */
+  def +(b:Behavior):Behavior = Transformation.compose(this, b)
 
 	override def toString():String = "FSM: Nodes=" + nodes + " Transitions=" + transitions
 

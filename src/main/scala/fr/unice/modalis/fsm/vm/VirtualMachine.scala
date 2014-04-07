@@ -18,6 +18,7 @@ object VirtualMachine {
     arr match {
       case x :: Nil => x.make(b)
       case x :: tail => apply(x.make(b), tail)
+      case Nil => b
     }
   }
 }

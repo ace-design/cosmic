@@ -19,7 +19,20 @@ class Node(nodeName: String, actionsSet:Set[StateAction]) {
 	 * @param action Action to add
 	 */
 	def addAction(action:StateAction):Unit = actions.add(action)
-	
+
+  /**
+   * Compose two nodes
+   * @param n Other node
+   * @return A composed node
+   */
+  def +(n:Node):Node =
+  {
+    val actionsComposed = this.actions.union(n.actions)
+    val processedNode:Node = new Node(this.name + "_" + n.name)
+    actionsComposed.foreach(a => processedNode.addAction(a))
+    processedNode
+  }
+
 	/**
 	 * Print the node's name
 	 * @return Node's name

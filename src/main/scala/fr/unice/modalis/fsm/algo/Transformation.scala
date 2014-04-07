@@ -11,9 +11,31 @@ import fr.unice.modalis.fsm.condition.TickCondition
  */
 object Transformation {
 
-  def compose(b1:SimpleTemporalBehavior, b2:SimpleTemporalBehavior):Behavior =
+  def compose(b1:Behavior, b2:Behavior):Behavior =
   {
+    val devB1:Behavior = VirtualMachine.apply(b1, Transformation.develop(b1))
+    val devB2:Behavior = VirtualMachine.apply(b2, Transformation.develop(b2))
+    val composedPeriod = Utils.lcm(devB1.period(), devB2.period())
+    val composedSkeleton = Utils.generateDevelopedTemporalBlankAutomata(composedPeriod)
+
     val setActions = ArrayBuffer[Action]()
+
+    for (i<- 1 to composedPeriod){
+      val actions = devB1.nodeAt(i).actions.union(devB2.nodeAt(i).actions)
+      setActions += new AddActions(composedSkeleton.nodeAt(i), actions)
+    }
+
+    val actionsList = setActions.toList
+
+    // Build composed automata
+    val composed = VirtualMachine.apply(composedSkeleton, actionsList)
+
+
+    // Factorize composed automata
+    VirtualMachine.apply(composed, Transformation.factorize(composed))
+
+
+    /*val setActions = ArrayBuffer[Action]()
 
     val composedPeriod = Utils.lcm(b1.tickPeriod, b2.tickPeriod)
     val blankAutomata = Utils.generateDevelopedTemporalBlankAutomata(composedPeriod)
@@ -32,7 +54,7 @@ object Transformation {
     val composed = VirtualMachine.apply(blankAutomata, actions)
 
     // Factorize composed automata
-    VirtualMachine.apply(composed, Transformation.factorize(composed))
+    VirtualMachine.apply(composed, Transformation.factorize(composed))*/
   }
   /**
    * Factorize a behavior
@@ -59,8 +81,14 @@ object Transformation {
     // STEP 0 : Identify transition
     val transition:Transition = behavior.transitions.filter(t => t.source.equals(currentNode)).head
 
-    // STEP 1a : If transition destination == entrypoint : finish
+    // STEP 1a : If transition destination == entrypoint : add the transition and finish
     if (transition.destination.name.equals(behavior.entryPoint.name)){
+      actions ++= Array(new AddTransition(new Transition(origin, transition.destination,
+        transition.condition match {
+        case TickCondition(n) =>
+          new TickCondition(counter+n)
+        }
+      )))
       actions.toList
     } else
     {

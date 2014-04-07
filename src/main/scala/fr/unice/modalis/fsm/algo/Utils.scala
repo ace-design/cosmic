@@ -1,7 +1,8 @@
 package fr.unice.modalis.fsm.algo
 
-import fr.unice.modalis.fsm.core.{Node, SimpleTemporalBehavior, Behavior}
+import fr.unice.modalis.fsm.core.{Transition, Node, SimpleTemporalBehavior, Behavior}
 import fr.unice.modalis.fsm.vm.VirtualMachine
+import fr.unice.modalis.fsm.condition.TickCondition
 
 /**
  * Utils methods
@@ -37,11 +38,13 @@ object Utils {
 
   /**
    * Compute a new developed temporal automata
-   * @param freq Frequency
-   * @return An automata with freq+1 states and freq transitions
+   * @param per Period
+   * @return An automata with per+1 states and per transitions
    */
-  def generateDevelopedTemporalBlankAutomata(freq:Int):Behavior = {
-    val b = new SimpleTemporalBehavior(new Node("A"), new Node("B"), freq)
+  def generateDevelopedTemporalBlankAutomata(per:Int):Behavior = {
+    val node = new Node("A");
+    val b = new Behavior(node).addTransition(new Transition(node,node,new TickCondition(per)))
+    //val b = new Behavior(new Node("A"), new Node("B"), freq)
     VirtualMachine.apply(b, Transformation.develop(b))
   }
 }
