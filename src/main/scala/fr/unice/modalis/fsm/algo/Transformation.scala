@@ -27,9 +27,12 @@ object Transformation {
     }
 
     val actions = setActions.toList
-    VirtualMachine.apply(blankAutomata, actions)
 
+    // Build composed automata
+    val composed = VirtualMachine.apply(blankAutomata, actions)
 
+    // Factorize composed automata
+    VirtualMachine.apply(composed, Transformation.factorize(composed))
   }
   /**
    * Factorize a behavior

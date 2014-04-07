@@ -2,6 +2,7 @@ package fr.unice.modalis.fsm.converter
 
 import fr.unice.modalis.fsm.core.{Node, Transition, Behavior}
 import fr.unice.modalis.fsm.condition.{TrueCondition, TickCondition}
+import fr.unice.modalis.fsm.actions.StateAction
 
 /**
  * Graphviz translator
@@ -19,6 +20,7 @@ object ToGraphviz {
     s.append(generateNodeShape("doublecircle"))
     s.append(generateNodeCode(b.entryPoint) + ";\n")
     s.append(generateNodeShape("circle"))
+    b.nodes.filterNot(n => n.equals(b.entryPoint)).foreach(n => s.append(generateNodeCode(n) + ";\n"))
     b.transitions.foreach(t => s.append(generateTransitionCode(t)))
     s.append(generateFooter)
 
@@ -42,7 +44,7 @@ object ToGraphviz {
     t.source.name + "->" + t.destination.name + " [ label = \"" + tname + "\"];\n"}
 
   def generateNodeCode(n: Node) =
-  { n.name }
+  { n.name + "[label=\"" + (if (n.actions.size> 0) n.actions  else "IDLE") + "\"]"}
 
   def generateFooter() = "}\n"
 }

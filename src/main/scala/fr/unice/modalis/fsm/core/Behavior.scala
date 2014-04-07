@@ -42,21 +42,6 @@ class Behavior (entry:Node, nodesSet:Set[Node], transitionSet:Set[Transition]) {
 
   def addAction(node: Node, action:StateAction):Unit = {
     node.addAction(action)
-    /*val newNode = node.addAction(action)
-
-    val newTransitions = ArrayBuffer[Transition]()
-    // Transitions linked to this node
-    val r = transitions.find(p => (p.source.name.equals(node.name) || p.destination.name.equals(node.name)))
-
-    r.foreach(t => if (t.source.name.equals(node.name))
-        newTransitions += new Transition(newNode, t.destination, t.condition)
-      else
-        newTransitions += new Transition(t.source, newNode, t.condition)
-    )
-    var newBehavior = deleteNode(node).addNode(newNode)
-    newTransitions.foreach(t => newBehavior = newBehavior.addTransition(t))
-
-    newBehavior*/
   }
 
 	/**
@@ -101,7 +86,8 @@ class Behavior (entry:Node, nodesSet:Set[Node], transitionSet:Set[Transition]) {
     }
     currentNode
   }
-	
+
+
 	override def toString():String = "FSM: Nodes=" + nodes + " Transitions=" + transitions
 
 }
