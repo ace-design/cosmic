@@ -4,13 +4,12 @@ import fr.unice.modalis.fsm.condition._
 
 /**
  * Simple temporal behavior
- * Represent the simplest behavior possible (two node, time condition between those nodes)
+ * Represent the simplest behavior possible (one node, time condition loop on this node)
  * @param a a First node
- * @param b b Second node
  * @param period period Period
  */
-class SimpleTemporalBehavior(a:Node, b:Node, period:Int)
-  extends Behavior(a, Set[Node](a,b), Set[Transition](new Transition(a,b, new TickCondition(period)), new Transition(b,a, new TrueCondition))){
+class SimpleTemporalBehavior(a:Node, period:Int)
+  extends Behavior(a, Set[Node](a), Set[Transition](new Transition(a,a, new TickCondition(period)))){
 
   // Automata period
   val tickPeriod:Int = period
@@ -19,6 +18,6 @@ class SimpleTemporalBehavior(a:Node, b:Node, period:Int)
    * Get the action node
    * @return Action node
    */
-  def actionNode:Node = b
+  def actionNode:Node = a
 
 }
