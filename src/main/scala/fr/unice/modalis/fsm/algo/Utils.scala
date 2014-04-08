@@ -42,9 +42,20 @@ object Utils {
    * @return An automata with per+1 states and per transitions
    */
   def generateDevelopedTemporalBlankAutomata(per:Int):Behavior = {
-    val node = new Node("A");
+    val node = new Node("Gen");
     val b = new Behavior(node).addTransition(new Transition(node,node,new TickCondition(per)))
-    //val b = new Behavior(new Node("A"), new Node("B"), freq)
     VirtualMachine.apply(b, Transformation.develop(b))
+  }
+
+  /**
+   * Check if a behavior is a valid one
+   * Condition #1: Deterministic automata
+   * Condition #2: Cyclic automata
+   * @param b User behavior
+   * @return Boolean corresponding to the validation
+   */
+  def checkBehavior(b:Behavior):Boolean = {
+    // Todo
+    true
   }
 }

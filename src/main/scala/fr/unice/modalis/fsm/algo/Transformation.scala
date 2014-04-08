@@ -33,28 +33,6 @@ object Transformation {
 
     // Factorize composed automata
     VirtualMachine.apply(composed, Transformation.factorize(composed))
-
-
-    /*val setActions = ArrayBuffer[Action]()
-
-    val composedPeriod = Utils.lcm(b1.tickPeriod, b2.tickPeriod)
-    val blankAutomata = Utils.generateDevelopedTemporalBlankAutomata(composedPeriod)
-
-    for (i <- 1 to composedPeriod) {
-      if (i % (b1.tickPeriod) == 0)
-        setActions += new AddActions(blankAutomata.nodeAt(i-1), b1.actionNode.actions)
-
-      if (i % (b2.tickPeriod) == 0)
-        setActions += new AddActions(blankAutomata.nodeAt(i-1), b2.actionNode.actions)
-    }
-
-    val actions = setActions.toList
-
-    // Build composed automata
-    val composed = VirtualMachine.apply(blankAutomata, actions)
-
-    // Factorize composed automata
-    VirtualMachine.apply(composed, Transformation.factorize(composed))*/
   }
   /**
    * Factorize a behavior

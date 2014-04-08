@@ -7,7 +7,7 @@ import fr.unice.modalis.fsm.actions.StateAction
 /**
  * Graphviz translator
  */
-object ToGraphviz {
+object ToGraphviz extends Converter{
 
   /**
    * Generate a Graphviz script from a behavior
