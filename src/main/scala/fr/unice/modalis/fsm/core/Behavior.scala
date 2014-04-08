@@ -94,20 +94,25 @@ class Behavior (entry:Node, nodesSet:Set[Node], transitionSet:Set[Transition]) {
 	}
 
   /**
-   * Get the node accessed at time t
-   * @param t Time
-   * @return Node accessed at time t
+   * Get the node accessed at tick t
+   * @param t tick
+   * @return Node accessed at tick t
    */
   def nodeAt(t:Int):Node = {
     var currentNode:Node = this.entryPoint
     for (i <- 1 to t)
     {
-      val possibleTransition:Transition = transitions.filter(x => x.source.equals(currentNode)).head
-      possibleTransition.condition match {
-        case TickCondition(n) => if (i%n ==0) currentNode = possibleTransition.destination
-        case TrueCondition() => currentNode = possibleTransition.destination
-        case _ => /* NOP */
+      val possibleTransition:Set[Transition] = transitions.filter(x => x.source.equals(currentNode))
+      possibleTransition.foreach(t => f(t))
+
+      def f(t:Transition) = {
+        t.condition match {
+          case TickCondition(n) => if (i % n == 0) currentNode = t.destination
+          case TrueCondition() => currentNode = t.destination
+          case _ => /* NOP */
+        }
       }
+
     }
     currentNode
   }

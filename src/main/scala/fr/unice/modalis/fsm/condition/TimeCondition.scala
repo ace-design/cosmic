@@ -8,7 +8,7 @@ import java.util.{GregorianCalendar, Calendar}
  * @param time String representing Time (format hh:mm 24-hours)
  * @throws Exception if time value isn't parsable
  */
-class TimeCondition(time:String) extends Condition{
+case class TimeCondition(time:String) extends Condition{
    val f:SimpleDateFormat = new SimpleDateFormat("HH:MM");
    try {
      f.parse(time)
