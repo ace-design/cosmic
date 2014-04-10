@@ -1,12 +1,17 @@
 package fr.unice.modalis.fsm.actions
 
-import fr.unice.modalis.fsm.actions.constrains.Constrain
+import fr.unice.modalis.fsm.actions.constraints.Constraint
 
 
-class OnStateAction(constrainsSet:Set[Constrain]) extends StateAction(constrainsSet:Set[Constrain]){
+case class OnStateAction(constraintL:List[Constraint]) extends StateAction(constraintL:List[Constraint]){
 
-  def this() = this(Set[Constrain]())
+  def this() = this(List[Constraint]())
 
-  override def toString():String = "ON " + " " + super.toString()
-  override def addConstrain(co:Constrain):OnStateAction = new OnStateAction(constrains + co)
+  override def toString():String = "ON"
+  override def addConstrain(co:Constraint):OnStateAction = new OnStateAction(co :: constraints)
+
+  override def equals(x:Any):Boolean = x match {
+    case OnStateAction(c) => c == constraints
+    case _ => false
+  }
 }

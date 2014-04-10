@@ -33,6 +33,12 @@ class Node(nodeName: String, actionsSet:Set[StateAction]) {
     processedNode
   }
 
+  def constraintsAmount():Int =
+  {
+    var i = 0;
+    actions.foreach(a => i = i + a.constraints.length)
+    i
+  }
 	/**
 	 * Print the node's name
 	 * @return Node's name

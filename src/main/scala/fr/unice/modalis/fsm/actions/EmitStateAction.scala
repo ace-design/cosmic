@@ -1,13 +1,18 @@
 package fr.unice.modalis.fsm.actions
 
-import fr.unice.modalis.fsm.actions.constrains.Constrain
+import fr.unice.modalis.fsm.actions.constraints.Constraint
 
-class EmitStateAction(url:String, port:Int, constrainsSet:Set[Constrain]) extends StateAction(constrainsSet:Set[Constrain]) {
-  def this(url:String, port:Int) = this(url, port, Set[Constrain]())
+case class EmitStateAction(url:String, port:Int, constraintL:List[Constraint]) extends StateAction(constraintL:List[Constraint]) {
+  def this(url:String, port:Int) = this(url, port, List[Constraint]())
 	val endpointURL: String = url
 	val endpointPort: Int = port
 
-  override def addConstrain(co:Constrain):EmitStateAction = new EmitStateAction(url, port, constrains + co)
+  override def addConstrain(co:Constraint):EmitStateAction = new EmitStateAction(url, port, co :: constraints)
 
-  override def toString():String = "EMIT " + endpointURL + ":" + endpointPort + " " + super.toString()
+  override def toString():String = "EMIT " + endpointURL + ":" + endpointPort
+
+  override def equals(x:Any):Boolean = x match {
+    case EmitStateAction(u, p, c) => u == url && p == port && c == constraints
+    case _ => false
+  }
 }

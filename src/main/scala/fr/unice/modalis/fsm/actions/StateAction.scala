@@ -1,13 +1,16 @@
 package fr.unice.modalis.fsm.actions
 
-import fr.unice.modalis.fsm.actions.constrains.Constrain
+import fr.unice.modalis.fsm.actions.constraints.Constraint
 
-abstract class StateAction(c:Set[Constrain]) {
+abstract class StateAction(c:List[Constraint]) {
 
-  def this() = this(Set[Constrain]())
-  val constrains:Set[Constrain] = c
+  def this() = this(List[Constraint]())
+  val constraints:List[Constraint] = c
 
-  def addConstrain(co:Constrain):StateAction
+  def addConstrain(co:Constraint):StateAction
 
-  override def toString(): String = constrains.toString()
+  override def toString(): String
+
+  override def equals(x:Any):Boolean;
+
 }

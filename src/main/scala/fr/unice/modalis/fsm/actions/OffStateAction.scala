@@ -1,10 +1,15 @@
 package fr.unice.modalis.fsm.actions
 
-import fr.unice.modalis.fsm.actions.constrains.Constrain
+import fr.unice.modalis.fsm.actions.constraints.Constraint
 
-class OffStateAction(constrainsSet:Set[Constrain]) extends StateAction(constrainsSet:Set[Constrain]){
+case class OffStateAction(constraintL:List[Constraint]) extends StateAction(constraintL:List[Constraint]){
 
-  def this() = this(Set[Constrain]())
-  override def addConstrain(co:Constrain):OffStateAction = new OffStateAction(constrains + co)
-  override def toString():String = "OFF" + " " + super.toString()
+  def this() = this(List[Constraint]())
+  override def addConstrain(co:Constraint):OffStateAction = new OffStateAction(co :: constraints)
+  override def toString():String = "OFF"
+
+  override def equals(x:Any):Boolean = x match {
+    case OffStateAction(c) => c == constraints
+    case _ => false
+  }
 }

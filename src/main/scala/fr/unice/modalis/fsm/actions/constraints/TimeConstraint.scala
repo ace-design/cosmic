@@ -1,4 +1,4 @@
-package fr.unice.modalis.fsm.actions.constrains
+package fr.unice.modalis.fsm.actions.constraints
 
 import java.text.SimpleDateFormat
 
@@ -9,7 +9,7 @@ import java.text.SimpleDateFormat
  * @param end end time (hh:mm)
  * @throws Exception when time format isn't valid
  */
-case class TimeConstrain(begin:String,end:String) extends Constrain{
+case class TimeConstraint(begin:String,end:String) extends Constraint{
   val f:SimpleDateFormat = new SimpleDateFormat("HH:MM")
   try {
     f.parse(begin)
@@ -18,6 +18,11 @@ case class TimeConstrain(begin:String,end:String) extends Constrain{
     case e: Exception => throw e
   }
 
-  override def toString():String = begin + "->" + end
+  override def toString():String = begin + " to " + end
+
+  override def equals(x:Any):Boolean = x match {
+    case TimeConstraint(b,e) => b.equals(begin) && e.equals(end)
+    case _ => false
+  }
 
 }
