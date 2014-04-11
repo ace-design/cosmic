@@ -55,17 +55,17 @@ object Utils {
   def checkCycle(b:Behavior):Boolean = {
     def x(e:Node, t:Transition, ns:Set[Node], ts:Set[Transition]):Boolean = {
       t match {
-        case Transition(a,b,_) if (b.equals(e)) => true
-        case Transition(a,b,_) if (a.equals(b)) => true
+        case Transition(a,b,_) if (b.equals(e)) => true // Entry point is next hop
+        case Transition(a,b,_) if (a.equals(b)) => true // Loop-transition on a node
         case Transition(a,b,_) => {
           // find candidates transitions with source == t.destination
           val candidates = ts.filter(p => p.source.equals(b))
           var result = true
           if (candidates.size > 0){
-            candidates.foreach(c => result = result && x(e, c, ns, ts))
+            candidates.foreach(c => result = result && x(e, c, ns, ts)) // Recurse on next transition
             result
           } else {
-            false
+            false // No more transition are found and entry point can't be reached
           }
         }
       }
@@ -76,6 +76,15 @@ object Utils {
     result
   }
 
-
-
+  /**
+   * Check if a behavior is a deterministic one
+   * @param b User behavior
+   * @return True if the behavior is deterministic
+   */
+  def checkDeterminism(b:Behavior):Boolean = {
+    var result = true
+    b.nodes.foreach(n => { val transitions = b.transitions.filter(t=> t.source.equals(n))
+    result = result && transitions.size == 1}) //Check if each node has ONLY one transition going from.
+    result
+  }
 }
