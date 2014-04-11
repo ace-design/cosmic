@@ -6,7 +6,7 @@ import scala.collection.mutable.Set
  * Node class
  * This class represents a FSM node with actions attached 
  */
-class Node(nodeName: String, actionsSet:Set[StateAction]) {
+case class Node(nodeName: String, actionsSet:Set[StateAction]) {
 
   def this(nodeName:String) = this(nodeName, Set[StateAction]())
 
@@ -33,9 +33,13 @@ class Node(nodeName: String, actionsSet:Set[StateAction]) {
     processedNode
   }
 
+  /**
+   * Count how many constrains are fixed on this node's actions
+   * @return Amount of constrains
+   */
   def constraintsAmount():Int =
   {
-    var i = 0;
+    var i = 0
     actions.foreach(a => i = i + a.constraints.length)
     i
   }
@@ -44,4 +48,10 @@ class Node(nodeName: String, actionsSet:Set[StateAction]) {
 	 * @return Node's name
 	 */
 	override def toString():String = name
+
+
+  override def equals(x:Any):Boolean = x match {
+    case Node(a,b) => a == nodeName && b.equals(actions)
+    case _ => false
+  }
 }
