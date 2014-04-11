@@ -87,4 +87,13 @@ object Utils {
     result = result && transitions.size == 1}) //Check if each node has ONLY one transition going from.
     result
   }
+
+  /**
+   * Check if a behavior is a valid one
+   * Condition #1: Deterministic automata
+   * Condition #2: Cyclic automata
+   * @param b User behavior
+   * @return Boolean corresponding to the validation
+   */
+  def isCorrectBehavior(b:Behavior):Boolean = checkCycle(b) && checkDeterminism(b)
 }
