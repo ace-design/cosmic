@@ -52,7 +52,7 @@ object AirQuality extends Scenario {
   override def init(): Behavior = {
     val n = new Node("ENVIRONMENT")
     n.addAction(new EmitStateAction("CharliePC", 8080).addConstrain(new TimeConstraint("19:00", "06:00")))
-    val t = new Transition(n, n, new TickCondition(10))
+    val t = new Transition(n, n, new TickCondition(3))
     new Behavior(n).addTransition(t)
   }
 
@@ -82,6 +82,21 @@ object CarPooling extends Scenario {
   override def init(): Behavior = {
     val n = new Node("PARKING")
     n.addAction(new EmitStateAction("Etienne", 8080).addConstrain(new TimeConstraint("08:00", "09:00")).addConstrain(new TimeConstraint("17:00", "18:00")))
+    val t = new Transition(n, n, new TickCondition(2))
+    new Behavior(n).addTransition(t)
+  }
+
+}
+
+/**
+ * This represents scenario #6: Window opening detection
+ * Period : 10 seconds
+ */
+object WindowOpening extends Scenario {
+
+  override def init(): Behavior = {
+    val n = new Node("OPENING")
+    n.addAction(new EmitStateAction("Francois", 8080).addConstrain(new TimeConstraint("09:00", "14:00")))
     val t = new Transition(n, n, new TickCondition(60))
     new Behavior(n).addTransition(t)
   }

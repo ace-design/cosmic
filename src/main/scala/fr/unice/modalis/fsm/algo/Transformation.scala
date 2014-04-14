@@ -30,9 +30,10 @@ object Transformation {
     // Build composed automata
     val composed = VirtualMachine.apply(composedSkeleton, actionsList)
 
+    val factorizeList = Transformation.factorize(composed)
 
     // Factorize composed automata
-    VirtualMachine.apply(composed, Transformation.factorize(composed))
+    VirtualMachine.apply(composed, factorizeList)
   }
   /**
    * Factorize a behavior
@@ -61,7 +62,7 @@ object Transformation {
 
     // STEP 1a : If transition destination == entrypoint : add the transition and finish
     if (transition.destination.name.equals(behavior.entryPoint.name)){
-      actions ++= Array(new AddTransition(new Transition(origin, transition.destination,
+      actions ++= Array(new DeleteTransition(transition), new AddTransition(new Transition(origin, transition.destination,
         transition.condition match {
         case TickCondition(n) =>
           new TickCondition(counter+n)
