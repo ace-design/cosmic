@@ -1,6 +1,6 @@
 package fr.unice.modalis.fsm.core
 
-import fr.unice.modalis.fsm.condition.Condition
+import fr.unice.modalis.fsm.condition.{TickCondition, Condition}
 
 /**
  * Transition class
@@ -12,11 +12,6 @@ case class Transition(src: Node, dst: Node, cond: Condition) {
 	val condition: Condition = cond
 
 	override def toString():String = "{" + source + "=>" + destination + "," + condition + "}"
-
-  override def equals(x:Any):Boolean = x match {
-    case Transition(s,d,c) => s == source && d == destination && c == condition
-    case _ => false
-  }
 
 
 }

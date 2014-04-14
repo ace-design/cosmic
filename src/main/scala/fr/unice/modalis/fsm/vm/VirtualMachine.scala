@@ -16,7 +16,6 @@ object VirtualMachine {
   def apply(b:Behavior, arr:List[Action]):Behavior =
   {
     arr match {
-      case x :: Nil => x.make(b)
       case x :: tail => apply(x.make(b), tail)
       case Nil => b
     }

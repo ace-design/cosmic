@@ -49,9 +49,4 @@ case class Node(nodeName: String, actionsSet:Set[StateAction]) {
 	 */
 	override def toString():String = name
 
-
-  override def equals(x:Any):Boolean = x match {
-    case Node(a,b) => a == nodeName && b.equals(actions)
-    case _ => false
-  }
 }

@@ -11,6 +11,4 @@ abstract class StateAction(c:List[Constraint]) {
 
   override def toString(): String
 
-  override def equals(x:Any):Boolean;
-
 }

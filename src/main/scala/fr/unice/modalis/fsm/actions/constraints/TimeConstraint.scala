@@ -20,9 +20,5 @@ case class TimeConstraint(begin:String,end:String) extends Constraint{
 
   override def toString():String = begin + " to " + end
 
-  override def equals(x:Any):Boolean = x match {
-    case TimeConstraint(b,e) => b.equals(begin) && e.equals(end)
-    case _ => false
-  }
 
 }

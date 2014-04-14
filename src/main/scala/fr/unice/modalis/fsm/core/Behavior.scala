@@ -42,15 +42,16 @@ class Behavior (entry:Node, nodesSet:Set[Node], transitionSet:Set[Transition]) {
   }
 
 	/**
-	 * Delete a node (+ transitions from/to this node)
+	 * Delete a node
 	 * @param node node to be deleted
 	 * @return A new behavior with the node deleted
 	 */
 	def deleteNode(node: Node):Behavior = 
 	{	
 		// Transitions to be kept 
-		val newTransitions = transitions.filter(a => !(a.source==node) && !(a.destination.name==node))
-		new Behavior(entry, nodes - node, newTransitions)
+		//val newTransitions = transitions.filter(a => !(a.source==node) && !(a.destination.name==node))
+		//new Behavior(entry, nodes - node, newTransitions)
+    new Behavior(entry, nodes - node, transitions)
 	}
 
   def addAction(node: Node, action:StateAction):Unit = {
@@ -65,10 +66,13 @@ class Behavior (entry:Node, nodesSet:Set[Node], transitionSet:Set[Transition]) {
 	 */
 	def addTransition(transition: Transition):Behavior = 
 	{
-		if(nodes.contains(transition.source) && nodes.contains(transition.destination))
-			new Behavior(entryPoint, nodes, transitions + transition)
-		else
-			throw new NodeNotFoundException()
+    if (nodes.filter(p => p.name == transition.source.name).size == 0)
+      throw new NodeNotFoundException(transition.source)
+    if (nodes.filter(p => p.name == transition.destination.name).size == 0)
+      throw new NodeNotFoundException(transition.destination)
+
+    new Behavior(entryPoint, nodes, transitions + transition)
+
 	}
 
   /**
@@ -90,7 +94,10 @@ class Behavior (entry:Node, nodesSet:Set[Node], transitionSet:Set[Transition]) {
 	 */
 	def deleteTransition(transition: Transition):Behavior =
 	{
-	  new Behavior(entryPoint, nodes, transitions - transition)
+    if (transitionSet.contains(transition))
+	    new Behavior(entryPoint, nodes, transitions - transition)
+    else
+      throw new Exception("Transition " + transition + " not found in current behavior (available " + transitionSet + ")")
 	}
 
   /**

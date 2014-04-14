@@ -8,8 +8,5 @@ case class OffStateAction(constraintL:List[Constraint]) extends StateAction(cons
   override def addConstrain(co:Constraint):OffStateAction = new OffStateAction(co :: constraints)
   override def toString():String = "OFF"
 
-  override def equals(x:Any):Boolean = x match {
-    case OffStateAction(c) => c == constraints
-    case _ => false
-  }
+
 }

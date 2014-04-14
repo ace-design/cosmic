@@ -11,8 +11,5 @@ case class EmitStateAction(url:String, port:Int, constraintL:List[Constraint]) e
 
   override def toString():String = "EMIT " + endpointURL + ":" + endpointPort
 
-  override def equals(x:Any):Boolean = x match {
-    case EmitStateAction(u, p, c) => u == url && p == port && c == constraints
-    case _ => false
-  }
+
 }
