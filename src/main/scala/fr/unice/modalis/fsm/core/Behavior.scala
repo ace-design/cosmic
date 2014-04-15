@@ -4,7 +4,6 @@ import fr.unice.modalis.fsm.exceptions.NodeNotFoundException
 import fr.unice.modalis.fsm.condition.{TrueCondition, TickCondition}
 import fr.unice.modalis.fsm.vm.VirtualMachine
 import fr.unice.modalis.fsm.algo.Transformation
-import fr.unice.modalis.fsm.actions.unit.Action
 
 /**
  * A user behavior
@@ -50,14 +49,6 @@ class Behavior (entry:Node, nodesSet:Set[Node], transitionSet:Set[Transition]) {
     new Behavior(entry, nodes - node, transitions)
   }
 
-  /**
-   * Add an action to a referenced node
-   * @param node Node
-   * @param action Action to add
-   */
-  def addAction(node: Node, action:Action):Unit = {
-    node.addAction(action)
-  }
 
   /**
    * Add a transition link

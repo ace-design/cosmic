@@ -1,5 +1,5 @@
 import fr.unice.modalis.fsm.actions.constraints.TimeConstraint
-import fr.unice.modalis.fsm.actions.unit.{EmitAction, Action}
+import fr.unice.modalis.fsm.actions.unit.EmitAction
 import fr.unice.modalis.fsm.core.Node
 import org.specs2.mutable.SpecificationWithJUnit
 
@@ -13,51 +13,45 @@ class NodeTest extends SpecificationWithJUnit{
       node.name mustEqual "A"
     }
 
-    "must be mutable" in {
+    "must be immmutable" in {
       val node = new Node("Emit")
-      node.addAction(new EmitAction("datacollector", 8080))
-      val action:Action = new EmitAction("a",0)
-      node.addAction(action)
 
-      node.actions.getActions.size mustEqual 2
+      val node2 = node.addAction(new EmitAction("datacollector", 8080)).addAction(new EmitAction("a",0))
+
+      (node.actions.size mustEqual 0) && (node2.actions.size mustEqual 2)
 
     }
 
     "allow non action" in {
       val node = new Node("Idle")
-      node.actions.getActions.size mustEqual 0
+      node.actions.actions.size mustEqual 0
     }
 
     "allow adding actions from a idle node" in {
-      val node = new Node("Idle")
-      node.addAction(new EmitAction("a",0))
-      node.actions.getActions.size mustEqual 1
+      val node = new Node("Idle").addAction(new EmitAction("a",0))
+      node.actions.size mustEqual 1
     }
 
     "equal to an other node (same nodes)" in {
-      val node = new Node("A")
-      val node2 = new Node("A")
-
-      node.addAction(new EmitAction("a",0))
-      node2.addAction(new EmitAction("a",0))
+      val node = new Node("A").addAction(new EmitAction("a",0))
+      val node2 = new Node("A").addAction(new EmitAction("a",0))
 
       node.equals(node2) mustEqual(true)
     }
 
     "equal to an other node (different nodes)" in {
-      val node = new Node("A")
-      val node2 = new Node("A")
-
-      node.addAction(new EmitAction("a",0))
-      node2.addAction(new EmitAction("b",0))
+      val node = new Node("A").addAction(new EmitAction("a",0))
+      val node2 = new Node("A").addAction(new EmitAction("b",0))
 
       node.equals(node2) mustEqual(false)
     }
 
     "return the amount of constraints fixed on" in {
-      val node = new Node("A")
-      node.addAction(new EmitAction("a",0).addConstrain(new TimeConstraint("08:00", "09:00")).addConstrain(new TimeConstraint("12:00", "13:00")))
-      node.addAction(new EmitAction("a",0).addConstrain(new TimeConstraint("03:00", "04:00")))
+      val node = new Node("A").addAction(new EmitAction("a",0)
+        .addConstrain(new TimeConstraint("08:00", "09:00"))
+        .addConstrain(new TimeConstraint("12:00", "13:00")))
+        .addAction(new EmitAction("a",0)
+        .addConstrain(new TimeConstraint("03:00", "04:00")))
       node.constraintsAmount() mustEqual(3)
     }
   }

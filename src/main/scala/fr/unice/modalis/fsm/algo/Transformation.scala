@@ -11,28 +11,58 @@ import fr.unice.modalis.fsm.condition.TickCondition
  */
 object Transformation {
 
+  /**
+   * Compose two behavior
+   * @param b1 Behavior 1
+   * @param b2 Behavior 2
+   * @return Composed behavior
+   */
   def compose(b1:Behavior, b2:Behavior):Behavior =
   {
-    val devB1:Behavior = VirtualMachine.apply(b1, Transformation.develop(b1))
-    val devB2:Behavior = VirtualMachine.apply(b2, Transformation.develop(b2))
-    val composedPeriod = Utils.lcm(devB1.period(), devB2.period())
-    val composedSkeleton = Utils.generateDevelopedTemporalBlankAutomata(composedPeriod)
-
+    val composedPeriod = Utils.lcm(b1.period(), b2.period())
     val setActions = ArrayBuffer[Instruction]()
 
-    for (i<- 1 to composedPeriod){
-      val actions = devB1.nodeAt(i).actions.union(devB2.nodeAt(i).actions)
-      setActions += new AddActions(composedSkeleton.nodeAt(i), actions)
+    // Build new entry point
+    val entry = b1.entryPoint + b2.entryPoint
+    setActions += new AddNode(entry)
+
+    // Init : Previous node at start = entry point
+    var previousNode:Node = entry
+
+    // Generate new nodes
+    for (i<- 1 to composedPeriod-1)
+    {
+      // Action composition rule : if (index-1)%P1 == 0 => add A ||  if (index-1)%P2 == 0 ==> add B
+      def generateNode(index:Int):Node = {
+        if (index % b1.period() == 0 && index-1 % b2.period() == 0)
+          new Node("G"+index, b1.nodeAt(index).actions.union(b2.nodeAt(index).actions))
+        else if (index % b1.period() == 0)
+          new Node("G"+index, b1.nodeAt(index).actions)
+        else if (index % b2.period() == 0)
+          new Node("G"+index, b2.nodeAt(index).actions)
+        else
+          new Node("G"+index)
+      }
+
+
+      val newNode = generateNode(i)
+
+      setActions += new AddNode(newNode)
+      setActions += new AddTransition(new Transition(previousNode, newNode, new TickCondition(1)))
+
+      // Update previous node with newly created one
+      previousNode = newNode
+
     }
 
-    val actionsList = setActions.toList
+    // Add final transition (last node -> entryNode)
+    setActions += new AddTransition(new Transition(previousNode, entry, new TickCondition(1)))
 
     // Build composed automata
-    val composed = VirtualMachine.apply(composedSkeleton, actionsList)
-
-    val factorizeList = Transformation.factorize(composed)
+    val composed = VirtualMachine.apply(new Behavior(entry), setActions.toList)
 
     // Factorize composed automata
+    val factorizeList = Transformation.factorize(composed)
     VirtualMachine.apply(composed, factorizeList)
   }
   /**

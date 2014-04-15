@@ -14,8 +14,9 @@ case class Node(val name: String, val actions:SequentialActions) {
 	/**
 	 * Add an action for the current Node
 	 * @param action Action to add
+   * @return Copied node with new action added
 	 */
-	def addAction(action:Action):Unit = actions.add(action)
+	def addAction(action:Action):Node = new Node(name, actions.add(action))
 
   /**
    * Compose two nodes
@@ -34,7 +35,7 @@ case class Node(val name: String, val actions:SequentialActions) {
   def constraintsAmount():Int =
   {
     var i = 0
-    actions.getActions.foreach(a => i = i + a.constraints.length)
+    actions.actions.foreach(a => i = i + a.constraints.length)
     i
   }
 	/**

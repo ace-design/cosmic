@@ -8,18 +8,15 @@ import org.specs2.mutable.SpecificationWithJUnit
 class ActionsTest extends SpecificationWithJUnit{
   "A sequential actions object" should {
     "handle new actions (1)" in {
-      val a = new SequentialActions()
-      a.add(new EmitAction("a",0))
+      val a = new SequentialActions().add(new EmitAction("a",0))
 
-      a.getActions.size must_== 1
+      a.actions.size must_== 1
     }
 
     "handle new actions (2)" in {
-      val a = new SequentialActions()
-      a.add(new EmitAction("a",0))
-      a.add(new EmitAction("b",0))
+      val a = new SequentialActions().add(new EmitAction("a",0)).add(new EmitAction("b",0))
 
-      a.getActions.size must_== 2
+      a.actions.size must_== 2
     }
   }
 }
