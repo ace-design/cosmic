@@ -3,7 +3,6 @@ package fr.unice.modalis.fsm.core
 import fr.unice.modalis.fsm.exceptions.NodeNotFoundException
 import fr.unice.modalis.fsm.condition.{TrueCondition, TickCondition}
 import fr.unice.modalis.fsm.actions.StateAction
-import scala.collection.mutable.ArrayBuffer
 import fr.unice.modalis.fsm.vm.VirtualMachine
 import fr.unice.modalis.fsm.algo.Transformation
 
@@ -14,21 +13,21 @@ import fr.unice.modalis.fsm.algo.Transformation
  */
 class Behavior (entry:Node, nodesSet:Set[Node], transitionSet:Set[Transition]) {
 
-	def this(entry:Node) = this(entry, Set[Node](entry), Set[Transition]())
+  def this(entry:Node) = this(entry, Set[Node](entry), Set[Transition]())
 
-	val nodes:Set[Node] = nodesSet
-	val transitions:Set[Transition] = transitionSet
+  val nodes:Set[Node] = nodesSet
+  val transitions:Set[Transition] = transitionSet
 
-	val entryPoint:Node = entry 	// FSM Entry point
+  val entryPoint:Node = entry 	// FSM Entry point
 
 
   /**
-	* Add a node
-	* @param node node to add
-	* @return A new behavior with the node added
-	* 
-	*/
-	def addNode(node: Node):Behavior = new Behavior(entry, nodes + node, transitions)
+   * Add a node
+   * @param node node to add
+   * @return A new behavior with the node added
+   *
+   */
+  def addNode(node: Node):Behavior = new Behavior(entry, nodes + node, transitions)
 
   /**
    * Add nodes
@@ -41,31 +40,33 @@ class Behavior (entry:Node, nodesSet:Set[Node], transitionSet:Set[Transition]) {
     processedBehavior
   }
 
-	/**
-	 * Delete a node
-	 * @param node node to be deleted
-	 * @return A new behavior with the node deleted
-	 */
-	def deleteNode(node: Node):Behavior = 
-	{	
-		// Transitions to be kept 
-		//val newTransitions = transitions.filter(a => !(a.source==node) && !(a.destination.name==node))
-		//new Behavior(entry, nodes - node, newTransitions)
+  /**
+   * Delete a node
+   * @param node node to be deleted
+   * @return A new behavior with the node deleted
+   */
+  def deleteNode(node: Node):Behavior =
+  {
     new Behavior(entry, nodes - node, transitions)
-	}
+  }
 
+  /**
+   * Add an action to a referenced node
+   * @param node Node
+   * @param action Action to add
+   */
   def addAction(node: Node, action:StateAction):Unit = {
     node.addAction(action)
   }
 
-	/**
-	 * Add a transition link
-	 * @param transition transition between two nodes
-	 * @return A new behavior with the transition added
-	 * 
-	 */
-	def addTransition(transition: Transition):Behavior = 
-	{
+  /**
+   * Add a transition link
+   * @param transition transition between two nodes
+   * @return A new behavior with the transition added
+   *
+   */
+  def addTransition(transition: Transition):Behavior =
+  {
     if (nodes.filter(p => p.name == transition.source.name).size == 0)
       throw new NodeNotFoundException(transition.source)
     if (nodes.filter(p => p.name == transition.destination.name).size == 0)
@@ -73,7 +74,7 @@ class Behavior (entry:Node, nodesSet:Set[Node], transitionSet:Set[Transition]) {
 
     new Behavior(entryPoint, nodes, transitions + transition)
 
-	}
+  }
 
   /**
    * Add transition links
@@ -87,18 +88,16 @@ class Behavior (entry:Node, nodesSet:Set[Node], transitionSet:Set[Transition]) {
     processedBehavior
   }
 
-	/**
-	 * Delete a transition link
-	 * @param  transition transition to be deleted
-	 * @return  A new behavior with the transition deleted
-	 */
-	def deleteTransition(transition: Transition):Behavior =
-	{
-    if (transitionSet.contains(transition))
-	    new Behavior(entryPoint, nodes, transitions - transition)
-    else
-      throw new Exception("Transition " + transition + " not found in current behavior (available " + transitionSet + ")")
-	}
+  /**
+   * Delete a transition link
+   * @param  transition transition to be deleted
+   * @return  A new behavior with the transition deleted
+   */
+  def deleteTransition(transition: Transition):Behavior =
+  {
+    val newSet = transitions.filterNot(p => (p.source.name == transition.source.name) && (p.destination.name == transition.destination.name) && (p.condition.equals(transition.condition)))
+    new Behavior(entryPoint, nodes, newSet)
+  }
 
   /**
    * Get the node accessed at tick t
@@ -142,6 +141,6 @@ class Behavior (entry:Node, nodesSet:Set[Node], transitionSet:Set[Transition]) {
    */
   def +(b:Behavior):Behavior = Transformation.compose(this, b)
 
-	override def toString():String = "FSM: Nodes=" + nodes + " Transitions=" + transitions
+  override def toString():String = "FSM: Nodes=" + nodes + " Transitions=" + transitions
 
 }

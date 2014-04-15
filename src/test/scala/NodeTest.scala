@@ -1,13 +1,13 @@
 import fr.unice.modalis.fsm.actions.constraints.TimeConstraint
 import fr.unice.modalis.fsm.actions.{EmitStateAction, OffStateAction, StateAction}
 import fr.unice.modalis.fsm.core.Node
-import org.specs2.mutable.Specification
+import org.specs2.mutable.SpecificationWithJUnit
 import scala.collection.mutable.Set
 
 /**
  * Created by Cyril Cecchinel on 24/03/2014.
  */
-class NodeTest extends Specification{
+class NodeTest extends SpecificationWithJUnit{
   "Node" should {
     "tell his name" in {
       val node = new Node("A");

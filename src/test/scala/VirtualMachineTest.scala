@@ -1,13 +1,13 @@
 import fr.unice.modalis.fsm.condition.TickCondition
 import fr.unice.modalis.fsm.core.{Transition, Node, Behavior}
 import fr.unice.modalis.fsm.vm.{VirtualMachine, Action, AddTransition, DeleteNode}
-import org.specs2.mutable._
+import org.specs2.mutable.SpecificationWithJUnit
 import scala.collection.mutable.ArrayBuffer
 
 /**
  * Created by cyrilcecchinel on 31/03/2014.
  */
-class VirtualMachineTest extends Specification{
+class VirtualMachineTest extends SpecificationWithJUnit{
   "A Virtual machine" should {
        "apply a action list on a behavior " in {
          val n1:Node = new Node("A")

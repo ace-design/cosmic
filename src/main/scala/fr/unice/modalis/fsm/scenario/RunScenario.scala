@@ -10,7 +10,7 @@ object RunScenario extends App {
 
 
 
-  // Build a pressure sensor and initiate scernario on it
+  // Build a pressure sensor and initiate scenario on it
   val pressureSensor = new PressureSensor(IntrusionPrevention.init())
   pressureSensor.addBehavior(WindowOpening.init()) */
 

@@ -2,12 +2,12 @@ import fr.unice.modalis.fsm.actions.{OffStateAction, EmitStateAction}
 import fr.unice.modalis.fsm.condition.{TimeCondition, TickCondition, TrueCondition}
 import fr.unice.modalis.fsm.core.{Transition, Behavior, Node}
 import fr.unice.modalis.fsm.exceptions.NodeNotFoundException
-import org.specs2.mutable.Specification
+import org.specs2.mutable.SpecificationWithJUnit
 
 /**
  * Created by Cyril Cecchinel on 26/03/2014.
  */
-class BehaviorTest extends Specification {
+class BehaviorTest extends SpecificationWithJUnit {
   "Behavior" should {
     "have an entry point" in {
       val node = new Node("START")

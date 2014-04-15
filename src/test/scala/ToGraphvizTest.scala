@@ -1,6 +1,6 @@
 import fr.unice.modalis.fsm.condition.{TrueCondition, TickCondition}
 import fr.unice.modalis.fsm.converter.ToGraphviz
-import fr.unice.modalis.fsm.core.{Behavior, Transition, Node}
+import fr.unice.modalis.fsm.core.{Transition, Node}
 
 import org.specs2.mutable.Specification
 
@@ -22,21 +22,5 @@ class ToGraphvizTest extends Specification{
       ToGraphviz.generateNodeShape("doublecircle").replaceAll("\\s","").trim mustEqual "node [shape = doublecircle];".replaceAll("\\s","").trim;
     }
 
-    "Translate a complete behavior" in {
-      val a = new Node("A")
-      val b = new Node("B")
-      val t = new Transition(a,b, new TickCondition(1))
-      val t2 = new Transition(b,a, new TrueCondition)
-      val behavior = new Behavior(a).addNode(b).addTransition(t).addTransition(t2)
-      val resultConvert = ToGraphviz.generateCode(behavior).replaceAll("\\s","").replaceAll("\\n","").trim
-      val expected = """digraph finite_state_machine {
-        #rankdir=LR;
-        #size="8,5"
-        #node [shape = doublecircle]; A;
-        #node [shape = circle];
-        #A -> B [ label = "t%1==0" ];
-        #B -> A [ label = "*" ];}""".stripMargin('#').replaceAll("\\s","").replaceAll("\\n","").trim;
-      resultConvert mustEqual expected
-    }
   }
 }

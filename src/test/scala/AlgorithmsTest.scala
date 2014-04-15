@@ -2,13 +2,14 @@ import fr.unice.modalis.fsm.actions.OffStateAction
 import fr.unice.modalis.fsm.algo.{Utils, Transformation}
 import fr.unice.modalis.fsm.condition.TickCondition
 import fr.unice.modalis.fsm.core.{Behavior, Transition, Node}
+import fr.unice.modalis.fsm.scenario.{HeatingMonitoring, CarPooling, AirQuality}
 import fr.unice.modalis.fsm.vm.VirtualMachine
-import org.specs2.mutable.Specification
+import org.specs2.mutable.SpecificationWithJUnit
 
 /**
  * Created by cyrilcecchinel on 14/04/2014.
  */
-class AlgorithmsTest extends Specification{
+class AlgorithmsTest extends SpecificationWithJUnit{
   "A development should maintain behavior properties (correctness and period)" in {
     val n1:Node = new Node("A");
     val n2:Node = new Node("B");
@@ -41,5 +42,24 @@ class AlgorithmsTest extends Specification{
     val fb:Behavior = VirtualMachine.apply(b,Transformation.factorize(b))
 
     (Utils.isCorrectBehavior(fb) mustEqual(true)) and (b.period() must_== fb.period())
+  }
+
+  "A simple composition should maintain behavior properties (correctness and period = lcm(overall perdiods))" in {
+    val a = AirQuality.init()
+    val b = CarPooling.init()
+    val composed = a + b
+
+
+
+    (Utils.isCorrectBehavior(composed) mustEqual(true)) and (composed.period() must_== Utils.lcm(a.period(), b.period()))
+  }
+
+  "A complex composition should maintain behavior properties (correctness and period = lcm(overall perdiods))" in {
+    val a = AirQuality.init()
+    val b = CarPooling.init()
+    val c = HeatingMonitoring.init()
+    val composed = a + b + c
+
+    (Utils.isCorrectBehavior(composed) mustEqual(true)) and (composed.period() must_== Utils.lcmm(List[Int](a.period(), b.period(), c.period())))
   }
 }

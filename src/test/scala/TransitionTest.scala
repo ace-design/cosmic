@@ -1,11 +1,11 @@
 import fr.unice.modalis.fsm.condition.TickCondition
 import fr.unice.modalis.fsm.core._
-import org.specs2.mutable._
+import org.specs2.mutable.SpecificationWithJUnit
 
 /**
  * Created by Cyril Cecchinel on 24/03/2014.
  */
-class TransitionTest extends Specification {
+class TransitionTest extends SpecificationWithJUnit {
   "A transition" should {
     "have a source" in {
       val t = new Transition(new Node("A"), new Node("B"), new TickCondition(5));

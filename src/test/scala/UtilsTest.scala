@@ -1,12 +1,12 @@
 import fr.unice.modalis.fsm.algo.Utils
 import fr.unice.modalis.fsm.condition.TrueCondition
 import fr.unice.modalis.fsm.core.{SimpleTemporalBehavior, Behavior, Transition, Node}
-import org.specs2.mutable.Specification
+import org.specs2.mutable.SpecificationWithJUnit
 
 /**
  * Created by cyrilcecchinel on 11/04/2014.
  */
-class UtilsTest extends Specification{
+class UtilsTest extends SpecificationWithJUnit{
   "A util class" should {
     "provide cycle detection algorithm (correct behavior)" in {
       val a = new Node("A")

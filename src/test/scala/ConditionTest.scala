@@ -1,10 +1,10 @@
 import fr.unice.modalis.fsm.condition._
-import org.specs2.mutable.Specification
+import org.specs2.mutable.SpecificationWithJUnit
 
 /**
  * Created by cyrilcecchinel on 14/04/2014.
  */
-class ConditionTest extends Specification{
+class ConditionTest extends SpecificationWithJUnit{
   "A condition" should {
     "be equals to an other condition (true case)" in {
       val t1:Condition = new TickCondition(2)

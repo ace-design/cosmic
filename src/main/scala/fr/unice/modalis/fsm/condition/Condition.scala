@@ -1,6 +1,6 @@
 package fr.unice.modalis.fsm.condition
 
 
-class Condition {
+abstract class Condition {
   
 }
