@@ -7,7 +7,7 @@ import fr.unice.modalis.fsm.core.Node
  * AddNode class
  * Represent the action of adding a node
  */
-case class AddNode(n:Node) extends Action {
+case class AddNode(n:Node) extends VMAction {
   
 	override def make(b: Behavior):Behavior = b.addNode(n)
 

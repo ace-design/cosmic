@@ -18,7 +18,7 @@ object Transformation {
     val composedPeriod = Utils.lcm(devB1.period(), devB2.period())
     val composedSkeleton = Utils.generateDevelopedTemporalBlankAutomata(composedPeriod)
 
-    val setActions = ArrayBuffer[Action]()
+    val setActions = ArrayBuffer[VMAction]()
 
     for (i<- 1 to composedPeriod){
       val actions = devB1.nodeAt(i).actions.union(devB2.nodeAt(i).actions)
@@ -40,8 +40,8 @@ object Transformation {
    * @param b Behavior
    * @return An actions list to factorize the behavior
    */
-  def factorize(b:Behavior):List[Action] = {
-    factorize_int(b, b.entryPoint, b.entryPoint, ArrayBuffer[Action](), 0)
+  def factorize(b:Behavior):List[VMAction] = {
+    factorize_int(b, b.entryPoint, b.entryPoint, ArrayBuffer[VMAction](), 0)
 
    }
 
@@ -54,7 +54,7 @@ object Transformation {
    * @param counter Time counter since last significant node
    * @return An action list to factorize the behavior
    */
-  private def factorize_int(behavior:Behavior, currentNode:Node, origin:Node, actions:ArrayBuffer[Action], counter:Int):List[Action]=
+  private def factorize_int(behavior:Behavior, currentNode:Node, origin:Node, actions:ArrayBuffer[VMAction], counter:Int):List[VMAction]=
   {
 
     // STEP 0 : Identify transition
@@ -98,8 +98,8 @@ object Transformation {
    * @param b Behavior
    * @return An actions list to develop the behavior
    */
-	def develop(b: Behavior):List[Action] = {
-    val setActions = ArrayBuffer[Action]()
+	def develop(b: Behavior):List[VMAction] = {
+    val setActions = ArrayBuffer[VMAction]()
     b.transitions.foreach(t => setActions ++= develop_int(t))
     setActions.toList
   }
@@ -109,11 +109,11 @@ object Transformation {
    * @param t Transition
    * @return An actions list to develop the transition
    */
-	private def develop_int(t: Transition):List[Action] = {
+	private def develop_int(t: Transition):List[VMAction] = {
 	  
 	  val currentSource: Node = t.source
 	  val currentDestination: Node = t.destination
-	  val actions = new ArrayBuffer[Action]
+	  val actions = new ArrayBuffer[VMAction]
 	  
 	 
 	 t.condition match {

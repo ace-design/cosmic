@@ -1,14 +1,14 @@
 package fr.unice.modalis.fsm.core
 
-import fr.unice.modalis.fsm.actions.StateAction
+import fr.unice.modalis.fsm.actions.Action
 import scala.collection.mutable.Set
 /**
  * Node class
  * This class represents a FSM node with actions attached 
  */
-case class Node(nodeName: String, actionsSet:Set[StateAction]) {
+case class Node(nodeName: String, actionsSet:Set[Action]) {
 
-  def this(nodeName:String) = this(nodeName, Set[StateAction]())
+  def this(nodeName:String) = this(nodeName, Set[Action]())
 
 	// Node properties
 	val name = nodeName
@@ -18,7 +18,7 @@ case class Node(nodeName: String, actionsSet:Set[StateAction]) {
 	 * Add an action for the current Node
 	 * @param action Action to add
 	 */
-	def addAction(action:StateAction):Unit = actions.add(action)
+	def addAction(action:Action):Unit = actions.add(action)
 
   /**
    * Compose two nodes

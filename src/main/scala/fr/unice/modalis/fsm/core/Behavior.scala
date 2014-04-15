@@ -2,7 +2,7 @@ package fr.unice.modalis.fsm.core
 
 import fr.unice.modalis.fsm.exceptions.NodeNotFoundException
 import fr.unice.modalis.fsm.condition.{TrueCondition, TickCondition}
-import fr.unice.modalis.fsm.actions.StateAction
+import fr.unice.modalis.fsm.actions.Action
 import fr.unice.modalis.fsm.vm.VirtualMachine
 import fr.unice.modalis.fsm.algo.Transformation
 
@@ -55,7 +55,7 @@ class Behavior (entry:Node, nodesSet:Set[Node], transitionSet:Set[Transition]) {
    * @param node Node
    * @param action Action to add
    */
-  def addAction(node: Node, action:StateAction):Unit = {
+  def addAction(node: Node, action:Action):Unit = {
     node.addAction(action)
   }
 

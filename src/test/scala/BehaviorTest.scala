@@ -1,4 +1,4 @@
-import fr.unice.modalis.fsm.actions.{OffStateAction, EmitStateAction}
+import fr.unice.modalis.fsm.actions.{OffAction, EmitAction}
 import fr.unice.modalis.fsm.condition.{TimeCondition, TickCondition, TrueCondition}
 import fr.unice.modalis.fsm.core.{Transition, Behavior, Node}
 import fr.unice.modalis.fsm.exceptions.NodeNotFoundException
@@ -37,7 +37,7 @@ class BehaviorTest extends SpecificationWithJUnit {
     }
 
     "give correct node for a defined tick value" in {
-      val n1:Node = new Node("B"); n1.addAction(new EmitStateAction("host", 9090))
+      val n1:Node = new Node("B"); n1.addAction(new EmitAction("host", 9090))
       val n2:Node = new Node("Bnull1")
       val n3:Node = new Node("Bnull2")
 
@@ -51,7 +51,7 @@ class BehaviorTest extends SpecificationWithJUnit {
     }
 
     "give a correct period on simple behaviors" in {
-      val n1:Node = new Node("B"); n1.addAction(new EmitStateAction("host", 9090))
+      val n1:Node = new Node("B"); n1.addAction(new EmitAction("host", 9090))
       val n2:Node = new Node("Bnull1")
       val n3:Node = new Node("Bnull2")
 
@@ -65,10 +65,10 @@ class BehaviorTest extends SpecificationWithJUnit {
     }
 
     "give a correct period on complex behaviors" in {
-      val n1:Node = new Node("B"); n1.addAction(new EmitStateAction("host", 9090))
+      val n1:Node = new Node("B"); n1.addAction(new EmitAction("host", 9090))
       val n2:Node = new Node("Bnull1")
       val n3:Node = new Node("Bnull2")
-      val n4:Node = new Node("Off"); n4.addAction(new OffStateAction)
+      val n4:Node = new Node("Off"); n4.addAction(new OffAction)
 
       val t1:Transition = new Transition(n1,n2, new TickCondition(1))
       val t2:Transition = new Transition(n2,n3, new TickCondition(1))

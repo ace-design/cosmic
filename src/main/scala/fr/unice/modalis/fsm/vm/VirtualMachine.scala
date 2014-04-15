@@ -13,7 +13,7 @@ object VirtualMachine {
    * @param arr Action list
    * @return A new behavior with the actions list applied
    */
-  def apply(b:Behavior, arr:List[Action]):Behavior =
+  def apply(b:Behavior, arr:List[VMAction]):Behavior =
   {
     arr match {
       case x :: tail => apply(x.make(b), tail)

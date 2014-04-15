@@ -1,4 +1,4 @@
-import fr.unice.modalis.fsm.actions.OffStateAction
+import fr.unice.modalis.fsm.actions.OffAction
 import fr.unice.modalis.fsm.algo.{Utils, Transformation}
 import fr.unice.modalis.fsm.condition.TickCondition
 import fr.unice.modalis.fsm.core.{Behavior, Transition, Node}
@@ -14,7 +14,7 @@ class AlgorithmsTest extends SpecificationWithJUnit{
     val n1:Node = new Node("A");
     val n2:Node = new Node("B");
     val n3:Node = new Node("C");
-    n3.addAction(new OffStateAction())
+    n3.addAction(new OffAction())
 
     val t1:Transition = new Transition(n1,n2,new TickCondition(3))
     val t2:Transition = new Transition(n2,n3,new TickCondition(2))
@@ -31,7 +31,7 @@ class AlgorithmsTest extends SpecificationWithJUnit{
     val n1:Node = new Node("A");
     val n2:Node = new Node("B");
     val n3:Node = new Node("C");
-    n3.addAction(new OffStateAction())
+    n3.addAction(new OffAction())
 
     val t1:Transition = new Transition(n1,n2,new TickCondition(1))
     val t2:Transition = new Transition(n2,n3,new TickCondition(1))

@@ -7,7 +7,7 @@ import fr.unice.modalis.fsm.core.Transition
  * AddTransition class
  * Represent the action of adding a transition
  */
-case class AddTransition(t:Transition) extends Action {
+case class AddTransition(t:Transition) extends VMAction {
 	override def make(b: Behavior): Behavior = b.addTransition(t)
 
   override def toString():String = "{AddTransition transition=" + t + "}"
