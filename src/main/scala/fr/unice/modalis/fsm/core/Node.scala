@@ -1,7 +1,8 @@
 package fr.unice.modalis.fsm.core
 
-import fr.unice.modalis.fsm.actions.Action
 import scala.collection.mutable.Set
+import fr.unice.modalis.fsm.actions.unit.Action
+
 /**
  * Node class
  * This class represents a FSM node with actions attached 

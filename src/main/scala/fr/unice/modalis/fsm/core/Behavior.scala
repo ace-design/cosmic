@@ -2,9 +2,9 @@ package fr.unice.modalis.fsm.core
 
 import fr.unice.modalis.fsm.exceptions.NodeNotFoundException
 import fr.unice.modalis.fsm.condition.{TrueCondition, TickCondition}
-import fr.unice.modalis.fsm.actions.Action
 import fr.unice.modalis.fsm.vm.VirtualMachine
 import fr.unice.modalis.fsm.algo.Transformation
+import fr.unice.modalis.fsm.actions.unit.Action
 
 /**
  * A user behavior

@@ -1,6 +1,6 @@
 import fr.unice.modalis.fsm.condition.TickCondition
 import fr.unice.modalis.fsm.core.{Transition, Node, Behavior}
-import fr.unice.modalis.fsm.vm.{VirtualMachine, VMAction, AddTransition, DeleteNode}
+import fr.unice.modalis.fsm.vm.{VirtualMachine, Instruction, AddTransition, DeleteNode}
 import org.specs2.mutable.SpecificationWithJUnit
 import scala.collection.mutable.ArrayBuffer
 
@@ -15,7 +15,7 @@ class VirtualMachineTest extends SpecificationWithJUnit{
          val n3:Node = new Node("C")
          val b = new Behavior(n1).addNode(n2).addNode(n3)
 
-         val actions = ArrayBuffer[VMAction]()
+         val actions = ArrayBuffer[Instruction]()
          actions += new DeleteNode(n3)
          actions += new AddTransition(new Transition(n1, n2, new TickCondition(2)))
 

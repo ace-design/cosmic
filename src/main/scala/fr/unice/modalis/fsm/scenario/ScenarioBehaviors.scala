@@ -1,9 +1,9 @@
 package fr.unice.modalis.fsm.scenario
 
 import fr.unice.modalis.fsm.core.{Behavior, Transition, Node}
-import fr.unice.modalis.fsm.actions.EmitAction
 import fr.unice.modalis.fsm.condition.TickCondition
 import fr.unice.modalis.fsm.actions.constraints.TimeConstraint
+import fr.unice.modalis.fsm.actions.unit.EmitAction
 
 /**
  * Scenario basis

@@ -1,6 +1,6 @@
 package fr.unice.modalis.fsm.algo
 
-import fr.unice.modalis.fsm.core.{Transition, Node, SimpleTemporalBehavior, Behavior}
+import fr.unice.modalis.fsm.core.{Transition, Node, Behavior}
 import fr.unice.modalis.fsm.vm.VirtualMachine
 import fr.unice.modalis.fsm.condition.TickCondition
 
@@ -96,4 +96,5 @@ object Utils {
    * @return Boolean corresponding to the validation
    */
   def isCorrectBehavior(b:Behavior):Boolean = checkCycle(b) && checkDeterminism(b)
+
 }
