@@ -2,7 +2,6 @@ import fr.unice.modalis.fsm.actions.constraints.TimeConstraint
 import fr.unice.modalis.fsm.actions.unit.{EmitAction, Action}
 import fr.unice.modalis.fsm.core.Node
 import org.specs2.mutable.SpecificationWithJUnit
-import scala.collection.mutable.Set
 
 /**
  * Created by Cyril Cecchinel on 24/03/2014.
@@ -15,23 +14,24 @@ class NodeTest extends SpecificationWithJUnit{
     }
 
     "must be mutable" in {
-      val node = new Node("Emit", Set[Action](new EmitAction("datacollector", 8080)))
+      val node = new Node("Emit")
+      node.addAction(new EmitAction("datacollector", 8080))
       val action:Action = new EmitAction("a",0)
       node.addAction(action)
 
-      node.actions.size mustEqual 2
+      node.actions.getActions.size mustEqual 2
 
     }
 
     "allow non action" in {
       val node = new Node("Idle")
-      node.actions.size mustEqual 0
+      node.actions.getActions.size mustEqual 0
     }
 
     "allow adding actions from a idle node" in {
       val node = new Node("Idle")
       node.addAction(new EmitAction("a",0))
-      node.actions.size mustEqual 1
+      node.actions.getActions.size mustEqual 1
     }
 
     "equal to an other node (same nodes)" in {

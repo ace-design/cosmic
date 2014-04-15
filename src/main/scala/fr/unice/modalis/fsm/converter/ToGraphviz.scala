@@ -59,7 +59,7 @@ object ToGraphviz extends Converter{
     val s = new StringBuilder
     var i = 1
 
-      for (f <- n.actions.toIterator) {
+      for (f <- n.actions.getActions.toIterator) {
 
         if (f.constraints.size > 0) {
           val box = n.name + "_CONSTRAINTS" + i

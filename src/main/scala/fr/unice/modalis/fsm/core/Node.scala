@@ -1,19 +1,15 @@
 package fr.unice.modalis.fsm.core
 
-import scala.collection.mutable.Set
 import fr.unice.modalis.fsm.actions.unit.Action
+import fr.unice.modalis.fsm.actions.flow.SequentialActions
 
 /**
  * Node class
  * This class represents a FSM node with actions attached 
  */
-case class Node(nodeName: String, actionsSet:Set[Action]) {
+case class Node(val name: String, val actions:SequentialActions) {
 
-  def this(nodeName:String) = this(nodeName, Set[Action]())
-
-	// Node properties
-	val name = nodeName
-	val actions = actionsSet
+  def this(nodeName:String) = this(nodeName, new SequentialActions)
 	
 	/**
 	 * Add an action for the current Node
@@ -28,10 +24,7 @@ case class Node(nodeName: String, actionsSet:Set[Action]) {
    */
   def +(n:Node):Node =
   {
-    val actionsComposed = this.actions.union(n.actions)
-    val processedNode:Node = new Node(this.name + "_" + n.name)
-    actionsComposed.foreach(a => processedNode.addAction(a))
-    processedNode
+    new Node(this.name + "_" + n.name, actions.union(n.actions))
   }
 
   /**
@@ -41,7 +34,7 @@ case class Node(nodeName: String, actionsSet:Set[Action]) {
   def constraintsAmount():Int =
   {
     var i = 0
-    actions.foreach(a => i = i + a.constraints.length)
+    actions.getActions.foreach(a => i = i + a.constraints.length)
     i
   }
 	/**
