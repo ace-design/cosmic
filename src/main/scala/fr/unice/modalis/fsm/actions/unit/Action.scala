@@ -14,7 +14,6 @@ abstract class Action(val constraints:List[Constraint]) {
    */
   def this() = this(List[Constraint]())
 
-
   /**
    * Add constraint on this action
    * @param co Constraint
@@ -24,6 +23,6 @@ abstract class Action(val constraints:List[Constraint]) {
 
   override def toString(): String
 
-
-
 }
+
+trait Result {}

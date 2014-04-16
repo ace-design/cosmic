@@ -11,4 +11,8 @@ case class SendAction(val to:String, constraintL:List[Constraint]) extends Actio
   override def addConstrain(co:Constraint):SendAction = new SendAction(to, co :: constraints)
 
 
+
+}
+case class SendResult(val p:ReadResult) extends Result{
+
 }

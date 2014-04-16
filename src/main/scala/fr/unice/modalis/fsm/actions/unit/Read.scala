@@ -11,3 +11,7 @@ class ReadAction(val sensorId:String, constraintL:List[Constraint]) extends Acti
 
 
 }
+
+class ReadResult() extends Result{
+
+}

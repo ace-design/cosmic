@@ -104,8 +104,8 @@ class Behavior (entry:Node, nodesSet:Set[Node], transitionSet:Set[Transition]) {
 
       def f(t:Transition) = {
         t.condition match {
-          case TickCondition(n) => if (i % n == 0) currentNode = t.destination
           case TrueCondition() => currentNode = t.destination
+          case TickCondition(n) => if (i % n == 0) currentNode = t.destination
           case _ => /* NOP */
         }
       }
