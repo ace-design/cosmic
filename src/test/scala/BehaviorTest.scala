@@ -37,7 +37,7 @@ class BehaviorTest extends SpecificationWithJUnit {
     }
 
     "give correct node for a defined tick value" in {
-      val n1:Node = new Node("B"); n1.addAction(new EmitAction("host", 9090))
+      val n1:Node = new Node("B").addAction(new EmitAction("host", 9090))
       val n2:Node = new Node("Bnull1")
       val n3:Node = new Node("Bnull2")
 
@@ -51,7 +51,7 @@ class BehaviorTest extends SpecificationWithJUnit {
     }
 
     "give a correct period on simple behaviors" in {
-      val n1:Node = new Node("B"); n1.addAction(new EmitAction("host", 9090))
+      val n1:Node = new Node("B").addAction(new EmitAction("host", 9090))
       val n2:Node = new Node("Bnull1")
       val n3:Node = new Node("Bnull2")
 
@@ -65,7 +65,7 @@ class BehaviorTest extends SpecificationWithJUnit {
     }
 
     "give a correct period on complex behaviors" in {
-      val n1:Node = new Node("B"); n1.addAction(new EmitAction("host", 9090))
+      val n1:Node = new Node("B").addAction(new EmitAction("host", 9090))
       val n2:Node = new Node("Bnull1")
       val n3:Node = new Node("Bnull2")
       val n4:Node = new Node("Off"); n4.addAction(new EmitAction("a",0))
@@ -80,6 +80,29 @@ class BehaviorTest extends SpecificationWithJUnit {
       val behavior:Behavior = new Behavior(n1).addNodes(List[Node](n1,n2,n3,n4)).addTransitions(List[Transition](t1,t2,t3,t4,t5))
 
       behavior.period() must_== 3
+    }
+
+    "tell if a new node is accessed at a defined tick (a transition is crossed at tick t) (1)" in {
+      val n1:Node = new Node("A")
+      val n2:Node = new Node("B")
+      val n3:Node = new Node("C")
+
+      val t1:Transition = new Transition(n1,n2, new TickCondition(1))
+      val t2:Transition = new Transition(n2,n3, new TickCondition(2))
+      val t3:Transition = new Transition(n3,n1, new TickCondition(3))
+
+      val behavior:Behavior = new Behavior(n1).addNodes(List[Node](n1,n2,n3)).addTransitions(List[Transition](t1,t2,t3))
+
+      (behavior.newNodeAt(1) mustEqual(true)) && (behavior.newNodeAt(3) mustEqual(true)) && (behavior.newNodeAt(7) mustEqual(true)) && (behavior.newNodeAt(8) mustEqual(false))
+    }
+
+    "tell if a new node is accessed at a defined tick (a transition is crossed at tick t) (2)" in {
+      val n1:Node = new Node("A")
+      val t1:Transition = new Transition(n1,n1, new TickCondition(4))
+
+      val behavior:Behavior = new Behavior(n1).addNode(n1).addTransition(t1)
+
+      (behavior.newNodeAt(1) mustEqual(false)) && (behavior.newNodeAt(4) mustEqual(true)) && (behavior.newNodeAt(0) mustEqual(true))
     }
   }
 }

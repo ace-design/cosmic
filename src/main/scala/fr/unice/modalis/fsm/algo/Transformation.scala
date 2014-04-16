@@ -34,11 +34,11 @@ object Transformation {
     {
       // Action composition rule : if (index-1)%P1 == 0 => add A ||  if (index-1)%P2 == 0 ==> add B
       def generateNode(index:Int):Node = {
-        if (index % b1.period() == 0 && index-1 % b2.period() == 0)
+        if (b1.newNodeAt(index) && b2.newNodeAt(index))
           new Node("G"+index, b1.nodeAt(index).actions.union(b2.nodeAt(index).actions))
-        else if (index % b1.period() == 0)
+        else if (b1.newNodeAt(index))
           new Node("G"+index, b1.nodeAt(index).actions)
-        else if (index % b2.period() == 0)
+        else if (b2.newNodeAt(index))
           new Node("G"+index, b2.nodeAt(index).actions)
         else
           new Node("G"+index)

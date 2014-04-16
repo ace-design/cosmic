@@ -97,6 +97,7 @@ class Behavior (entry:Node, nodesSet:Set[Node], transitionSet:Set[Transition]) {
    */
   def nodeAt(t:Int):Node = {
     var currentNode:Node = this.entryPoint
+    var wait:Int = 0
     for (i <- 1 to t)
     {
       val possibleTransition:Set[Transition] = transitions.filter(x => x.source.equals(currentNode))
@@ -105,13 +106,31 @@ class Behavior (entry:Node, nodesSet:Set[Node], transitionSet:Set[Transition]) {
       def f(t:Transition) = {
         t.condition match {
           case TrueCondition() => currentNode = t.destination
-          case TickCondition(n) => if (i % n == 0) currentNode = t.destination
+          case TickCondition(n) => wait += 1; if (wait % n == 0) { currentNode = t.destination; wait = 0}
           case _ => /* NOP */
         }
       }
 
     }
     currentNode
+  }
+
+  /**
+   * Return if a new node is reached at tick t
+   * @param t Tick
+   * @return True if a new node is reached at tick t
+   */
+  def newNodeAt(t:Int):Boolean =
+  {
+    // Limit-case : 1 node with a single transition looping on it
+    if (this.nodes.size == 1){
+      val tr:Transition = transitions.filter(t => t.source == entryPoint && t.destination == entryPoint).head
+      tr.condition match {
+        case TickCondition(n) if (t % n == 0) => true
+        case _ => false
+      }
+    }
+    else nodeAt(t-1) != nodeAt(t) // Check if previous and current node are different
   }
 
   /**
