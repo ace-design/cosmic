@@ -3,7 +3,7 @@ package fr.unice.modalis.fsm.actions.unit
 import fr.unice.modalis.fsm.actions.constraints.Constraint
 
 
-case class SendAction(val to:String, constraintL:List[Constraint]) extends Action(constraintL:List[Constraint]){
+case class SendAction(val to:String, val constraints:List[Constraint]) extends Action{
 
   def this(toSend:String) = this(toSend, List[Constraint]())
 

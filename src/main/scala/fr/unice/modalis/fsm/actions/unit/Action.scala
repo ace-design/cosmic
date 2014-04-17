@@ -3,16 +3,11 @@ package fr.unice.modalis.fsm.actions.unit
 import fr.unice.modalis.fsm.actions.constraints.Constraint
 
 /**
- * Action mother class
- * @param constraints Constraint list
+ * Action mother trait
  */
-abstract class Action(val constraints:List[Constraint]) {
+trait Action {
 
-  /**
-   * Create Action with an empty constraint list
-   * @return
-   */
-  def this() = this(List[Constraint]())
+  val constraints:List[Constraint]
 
   /**
    * Add constraint on this action

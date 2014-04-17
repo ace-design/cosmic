@@ -2,7 +2,7 @@ package fr.unice.modalis.fsm.actions.unit
 
 import fr.unice.modalis.fsm.actions.constraints.Constraint
 
-class ReadAction(val sensorId:String, constraintL:List[Constraint]) extends Action(constraintL:List[Constraint]){
+case class ReadAction(val sensorId:String, val constraints:List[Constraint]) extends Action{
 
   def this(sensorId:String) = this(sensorId, List[Constraint]())
 
@@ -12,6 +12,6 @@ class ReadAction(val sensorId:String, constraintL:List[Constraint]) extends Acti
 
 }
 
-class ReadResult() extends Result{
+case class ReadResult() extends Result{
 
 }
