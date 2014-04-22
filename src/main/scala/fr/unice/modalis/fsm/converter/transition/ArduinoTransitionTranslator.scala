@@ -5,7 +5,7 @@ import fr.unice.modalis.fsm.condition.{TrueCondition, TickCondition}
 import fr.unice.modalis.fsm.converter.TransitionTranslator
 
 /**
- * Created by cyrilcecchinel on 22/04/2014.
+ * Arduino transition translator
  */
 object ArduinoTransitionTranslator extends TransitionTranslator {
   /**
