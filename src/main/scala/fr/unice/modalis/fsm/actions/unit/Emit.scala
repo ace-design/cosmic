@@ -13,6 +13,6 @@ case class EmitAction( val endpointURL:String, val endpointPort:Int, val constra
 
 }
 
-class EmitResult() extends Result{
+class EmitResult(val name:String) extends Result{
 
 }

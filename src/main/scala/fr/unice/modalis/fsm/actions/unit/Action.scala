@@ -20,4 +20,4 @@ trait Action {
 
 }
 
-trait Result {}
+trait Result { val name:String }

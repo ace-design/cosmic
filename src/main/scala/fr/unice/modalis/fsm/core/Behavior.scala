@@ -122,15 +122,21 @@ class Behavior (entry:Node, nodesSet:Set[Node], transitionSet:Set[Transition]) {
    */
   def newNodeAt(t:Int):Boolean =
   {
-    // Limit-case : 1 node with a single transition looping on it
-    if (this.nodes.size == 1){
-      val tr:Transition = transitions.filter(t => t.source == entryPoint && t.destination == entryPoint).head
-      tr.condition match {
-        case TickCondition(n) if (t % n == 0) => true
-        case _ => false
-      }
+    // Entry point
+    if (t % period() == 0) {
+      true
     }
-    else nodeAt(t-1) != nodeAt(t) // Check if previous and current node are different
+    else {
+      // Limit-case : 1 node with a single transition looping on it
+      if (this.nodes.size == 1) {
+        val tr: Transition = transitions.filter(t => t.source == entryPoint && t.destination == entryPoint).head
+        tr.condition match {
+          case TickCondition(n) if (t % n == 0) => true
+          case _ => false
+        }
+      }
+      else nodeAt(t - 1) != nodeAt(t) // Check if previous and current node are different
+    }
   }
 
   /**

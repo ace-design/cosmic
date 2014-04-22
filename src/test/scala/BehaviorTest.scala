@@ -104,5 +104,19 @@ class BehaviorTest extends SpecificationWithJUnit {
 
       (behavior.newNodeAt(1) mustEqual(false)) && (behavior.newNodeAt(4) mustEqual(true)) && (behavior.newNodeAt(0) mustEqual(true))
     }
+
+    "entry node must be considered as a new accessed node" in {
+      val n1:Node = new Node("A")
+      val n2:Node = new Node("B")
+      val n3:Node = new Node("C")
+
+      val t1:Transition = new Transition(n1,n2, new TickCondition(1))
+      val t2:Transition = new Transition(n2,n3, new TickCondition(2))
+      val t3:Transition = new Transition(n3,n1, new TickCondition(3))
+
+      val behavior:Behavior = new Behavior(n1).addNodes(List[Node](n1,n2,n3)).addTransitions(List[Transition](t1,t2,t3))
+
+      behavior.newNodeAt(0) mustEqual true
+    }
   }
 }

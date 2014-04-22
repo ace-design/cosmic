@@ -6,6 +6,6 @@ import fr.unice.modalis.fsm.core.Behavior
  * Abstract class Converter
  * Contain common methods needed for all converters
  */
-abstract  class Converter {
+trait Converter {
   def generateCode(b:Behavior):String
 }
