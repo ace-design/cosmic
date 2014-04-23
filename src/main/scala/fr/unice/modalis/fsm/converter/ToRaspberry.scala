@@ -18,7 +18,7 @@ object ToRaspberry extends Converter {
    * @return An arduino code
    */
   def generateCode(b:Behavior):String = {
-    "\"\"\" Generated code\nDO NOT MODIFY\n" + Calendar.getInstance().getTime() + " \"\"\"\n" + generateLoop(b)
+    "\"\"\" Generated code\nDO NOT MODIFY\n" + Calendar.getInstance().getTime() + " \"\"\"\n" + generateSetup + generateLoop(b)
 
   }
 
@@ -36,7 +36,7 @@ object ToRaspberry extends Converter {
     "# Processing node " + n.name + "\n" + str.toString()
   }
 
-  private def generateSetup(b:Behavior) = { "import serial\nser = serial.Serial('/dev/ttyUSB0',"+ RASP_SERIAL_BAUD +", timeout=1)\n"}
+  private def generateSetup= { "import serial\nser = serial.Serial('/dev/ttyUSB0',"+ RASP_SERIAL_BAUD +", timeout=1)\n"}
 
 
   def generateLoop(b:Behavior) = {
@@ -54,6 +54,6 @@ object ToRaspberry extends Converter {
       }
     }
 
-    "while True:\n" + loop.toString() + ""
+    "while True:\n\ttry:\n" + loop.toString() + "\texcept Exception:\n\t\tpass"
   }
 }

@@ -3,12 +3,15 @@ package fr.unice.modalis.fsm.actions.unit
 import fr.unice.modalis.fsm.actions.constraints.Constraint
 
 
-case class SendAction(val data:ReadResult, val to:String, val constraints:List[Constraint]) extends Action{
+case class SendAction(val result:ReadSensorResult, val to:String, val constraints:List[Constraint]) extends Action{
 
-  def this(data:ReadResult, toSend:String) = this(data, toSend, List[Constraint]())
+  def this(result:ReadSensorResult, to:String) = this(result, to, List[Constraint]())
 
-  override def toString():String = "SEND to: " + to
-  override def addConstrain(co:Constraint):SendAction = new SendAction(data, to, co :: constraints)
+  // No communication port name : ie. Arduino boards
+  def this(result:ReadSensorResult) = this(result, "", List[Constraint]())
+
+  override def toString():String = "SEND" + (if (to != "") " " + to else "")
+  override def addConstrain(co:Constraint):SendAction = new SendAction(result, to, co :: constraints)
 
 
 

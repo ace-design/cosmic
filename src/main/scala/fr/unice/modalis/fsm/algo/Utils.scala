@@ -95,6 +95,11 @@ object Utils {
    * @param b User behavior
    * @return Boolean corresponding to the validation
    */
-  def isCorrectBehavior(b:Behavior):Boolean = checkCycle(b) && checkDeterminism(b)
+  def isCorrectBehavior(b:Behavior):Boolean =
+    try {
+      checkCycle(b) && checkDeterminism(b)
+    } catch {
+      case e: StackOverflowError => false
+    }
 
 }

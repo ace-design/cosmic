@@ -2,6 +2,7 @@ package fr.unice.modalis.fsm.converter.actions
 
 import fr.unice.modalis.fsm.actions.unit._
 import fr.unice.modalis.fsm.converter.ActionTranslator
+import fr.unice.modalis.fsm.actions.constraints.{ValueConstraint, Constraint}
 
 /**
  * Translate actions for Raspberry Pi
@@ -17,10 +18,43 @@ object RaspberryActionTranslator extends ActionTranslator{
 
   def translate(a:Action,v:Set[Result]):(String,Set[Result]) = {
     a match {
-      case EmitAction(data, url, port, _) => ("\tprint(\"Emitting \"+ "+ (if (data==null) "Nothing" else data.name) + " +\" to " + url + ":" + port + ")\"\n", v)
-      case ReadSerial(ref, result, _) => ("\t"+ result.name + " = " + ref.name + ".readline()\n",v + result)
-      case SerialInit(comPort, result, _) => ("\t"+ result.name + "= serial.Serial(\'"+ comPort + "\', 9600, timeout=1)\n",v + result)
+      case EmitAction(data, url, port, cl) => ("\t\t" + buildConstraints(cl) + "print(\"Emitting \"+ "+ (if (data==null) "Nothing" else "str(" + data.name +")") + " +\" to " + url + ":" + port + "\")\n", v)
+      case ReadSerial(ref, result, cl) => ("\t\t" + buildConstraints(cl) + result.name + " = " + ref.name + ".readline()\n",v + result)
+      case SerialInitAction(comPort, result, cl) => ("\t\t" + buildConstraints(cl) + result.name + "= serial.Serial(\'"+ comPort + "\', 9600, timeout=1)\n",v + result)
       case _ => throw new Exception("Action " + a + " not handled on Raspberry")
+    }
+  }
+
+  /**
+   * Translate constraints
+   * @param cl Constrains list
+   * @return Constraints translated
+   */
+  def buildConstraints(cl:List[Constraint]):String = {
+    if (cl.size > 0){
+
+      def x(l:List[Constraint]):String = {
+        l match {
+          case Nil => ""
+          case a::Nil => translateConstraint(a)
+          case a::l => translateConstraint(a) + " and " + x(l)
+        }
+      }
+      "if " + x(cl) + ":\n\t\t\t"
+    }
+    else
+      ""
+  }
+
+  /**
+   * Build Python semantic
+   * @param c Constraint
+   * @return Translated constraint
+   */
+  private def translateConstraint(c:Constraint):String = {
+    c match {
+      case ValueConstraint(value, threshold, operator) => "int(" + value.name + ")" + operator + threshold
+      case _ => throw new Exception("Constraint " + c + " not handled on Raspberry")
     }
   }
 }

@@ -4,18 +4,28 @@ import fr.unice.modalis.fsm.actions.constraints.Constraint
 import scala.util.Random
 
 /**
- * Created by cyrilcecchinel on 22/04/2014.
+ * Read from serial port
+ * @param comPort Serial port reference
+ * @param result Read Serial result
+ * @param constraints Constraint list
  */
-case class ReadSerial(val comPort:SerialReference, val result:ReadSerialResult, val constraints:List[Constraint]) extends Action{
+case class ReadSerial(val comPort:SerialInitResult, val result:ReadSerialResult, val constraints:List[Constraint]) extends Action{
 
-  def this(comPort:SerialReference, result:ReadSerialResult) = this(comPort, result, List[Constraint]())
+  def this(comPort:SerialInitResult, result:ReadSerialResult) = this(comPort, result, List[Constraint]())
 
-  override def toString():String = "READ SERIAL ref:" + comPort.name
+  // No initialization mandatory (ie. Arduino boards)
+  def this(result:ReadSerialResult) = this(new SerialInitResult(), result, List[Constraint]())
+
+  override def toString():String = "READ SERIAL ref:" + comPort.name + " (" + result.name + ")"
   override def addConstrain(co:Constraint):ReadSerial = new ReadSerial(comPort, result, co :: constraints)
 
 
 }
 
-case class ReadSerialResult(val name:String) extends Result{
+/**
+ * Read serial result
+ * @param name Name
+ */
+case class ReadSerialResult(val name:String) extends ReadResult{
   def this() = this("var_"+ Random.alphanumeric.take(5).mkString)
 }
