@@ -2,7 +2,6 @@ package fr.unice.modalis.fsm.core
 
 import fr.unice.modalis.fsm.exceptions.NodeNotFoundException
 import fr.unice.modalis.fsm.condition.{TrueCondition, TickCondition}
-import fr.unice.modalis.fsm.vm.VirtualMachine
 import fr.unice.modalis.fsm.algo.Transformation
 
 /**
@@ -144,9 +143,18 @@ class Behavior (entry:Node, nodesSet:Set[Node], transitionSet:Set[Transition]) {
    * @return Behavior period
    */
   def period():Int = {
-    var i:Int = 1
-    while(!VirtualMachine.apply(this, Transformation.develop(this)).nodeAt(i).equals(entryPoint))
-      i += 1
+    var currentNode:Node = this.entryPoint
+    var nextNode:Node = null
+    var i = 0
+    while (nextNode != entryPoint){
+      val tr = transitions.filter(x => x.source.equals(currentNode)).head
+      tr.condition match {
+        case TrueCondition() => /* NOP */
+        case TickCondition(n) => i += n
+      }
+      nextNode = tr.destination
+      currentNode = tr.destination
+    }
     i
   }
 

@@ -8,7 +8,6 @@ import fr.unice.modalis.fsm.actions.constraints.Constraint
  * Graphviz translator
  */
 object ToGraphviz extends Converter{
-
   /**
    * Generate a Graphviz script from a behavior
    * @param b Behavior
@@ -44,7 +43,7 @@ object ToGraphviz extends Converter{
   def generateTransitionCode(t: Transition) =
   {
     val tname = t.condition match {
-      case TickCondition(n) => "t%" + n +"==0"
+      case TickCondition(n) => n + "s"
       case TrueCondition() => "*"
       case _ => t.condition.toString
 

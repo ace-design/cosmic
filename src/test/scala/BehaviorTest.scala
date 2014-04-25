@@ -82,6 +82,14 @@ class BehaviorTest extends SpecificationWithJUnit {
       behavior.period() must_== 3
     }
 
+    "give a correct perdiod on always true behaviors" in {
+      val n = new Node("A")
+      val t = new Transition(n,n, new TrueCondition)
+      val b = new Behavior(n).addTransition(t)
+
+      b.period() must_== 0
+    }
+
     "tell if a new node is accessed at a defined tick (a transition is crossed at tick t) (1)" in {
       val n1:Node = new Node("A")
       val n2:Node = new Node("B")
