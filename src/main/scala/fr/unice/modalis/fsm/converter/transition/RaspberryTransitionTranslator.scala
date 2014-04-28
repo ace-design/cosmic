@@ -15,7 +15,7 @@ object RaspberryTransitionTranslator extends TransitionTranslator {
    */
   def translate(t:Transition):String = t.condition match {
     case TickCondition(n) => "\t\ttime.sleep(" + n + ");\n"
-    case TrueCondition() => "\n"
+    case TrueCondition() => "\t\t\n"
     case _ => throw new Exception("Transition " + t + " not handled on Raspberry plateform")
   }
 }

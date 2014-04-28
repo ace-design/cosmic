@@ -39,21 +39,26 @@ object ToRaspberry extends Converter {
   private def generateSetup= { "import serial\nser = serial.Serial('/dev/ttyUSB0',"+ RASP_SERIAL_BAUD +", timeout=1)\n"}
 
 
+
   def generateLoop(b:Behavior) = {
     val loop:StringBuilder = new StringBuilder
 
-    for (i <- 0 to b.period() - 1){
-      if (b.newNodeAt(i)) {
-        val currentNode = b.nodeAt(i)
+    if (b.period() == 0) {
+      b.nodes.foreach(n => loop.append(generateNodeCode(n)))
+    } else
+    {
+      for (i <- 0 to b.period() - 1){
+        if (b.newNodeAt(i)) {
+          val currentNode = b.nodeAt(i)
 
-        // Generate actions
-        loop.append(generateNodeCode(currentNode))
+          // Generate actions
+          loop.append(generateNodeCode(currentNode))
 
-        // Generate transition
-        loop.append(generateTransitionCode(b.transitions.filter(t => t.source == currentNode).head))
+          // Generate transition
+          loop.append(generateTransitionCode(b.transitions.filter(t => t.source == currentNode).head))
+        }
       }
     }
-
     "while True:\n\ttry:\n" + loop.toString() + "\texcept Exception:\n\t\tpass"
   }
 }

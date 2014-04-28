@@ -97,6 +97,12 @@ class Behavior (entry:Node, nodesSet:Set[Node], transitionSet:Set[Transition]) {
   def nodeAt(t:Int):Node = {
     var currentNode:Node = this.entryPoint
     var wait:Int = 0
+
+    // Check true condition transition attached to entry Point
+    val truecondition = transitions.filter(x => x.source.equals(entryPoint) && x.condition == new TrueCondition)
+    if (truecondition.size != 0)
+      currentNode = truecondition.head.destination
+
     for (i <- 1 to t)
     {
       val possibleTransition:Set[Transition] = transitions.filter(x => x.source.equals(currentNode))
@@ -121,6 +127,7 @@ class Behavior (entry:Node, nodesSet:Set[Node], transitionSet:Set[Transition]) {
    */
   def newNodeAt(t:Int):Boolean =
   {
+    if (t==0) true else
     // Entry point
     if (t % period() == 0) {
       true
