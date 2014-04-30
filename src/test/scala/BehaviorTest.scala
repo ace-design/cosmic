@@ -1,8 +1,11 @@
 import fr.unice.modalis.fsm.actions.unit.EmitAction
+import fr.unice.modalis.fsm.algo.Transformation
 import fr.unice.modalis.fsm.condition.{TimeCondition, TickCondition, TrueCondition}
 import fr.unice.modalis.fsm.core.{Transition, Behavior, Node}
 import fr.unice.modalis.fsm.exceptions.NodeNotFoundException
+import fr.unice.modalis.fsm.vm.VirtualMachine
 import org.specs2.mutable.SpecificationWithJUnit
+import scala.util.Random
 
 /**
  * Created by Cyril Cecchinel on 26/03/2014.
@@ -68,7 +71,7 @@ class BehaviorTest extends SpecificationWithJUnit {
       val n1:Node = new Node("B").addAction(new EmitAction("host", 9090))
       val n2:Node = new Node("Bnull1")
       val n3:Node = new Node("Bnull2")
-      val n4:Node = new Node("Off"); n4.addAction(new EmitAction("a",0))
+      val n4:Node = new Node("Off")
 
       val t1:Transition = new Transition(n1,n2, new TickCondition(1))
       val t2:Transition = new Transition(n2,n3, new TickCondition(1))
@@ -125,6 +128,35 @@ class BehaviorTest extends SpecificationWithJUnit {
       val behavior:Behavior = new Behavior(n1).addNodes(List[Node](n1,n2,n3)).addTransitions(List[Transition](t1,t2,t3))
 
       behavior.newNodeAt(0) mustEqual true
+    }
+
+    "new accessed node on always true condition" in {
+      val n1:Node = new Node("A")
+      val t1:Transition = new Transition(n1,n1, new TrueCondition)
+
+      val behavior:Behavior = new Behavior(n1).addTransition(t1)
+
+      behavior.newNodeAt(Random.nextInt(100)) mustEqual(true)
+
+    }
+
+    "new accessed node on complex behaviors" in {
+      val n1:Node = new Node("A").addAction(new EmitAction("host", 9090))
+      val n2:Node = new Node("B")
+      val n3:Node = new Node("C")
+      val n4:Node = new Node("D").addAction(new EmitAction("a",0))
+
+      val t1:Transition = new Transition(n1,n2, new TickCondition(2))
+      val t2:Transition = new Transition(n2,n3, new TrueCondition)
+      val t3:Transition = new Transition(n3,n4, new TickCondition(3))
+      val t4:Transition = new Transition(n4,n1, new TickCondition(1))
+
+      val behavior:Behavior = new Behavior(n1).addNodes(List[Node](n1,n2,n3,n4)).addTransitions(List[Transition](t1,t2,t3,t4))
+
+      val fact = VirtualMachine(behavior, Transformation.factorize(behavior))
+      (fact.newNodeAt(0) mustEqual(true)) && (fact.newNodeAt(2) mustEqual(true)) && (fact.newNodeAt(5) mustEqual(true)) && (fact.newNodeAt(3) mustEqual(false))
+
+
     }
   }
 }

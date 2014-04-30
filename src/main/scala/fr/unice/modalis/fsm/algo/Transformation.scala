@@ -3,7 +3,7 @@ package fr.unice.modalis.fsm.algo
 import fr.unice.modalis.fsm.core._
 import scala.collection.mutable.ArrayBuffer
 import fr.unice.modalis.fsm.vm._
-import fr.unice.modalis.fsm.condition.TickCondition
+import fr.unice.modalis.fsm.condition.{TrueCondition, TickCondition}
 
 
 /**
@@ -19,7 +19,15 @@ object Transformation {
    */
   def compose(b1:Behavior, b2:Behavior):Behavior =
   {
-    val composedPeriod = Utils.lcm(b1.period(), b2.period())
+
+    val composedPeriod = (b1.period(), b2.period()) match {
+      case (0, 0) => 0
+      case (0 , a) => a
+      case (a, 0) => a
+      case (a ,b) => Utils.lcm(a,b)
+    }
+
+
     val setActions = ArrayBuffer[Instruction]()
 
     // Build new entry point
@@ -73,7 +81,7 @@ object Transformation {
   def factorize(b:Behavior):List[Instruction] = {
     factorize_int(b, b.entryPoint, b.entryPoint, ArrayBuffer[Instruction](), 0)
 
-   }
+  }
 
   /**
    * Internal factorization
@@ -94,8 +102,8 @@ object Transformation {
     if (transition.destination.name.equals(behavior.entryPoint.name)){
       actions ++= Array(new DeleteTransition(transition), new AddTransition(new Transition(origin, transition.destination,
         transition.condition match {
-        case TickCondition(n) =>
-          new TickCondition(counter+n)
+          case TickCondition(n) =>
+            new TickCondition(counter+n)
         }
       )))
       actions.toList
@@ -106,11 +114,42 @@ object Transformation {
         case TickCondition(n) => // STEP 3a: Tick condition : Seem to be factorizable
         {
           if (transition.destination.actions == null || transition.destination.actions.size == 0) // STEP 3a1: IDLE node : factorizable =)
-            // STEP 3a2: RECURSE on next node
+          // STEP 3a2: RECURSE on next node
             factorize_int(behavior, transition.destination, origin, actions ++= Array(new DeleteTransition(transition), new DeleteNode(transition.destination)), counter + n)
           else // STEP 3a2 : Not IDLE node : just loop
             factorize_int(behavior, transition.destination, transition.destination, actions ++= Array(new DeleteTransition(transition), new AddTransition(new Transition(origin, transition.destination, new TickCondition(counter +n)))), 0)
         }
+        case TrueCondition() => // STEP 3b : True condition : Factorizable by node fusion
+
+          val instructionBuffer = new ArrayBuffer[Instruction]()
+
+          val newNode = transition.source + transition.destination
+
+          instructionBuffer += new AddNode(newNode)
+          instructionBuffer += new DeleteNode(transition.source)
+          instructionBuffer += new DeleteNode(transition.destination)
+          // Find all transitions with transition.destination = thistransition.source
+          val r1 = behavior.transitions.find(p => p.destination == transition.source)
+          r1.foreach(t => {
+            instructionBuffer += new AddTransition(new Transition(t.source, newNode, t.condition)) // Create new transition
+            instructionBuffer += new DeleteTransition(t) // Delete transition
+          })
+
+          // Find all transitions with transition.source = thistransition.destination
+          val r2 = behavior.transitions.find(p => p.source == transition.destination)
+          r2.foreach(t => {
+            instructionBuffer += new AddTransition(new Transition(newNode, t.destination, t.condition)) // Create new transition
+            instructionBuffer += new DeleteTransition(t) // Delete transition
+          })
+          instructionBuffer += new DeleteTransition(transition)
+
+          // Find nextNode
+          val nextNode = behavior.transitions.find(p => transition.destination == p.source).head.destination
+
+          // Loop
+          factorize_int(behavior, nextNode, nextNode, actions ++= instructionBuffer, 0)
+
+
 
         case _ => // STEP 2b : Other condition : Not factorizable
         {
@@ -128,7 +167,7 @@ object Transformation {
    * @param b Behavior
    * @return An actions list to develop the behavior
    */
-	def develop(b: Behavior):List[Instruction] = {
+  def develop(b: Behavior):List[Instruction] = {
     val setActions = ArrayBuffer[Instruction]()
     b.transitions.foreach(t => setActions ++= develop_int(t))
     setActions.toList
@@ -139,37 +178,37 @@ object Transformation {
    * @param t Transition
    * @return An actions list to develop the transition
    */
-	private def develop_int(t: Transition):List[Instruction] = {
-	  
-	  val currentSource: Node = t.source
-	  val currentDestination: Node = t.destination
-	  val actions = new ArrayBuffer[Instruction]
-	  
-	 
-	 t.condition match {
-	    case TickCondition(f) if f>1=>  // Tick condition (freq : t)
-	      {
-	        var newNode:Node = null
-	        var previousNode:Node = null
-	        
-	        for (i <- 1 to f-1) yield { // Generate t-1 nodes
-	          newNode = new Node(currentSource.name + "D" + i)
-	          def newTransition =   // Generate transitions between newly created nodes
-	            if (i==1) new Transition(currentSource, newNode, new TickCondition(1))  // First node case
-	            else new Transition(previousNode, newNode, new TickCondition(1))
-	          
-	          actions += new AddNode(newNode)
-	          actions += new AddTransition(newTransition)
-	          previousNode = newNode
-	        }
-	        actions += new AddTransition(new Transition(newNode, currentDestination, new TickCondition(1))) // Last node case
-	        actions += new DeleteTransition(t)  // Delete non-developed transition
-	      
-	    }
-	    case _ => /* DO NOTHING */
-	  }
-	  
-	  actions.toList
-	  }
-	  
+  private def develop_int(t: Transition):List[Instruction] = {
+
+    val currentSource: Node = t.source
+    val currentDestination: Node = t.destination
+    val actions = new ArrayBuffer[Instruction]
+
+
+    t.condition match {
+      case TickCondition(f) if f>1=>  // Tick condition (freq : t)
+      {
+        var newNode:Node = null
+        var previousNode:Node = null
+
+        for (i <- 1 to f-1) yield { // Generate t-1 nodes
+          newNode = new Node(currentSource.name + "D" + i)
+          def newTransition =   // Generate transitions between newly created nodes
+            if (i==1) new Transition(currentSource, newNode, new TickCondition(1))  // First node case
+            else new Transition(previousNode, newNode, new TickCondition(1))
+
+          actions += new AddNode(newNode)
+          actions += new AddTransition(newTransition)
+          previousNode = newNode
+        }
+        actions += new AddTransition(new Transition(newNode, currentDestination, new TickCondition(1))) // Last node case
+        actions += new DeleteTransition(t)  // Delete non-developed transition
+
+      }
+      case _ => /* DO NOTHING */
+    }
+
+    actions.toList
+  }
+
 }

@@ -127,6 +127,7 @@ class Behavior (entry:Node, nodesSet:Set[Node], transitionSet:Set[Transition]) {
    */
   def newNodeAt(t:Int):Boolean =
   {
+    if (period() == 0) true else
     if (t==0) true else
     // Entry point
     if (t % period() == 0) {
