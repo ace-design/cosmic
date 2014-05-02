@@ -171,7 +171,7 @@ class Behavior (entry:Node, nodesSet:Set[Node], transitionSet:Set[Transition]) {
    * @param b Behavior to be composed with
    * @return Composed behavior
    */
-  def +(b:Behavior):Behavior = Transformation.compose(this, b)
+  def +(b:Behavior):Behavior = if (b == this) this else Transformation.compose(this, b)
 
   override def toString():String = "FSM: Nodes=" + nodes + " Transitions=" + transitions
 

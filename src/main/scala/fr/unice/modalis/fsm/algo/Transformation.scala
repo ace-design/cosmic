@@ -64,7 +64,10 @@ object Transformation {
     }
 
     // Add final transition (last node -> entryNode)
-    setActions += new AddTransition(new Transition(previousNode, entry, new TickCondition(1)))
+    if (composedPeriod == 0)
+      setActions += new AddTransition(new Transition(previousNode, entry, new TrueCondition))
+    else
+      setActions += new AddTransition(new Transition(previousNode, entry, new TickCondition(1)))
 
     // Build composed automata
     val composed = VirtualMachine.apply(new Behavior(entry), setActions.toList)
@@ -104,6 +107,7 @@ object Transformation {
         transition.condition match {
           case TickCondition(n) =>
             new TickCondition(counter+n)
+          case TrueCondition() => new TrueCondition
         }
       )))
       actions.toList
