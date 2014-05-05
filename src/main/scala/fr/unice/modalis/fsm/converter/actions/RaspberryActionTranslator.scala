@@ -24,7 +24,7 @@ object RaspberryActionTranslator extends ActionTranslator{
 
   def translate(a:Action,v:Set[Result]):(String,Set[Result]) = {
     a match {
-      case EmitAction(data, url, port, cl) => ("\t\t" + buildConstraints(cl) + "print(\"Emitting \"+ "+ (if (data==null) "Nothing" else "str(" + data.name +")") + " +\" to " + url + ":" + port + "\")\n", v)
+      case EmitAction(data, url, port, cl) => ("\t\t" + buildConstraints(cl) + "print(\"Emitting \"+ "+ (if (data==null) "\"Nothing\"" else "str(" + data.name +")") + " +\" to " + url + ":" + port + "\")\n", v)
       case ReadSerial(ref, result, cl) => ("\t\t" + buildConstraints(cl) + result.name + " = " + ref.name + ".readline()\n",v + result)
       case SerialInitAction(comPort, result, cl) => ("\t\t" + buildConstraints(cl) + result.name + "= serial.Serial(\'"+ comPort + "\', 9600, timeout=1)\n",v + result)
       case _ => throw new Exception("Action " + a + " not handled on Raspberry")
