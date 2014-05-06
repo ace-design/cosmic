@@ -1,7 +1,7 @@
 package fr.unice.modalis.fsm.core
 
 import fr.unice.modalis.fsm.exceptions.NodeNotFoundException
-import fr.unice.modalis.fsm.condition.{TrueCondition, TickCondition}
+import fr.unice.modalis.fsm.condition.TickCondition
 import fr.unice.modalis.fsm.algo.Transformation
 
 /**
@@ -98,11 +98,6 @@ class Behavior (entry:Node, nodesSet:Set[Node], transitionSet:Set[Transition]) {
     var currentNode:Node = this.entryPoint
     var wait:Int = 0
 
-    // Check true condition transition attached to entry Point
-    val truecondition = transitions.filter(x => x.source.equals(entryPoint) && x.condition == new TrueCondition)
-    if (truecondition.size != 0)
-      currentNode = truecondition.head.destination
-
     for (i <- 1 to t)
     {
       val possibleTransition:Set[Transition] = transitions.filter(x => x.source.equals(currentNode))
@@ -110,7 +105,6 @@ class Behavior (entry:Node, nodesSet:Set[Node], transitionSet:Set[Transition]) {
 
       def f(t:Transition) = {
         t.condition match {
-          case TrueCondition() => currentNode = t.destination
           case TickCondition(n) => wait += 1; if (wait % n == 0) { currentNode = t.destination; wait = 0}
           case _ => /* NOP */
         }
@@ -127,8 +121,6 @@ class Behavior (entry:Node, nodesSet:Set[Node], transitionSet:Set[Transition]) {
    */
   def newNodeAt(t:Int):Boolean =
   {
-    if (period() == 0) true else
-    if (t==0) true else
     // Entry point
     if (t % period() == 0) {
       true
@@ -157,7 +149,6 @@ class Behavior (entry:Node, nodesSet:Set[Node], transitionSet:Set[Transition]) {
     while (nextNode != entryPoint){
       val tr = transitions.filter(x => x.source.equals(currentNode)).head
       tr.condition match {
-        case TrueCondition() => /* NOP */
         case TickCondition(n) => i += n
       }
       nextNode = tr.destination

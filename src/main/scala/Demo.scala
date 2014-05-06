@@ -1,10 +1,9 @@
-import fr.unice.modalis.fsm.actions.constraints.ValueConstraint
 import fr.unice.modalis.fsm.actions.unit._
 import fr.unice.modalis.fsm.actions.unit.ReadSensorAction
 import fr.unice.modalis.fsm.actions.unit.ReadSensorResult
 import fr.unice.modalis.fsm.actions.unit.SendAction
 import fr.unice.modalis.fsm.actions.unit.SerialInitResult
-import fr.unice.modalis.fsm.condition.{TrueCondition, TickCondition}
+import fr.unice.modalis.fsm.condition.TickCondition
 import fr.unice.modalis.fsm.converter.{ToRaspberry, ToArduino, ToGraphviz}
 import fr.unice.modalis.fsm.core.{Behavior, Transition, Node}
 
@@ -77,8 +76,8 @@ object Demo extends App {
 
   val refSerial1 = new SerialInitResult()
   val refSerialRead1 = new ReadSerialResult()
-  val rNode1 = new Node("A").addAction(new SerialInitAction("/dev/ttyUSB0",refSerial1)).addAction(new ReadSerial(refSerial1, refSerialRead1)).addAction(new EmitAction(refSerialRead1,"host",9090).addConstrain(new ValueConstraint(refSerialRead1, 400, "==")))
-  val rTran1 = new Transition(rNode1, rNode1, new TrueCondition)
+  val rNode1 = new Node("A").addAction(new SerialInitAction("/dev/ttyUSB0", refSerial1)).addAction(new ReadSerial(refSerial1, refSerialRead1)).addAction(new EmitAction(refSerialRead1, "host", 9090))
+  val rTran1 = new Transition(rNode1, rNode1, new TickCondition(1))
   val raspB1 = new Behavior(rNode1).addTransition(rTran1)
 
   val refSerial2 = new SerialInitResult()

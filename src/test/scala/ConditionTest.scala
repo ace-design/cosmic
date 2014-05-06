@@ -9,11 +9,11 @@ class ConditionTest extends SpecificationWithJUnit{
     "be equals to an other condition (true case)" in {
       val t1:Condition = new TickCondition(2)
       val t2:Condition = new TimeCondition("08:00")
-      val t3:Condition = new TrueCondition
+      val t3: Condition = new TickCondition(1)
 
       val t1a:Condition = new TickCondition(2)
       val t2a:Condition = new TimeCondition("08:00")
-      val t3a:Condition = new TrueCondition
+      val t3a: Condition = new TickCondition(1)
 
       (t1.equals(t1a) mustEqual(true)) && (t2.equals(t2a) mustEqual(true)) && (t3.equals(t3a) mustEqual(true))
     }
@@ -21,7 +21,7 @@ class ConditionTest extends SpecificationWithJUnit{
     "be equals to an other condition (false case)" in {
       val t2:Condition = new TimeCondition("08:00")
 
-      val t3a:Condition = new TrueCondition
+      val t3a: Condition = new TickCondition(1)
 
       t2.equals(t3a) mustEqual(false)
     }

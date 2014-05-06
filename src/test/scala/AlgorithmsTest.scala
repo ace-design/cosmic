@@ -1,6 +1,6 @@
 import fr.unice.modalis.fsm.actions.unit.{Action, EmitAction}
 import fr.unice.modalis.fsm.algo.{Utils, Transformation}
-import fr.unice.modalis.fsm.condition.{TrueCondition, TickCondition}
+import fr.unice.modalis.fsm.condition.TickCondition
 import fr.unice.modalis.fsm.core.{Behavior, Transition, Node}
 import fr.unice.modalis.fsm.scenario.{HeatingMonitoring, CarPooling, AirQuality}
 import fr.unice.modalis.fsm.vm.VirtualMachine
@@ -103,51 +103,10 @@ class AlgorithmsTest extends SpecificationWithJUnit{
 
   }
 
-  /* Test hypothesis */
-  "Composition : Asynchronous + Asynchronous = Asynchronous" in {
-    val rNode1 = new Node("A").addAction(new EmitAction("A",0))
-    val rTran1 = new Transition(rNode1, rNode1, new TrueCondition)
-    val asynch = new Behavior(rNode1).addTransition(rTran1)
-
-    val rNode4 = new Node("D").addAction(new EmitAction("D",0))
-    val rTran4 = new Transition(rNode4, rNode4, new TrueCondition)
-    val asynch2 = new Behavior(rNode4).addTransition(rTran4)
-
-    (asynch + asynch2).period() must_==0
-  }
-
-  "Composition : Synchrounous + Asynchronous = Synchrounous" in {
-    val rNode1 = new Node("A").addAction(new EmitAction("A",0))
-    val rTran1 = new Transition(rNode1, rNode1, new TrueCondition)
-    val asynch = new Behavior(rNode1).addTransition(rTran1)
-
-    val rNode2 = new Node("B").addAction(new EmitAction("B",0))
-    val rTran2 = new Transition(rNode2, rNode2, new TickCondition(3))
-    val synch1 = new Behavior(rNode2).addTransition(rTran2)
-
-    val rNode3 = new Node("B").addAction(new EmitAction("C",0))
-    val rTran3 = new Transition(rNode3, rNode3, new TickCondition(2))
-    val synch2 = new Behavior(rNode3).addTransition(rTran3)
-
-    (asynch + synch1 + synch2).period() must_== 6
-
-  }
-
-  "Composition : Synchrounous + Synchrounous = Synchrounous" in {
-    val rNode2 = new Node("B").addAction(new EmitAction("B",0))
-    val rTran2 = new Transition(rNode2, rNode2, new TickCondition(3))
-    val synch1 = new Behavior(rNode2).addTransition(rTran2)
-
-    val rNode3 = new Node("B").addAction(new EmitAction("C",0))
-    val rTran3 = new Transition(rNode3, rNode3, new TickCondition(2))
-    val synch2 = new Behavior(rNode3).addTransition(rTran3)
-
-    (synch1 + synch2).period() must_== 6
-  }
 
   "Idempotance" in {
     val rNode1 = new Node("A").addAction(new EmitAction("A",0))
-    val rTran1 = new Transition(rNode1, rNode1, new TrueCondition)
+    val rTran1 = new Transition(rNode1, rNode1, new TickCondition(1))
     val asynch = new Behavior(rNode1).addTransition(rTran1)
 
     (asynch + asynch) must_==(asynch)

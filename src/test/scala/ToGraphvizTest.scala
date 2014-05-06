@@ -1,4 +1,4 @@
-import fr.unice.modalis.fsm.condition.{TrueCondition, TickCondition}
+import fr.unice.modalis.fsm.condition.TickCondition
 import fr.unice.modalis.fsm.converter.ToGraphviz
 import fr.unice.modalis.fsm.core.{Transition, Node}
 
@@ -12,10 +12,6 @@ class ToGraphvizTest extends Specification{
     "Translate temporal transitions" in {
       val t = new Transition(new Node("A"), new Node("B"), new TickCondition(3))
       ToGraphviz.generateTransitionCode(t).replaceAll("\\s","").trim mustEqual "A -> B [ label = \"t%3==0\" ];".replaceAll("\\s","").trim;
-    }
-    "Translate true transitions" in {
-      val t = new Transition(new Node("A"), new Node("B"), new TrueCondition)
-      ToGraphviz.generateTransitionCode(t).replaceAll("\\s","").trim mustEqual "A -> B [ label = \"*\" ];".replaceAll("\\s","").trim;
     }
 
     "Translate node shapes" in {

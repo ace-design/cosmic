@@ -1,19 +1,19 @@
 package fr.unice.modalis.fsm.converter
 
 import fr.unice.modalis.fsm.core.{Node, Transition, Behavior}
-import fr.unice.modalis.fsm.condition.{TrueCondition, TickCondition}
+import fr.unice.modalis.fsm.condition.TickCondition
 import fr.unice.modalis.fsm.actions.constraints.Constraint
 
 /**
  * Graphviz translator
  */
-object ToGraphviz extends Converter{
+object ToGraphviz extends Converter {
   /**
    * Generate a Graphviz script from a behavior
    * @param b Behavior
    * @return A graphviz script
    */
-  def generateCode(b: Behavior):String = {
+  def generateCode(b: Behavior): String = {
     val s = new StringBuilder
     s.append(generateHeader)
     // Generate entry point
@@ -34,57 +34,55 @@ object ToGraphviz extends Converter{
   }
 
 
-  def generateNodeShape(shape:String) = "node [shape = " + shape + "]; \n"
+  def generateNodeShape(shape: String) = "node [shape = " + shape + "]; \n"
 
-  def generateHeader()=
-  {
+  def generateHeader() = {
     "digraph finite_state_machine { rankdir=LR; size=\"13\"\n"
   }
-  def generateTransitionCode(t: Transition) =
-  {
+
+  def generateTransitionCode(t: Transition) = {
     val tname = t.condition match {
       case TickCondition(n) => n + "s"
-      case TrueCondition() => "*"
       case _ => t.condition.toString
 
     }
-    t.source.name + "->" + t.destination.name + " [ label = \"" + tname + "\"];\n"}
+    t.source.name + "->" + t.destination.name + " [ label = \"" + tname + "\"];\n"
+  }
 
-  def generateNodeCode(n: Node) =
-  { n.name + "[label=\"" + (if (n.actions.size> 0) n.actions  else "IDLE") + "\"]"}
+  def generateNodeCode(n: Node) = {
+    n.name + "[label=\"" + (if (n.actions.size > 0) n.actions else "IDLE") + "\"]"
+  }
 
-  def generateConstraints(n: Node):String =
-  {
+  def generateConstraints(n: Node): String = {
     val s = new StringBuilder
     var i = 1
 
-      for (f <- n.actions.actions.toIterator) {
+    for (f <- n.actions.actions.toIterator) {
 
-        if (f.constraints.size > 0) {
-          val box = n.name + "_CONSTRAINTS" + i
-          s.append(box)
-          s.append(printConstraints(f.toString(), f.constraints))
-          def a = box + "->" + n.name + " [dir=\"forward\",arrowhead=\"diamond\",arrowtail=\"normal\"];\n"
-          s.append(a)
-          i+=1
-        }
-
+      if (f.constraints.size > 0) {
+        val box = n.name + "_CONSTRAINTS" + i
+        s.append(box)
+        s.append(printConstraints(f.toString(), f.constraints))
+        def a = box + "->" + n.name + " [dir=\"forward\",arrowhead=\"diamond\",arrowtail=\"normal\"];\n"
+        s.append(a)
+        i += 1
       }
+
+    }
 
 
     s.toString()
 
   }
 
-  def printConstraints(a:String, l:List[Constraint]):String =
-  {
-    def printInternal(i:Int, c:List[Constraint]):String = {
+  def printConstraints(a: String, l: List[Constraint]): String = {
+    def printInternal(i: Int, c: List[Constraint]): String = {
       c match {
         case Nil => ""
         case c :: l => "|<f" + i + ">" + c.toString + "\\n" + printInternal(i + 1, l)
       }
     }
-    "[label=\"{<f0>"+ a + printInternal(1,l) + "}\"];"
+    "[label=\"{<f0>" + a + printInternal(1, l) + "}\"];"
 
   }
 

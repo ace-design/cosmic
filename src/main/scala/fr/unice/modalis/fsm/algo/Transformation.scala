@@ -3,7 +3,7 @@ package fr.unice.modalis.fsm.algo
 import fr.unice.modalis.fsm.core._
 import scala.collection.mutable.ArrayBuffer
 import fr.unice.modalis.fsm.vm._
-import fr.unice.modalis.fsm.condition.{TrueCondition, TickCondition}
+import fr.unice.modalis.fsm.condition.TickCondition
 
 
 /**
@@ -63,11 +63,8 @@ object Transformation {
 
     }
 
-    // Add final transition (last node -> entryNode)
-    if (composedPeriod == 0)
-      setActions += new AddTransition(new Transition(previousNode, entry, new TrueCondition))
-    else
-      setActions += new AddTransition(new Transition(previousNode, entry, new TickCondition(1)))
+
+    setActions += new AddTransition(new Transition(previousNode, entry, new TickCondition(1)))
 
     // Build composed automata
     val composed = VirtualMachine.apply(new Behavior(entry), setActions.toList)
@@ -107,7 +104,6 @@ object Transformation {
         transition.condition match {
           case TickCondition(n) =>
             new TickCondition(counter+n)
-          case TrueCondition() => new TrueCondition
         }
       )))
       actions.toList
@@ -123,37 +119,6 @@ object Transformation {
           else // STEP 3a2 : Not IDLE node : just loop
             factorize_int(behavior, transition.destination, transition.destination, actions ++= Array(new DeleteTransition(transition), new AddTransition(new Transition(origin, transition.destination, new TickCondition(counter +n)))), 0)
         }
-        case TrueCondition() => // STEP 3b : True condition : Factorizable by node fusion
-
-          val instructionBuffer = new ArrayBuffer[Instruction]()
-
-          val newNode = transition.source + transition.destination
-
-          instructionBuffer += new AddNode(newNode)
-          instructionBuffer += new DeleteNode(transition.source)
-          instructionBuffer += new DeleteNode(transition.destination)
-          // Find all transitions with transition.destination = thistransition.source
-          val r1 = behavior.transitions.find(p => p.destination == transition.source)
-          r1.foreach(t => {
-            instructionBuffer += new AddTransition(new Transition(t.source, newNode, t.condition)) // Create new transition
-            instructionBuffer += new DeleteTransition(t) // Delete transition
-          })
-
-          // Find all transitions with transition.source = thistransition.destination
-          val r2 = behavior.transitions.find(p => p.source == transition.destination)
-          r2.foreach(t => {
-            instructionBuffer += new AddTransition(new Transition(newNode, t.destination, t.condition)) // Create new transition
-            instructionBuffer += new DeleteTransition(t) // Delete transition
-          })
-          instructionBuffer += new DeleteTransition(transition)
-
-          // Find nextNode
-          val nextNode = behavior.transitions.find(p => transition.destination == p.source).head.destination
-
-          // Loop
-          factorize_int(behavior, nextNode, nextNode, actions ++= instructionBuffer, 0)
-
-
 
         case _ => // STEP 2b : Other condition : Not factorizable
         {
