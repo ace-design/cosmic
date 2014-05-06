@@ -5,6 +5,7 @@ import fr.unice.modalis.fsm.actions.unit.EmitAction
 import fr.unice.modalis.fsm.actions.unit.ReadSensorAction
 import fr.unice.modalis.fsm.actions.unit.SerialInitAction
 import fr.unice.modalis.fsm.converter.actions.compatibility.Plateform._
+import fr.unice.modalis.fsm.actions.flow.ActionFlow
 
 /**
  * Action dispatcher
@@ -12,7 +13,7 @@ import fr.unice.modalis.fsm.converter.actions.compatibility.Plateform._
  */
 object ActionDispatcher {
 
-  def apply(l: Iterable[Action], p: Plateform) = dispatch(l, p)
+  def apply(l: ActionFlow, p: Plateform) = dispatch(l.actions, p)
 
   /**
    * Dispatch actions

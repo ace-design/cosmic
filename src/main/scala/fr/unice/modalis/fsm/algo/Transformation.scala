@@ -4,6 +4,8 @@ import fr.unice.modalis.fsm.core._
 import scala.collection.mutable.ArrayBuffer
 import fr.unice.modalis.fsm.vm._
 import fr.unice.modalis.fsm.condition.TickCondition
+import fr.unice.modalis.fsm.converter.actions.compatibility.{Plateform, ActionDispatcher}
+import fr.unice.modalis.fsm.actions.flow.SequentialActions
 
 
 /**
@@ -178,6 +180,45 @@ object Transformation {
     }
 
     actions.toList
+  }
+
+  /**
+   * Slice a behavior into two distincts automata
+   * @param b Behavior
+   * @return Two automata sliced according their actions compatibility with final deployement
+   */
+  def slice(b: Behavior): (Behavior, Behavior) = {
+    val period = b.period()
+    // Slice actions
+    val actionsDispatched = ActionDispatcher(b.entryPoint.actions, Plateform.BOARD) //Get (board, non-board) actions
+
+    // Build new actions flow
+    var actionsFlowBoard = new SequentialActions()
+    var actionsFlowBridge = new SequentialActions()
+
+    actionsDispatched._1.foreach(a => actionsFlowBoard = actionsFlowBoard.add(a))
+    actionsDispatched._2.foreach(a => actionsFlowBridge = actionsFlowBridge.add(a))
+
+    // Build automata
+    val boardAutomata = Utils.generateDevelopedTemporalActionAutomata(period, actionsFlowBoard)
+    val bridgeAutomata = Utils.generateDevelopedTemporalActionAutomata(period, actionsFlowBridge)
+
+    (boardAutomata, bridgeAutomata)
+
+  }
+
+  /**
+   * Forward a behavior
+   * @param b behavior
+   * @return Forwarded behavior
+   */
+  def forward(b: Behavior): Behavior = {
+    Utils.generateDevelopedTemporalActionAutomata(b.period(), b.entryPoint.actions)
+  }
+
+  def minimize(b: Behavior): Behavior = {
+    throw new Exception("Not yet implemented")
+    b
   }
 
 }
