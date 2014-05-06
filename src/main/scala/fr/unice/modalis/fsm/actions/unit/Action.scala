@@ -29,3 +29,4 @@ trait Result { val name:String }
  * Read result trait
  */
 trait ReadResult extends Result {}
+

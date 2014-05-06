@@ -1,3 +1,5 @@
+import fr.unice.modalis.fsm.actions.flow.SequentialActions
+import fr.unice.modalis.fsm.actions.unit.EmitAction
 import fr.unice.modalis.fsm.algo.Utils
 import fr.unice.modalis.fsm.condition.TickCondition
 import fr.unice.modalis.fsm.core.{SimpleTemporalBehavior, Behavior, Transition, Node}
@@ -121,6 +123,17 @@ class UtilsTest extends SpecificationWithJUnit {
       val behavior = new SimpleTemporalBehavior(a, 10)
 
       Utils.isCorrectBehavior(behavior) must equalTo(true)
+    }
+
+    "new generated automata with same action on each node" in {
+      val a = new EmitAction("a", 0)
+      val g = Utils.generateDevelopedTemporalActionAutomata(10, new SequentialActions().add(a))
+      var checker = true
+      g.nodes.foreach(n => checker = checker && n.actions.contains(a))
+
+      checker must_== true
+
+
     }
 
   }

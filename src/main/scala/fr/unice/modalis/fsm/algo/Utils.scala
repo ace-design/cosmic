@@ -1,8 +1,10 @@
 package fr.unice.modalis.fsm.algo
 
 import fr.unice.modalis.fsm.core.{Transition, Node, Behavior}
-import fr.unice.modalis.fsm.vm.VirtualMachine
+import fr.unice.modalis.fsm.vm.{Instruction, AddTransition, AddNode, VirtualMachine}
 import fr.unice.modalis.fsm.condition.TickCondition
+import fr.unice.modalis.fsm.actions.flow.SequentialActions
+import scala.collection.mutable.ArrayBuffer
 
 /**
  * Utils methods
@@ -15,7 +17,9 @@ object Utils {
    * @param b b
    * @return The greatest common divisor between a and b
    */
-  def gcd(a: Int, b: Int):Int= {if (b==0) a.abs else gcd(b, a%b)}
+  def gcd(a: Int, b: Int): Int = {
+    if (b == 0) a.abs else gcd(b, a % b)
+  }
 
   /**
    * Compute the lcd
@@ -23,17 +27,19 @@ object Utils {
    * @param b b
    * @return The least commin divisor between a and b
    */
-  def lcm(a: Int, b: Int)= {(a*b).abs/gcd(a,b)}
+  def lcm(a: Int, b: Int) = {
+    (a * b).abs / gcd(a, b)
+  }
 
   /**
    * Compute lcd over a number list
    * @param args Int list
    * @return The greatest common divisor between each number
    */
-  def lcmm(args:List[Int]):Int =
+  def lcmm(args: List[Int]): Int =
     args match {
-      case a::b::Nil => lcm(a,b)
-      case a::b::tail => lcmm(lcm(a,b)::tail)
+      case a :: b :: Nil => lcm(a, b)
+      case a :: b :: tail => lcmm(lcm(a, b) :: tail)
     }
 
   /**
@@ -41,10 +47,37 @@ object Utils {
    * @param per Period
    * @return An automata with per+1 states and per transitions
    */
-  def generateDevelopedTemporalBlankAutomata(per:Int):Behavior = {
+  def generateDevelopedTemporalBlankAutomata(per: Int): Behavior = {
     val node = new Node("Gen")
-    val b = new Behavior(node).addTransition(new Transition(node,node,new TickCondition(per)))
+    val b = new Behavior(node).addTransition(new Transition(node, node, new TickCondition(per)))
     VirtualMachine.apply(b, Transformation.develop(b))
+  }
+
+  def generateDevelopedTemporalActionAutomata(per: Int, actions: SequentialActions): Behavior = {
+
+    val setActions = ArrayBuffer[Instruction]()
+
+    // Build new entry point
+    val entry = new Node("Gen", actions)
+
+    // Init : Previous node at start = entry point
+    var previousNode: Node = entry
+
+    setActions += new AddNode(entry)
+    for (i <- 1 to per - 1) {
+
+      val newNode = new Node("G" + i, actions)
+
+      setActions += new AddNode(newNode)
+      setActions += new AddTransition(new Transition(previousNode, newNode, new TickCondition(1)))
+
+      // Update previous node with newly created one
+      previousNode = newNode
+
+    }
+    setActions += new AddTransition(new Transition(previousNode, entry, new TickCondition(1)))
+
+    VirtualMachine.apply(new Behavior(entry), setActions.toList)
   }
 
   /**
@@ -52,16 +85,16 @@ object Utils {
    * @param b User behavior
    * @return True if the behavior is cyclic
    */
-  def checkCycle(b:Behavior):Boolean = {
-    def x(e:Node, t:Transition, ns:Set[Node], ts:Set[Transition]):Boolean = {
+  def checkCycle(b: Behavior): Boolean = {
+    def x(e: Node, t: Transition, ns: Set[Node], ts: Set[Transition]): Boolean = {
       t match {
-        case Transition(a,b,_) if (b.equals(e)) => true // Entry point is next hop
-        case Transition(a,b,_) if (a.equals(b)) => true // Loop-transition on a node
-        case Transition(a,b,_) => {
+        case Transition(a, b, _) if (b.equals(e)) => true // Entry point is next hop
+        case Transition(a, b, _) if (a.equals(b)) => true // Loop-transition on a node
+        case Transition(a, b, _) => {
           // find candidates transitions with source == t.destination
           val candidates = ts.filter(p => p.source.equals(b))
           var result = true
-          if (candidates.size > 0){
+          if (candidates.size > 0) {
             candidates.foreach(c => result = result && x(e, c, ns, ts)) // Recurse on next transition
             result
           } else {
@@ -72,7 +105,7 @@ object Utils {
     }
     val filter = b.transitions.filter(t => t.source == b.entryPoint)
     var result = true
-    filter.foreach(t => result = result && x (b.entryPoint, t, b.nodes, b.transitions))
+    filter.foreach(t => result = result && x(b.entryPoint, t, b.nodes, b.transitions))
     result
   }
 
@@ -81,10 +114,12 @@ object Utils {
    * @param b User behavior
    * @return True if the behavior is deterministic
    */
-  def checkDeterminism(b:Behavior):Boolean = {
+  def checkDeterminism(b: Behavior): Boolean = {
     var result = true
-    b.nodes.foreach(n => { val transitions = b.transitions.filter(t=> t.source.equals(n))
-    result = result && transitions.size == 1}) //Check if each node has ONLY one transition going from.
+    b.nodes.foreach(n => {
+      val transitions = b.transitions.filter(t => t.source.equals(n))
+      result = result && transitions.size == 1
+    }) //Check if each node has ONLY one transition going from.
     result
   }
 
@@ -95,7 +130,7 @@ object Utils {
    * @param b User behavior
    * @return Boolean corresponding to the validation
    */
-  def isCorrectBehavior(b:Behavior):Boolean =
+  def isCorrectBehavior(b: Behavior): Boolean =
     try {
       checkCycle(b) && checkDeterminism(b)
     } catch {
