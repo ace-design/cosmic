@@ -200,8 +200,8 @@ object Transformation {
     actionsDispatched._2.foreach(a => actionsFlowBridge = actionsFlowBridge.add(a))
 
     // Build automata
-    val boardAutomata = Utils.generateDevelopedTemporalActionAutomata(period, actionsFlowBoard)
-    val bridgeAutomata = Utils.generateDevelopedTemporalActionAutomata(period, actionsFlowBridge)
+    val boardAutomata = Utils.generateDevelopedTemporalRepeatedAutomata(period, actionsFlowBoard)
+    val bridgeAutomata = new SimpleTemporalBehavior(new Node("bridge", actionsFlowBridge), period)
 
     (boardAutomata, bridgeAutomata)
 
@@ -213,12 +213,30 @@ object Transformation {
    * @return Forwarded behavior
    */
   def forward(b: Behavior): Behavior = {
-    Utils.generateDevelopedTemporalActionAutomata(b.period(), b.entryPoint.actions)
+    Utils.generateDevelopedTemporalRepeatedAutomata(b.period(), b.entryPoint.actions)
   }
 
+  /**
+   * Minimize a forwarded behavior
+   * @param b Forwarder behavior
+   * @return Minimized behavior
+   */
   def minimize(b: Behavior): Behavior = {
-    throw new Exception("Not yet implemented")
-    b
+    new SimpleTemporalBehavior(b.entryPoint, 1)
+  }
+
+  /**
+   * Deploy a behavior on a sensor network
+   * @param b Behavior to deploy
+   * @return (Board behavior, Bridge behavior)
+   */
+  def deploy(b: Behavior): (Behavior, Behavior) = {
+    val sliceResult = slice(b)
+
+    val boardBehavior = minimize(forward(sliceResult._1))
+    val bridgeBehavior = sliceResult._2
+
+    (boardBehavior, bridgeBehavior)
   }
 
 }

@@ -127,7 +127,7 @@ class UtilsTest extends SpecificationWithJUnit {
 
     "new generated automata with same action on each node" in {
       val a = new EmitAction("a", 0)
-      val g = Utils.generateDevelopedTemporalActionAutomata(10, new SequentialActions().add(a))
+      val g = Utils.generateDevelopedTemporalRepeatedAutomata(10, new SequentialActions().add(a))
       var checker = true
       g.nodes.foreach(n => checker = checker && n.actions.contains(a))
 

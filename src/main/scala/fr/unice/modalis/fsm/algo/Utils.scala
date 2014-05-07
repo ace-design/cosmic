@@ -45,7 +45,7 @@ object Utils {
   /**
    * Compute a new developed temporal automata
    * @param per Period
-   * @return An automata with per+1 states and per transitions
+   * @return An automata with a per-Period
    */
   def generateDevelopedTemporalBlankAutomata(per: Int): Behavior = {
     val node = new Node("Gen")
@@ -53,7 +53,13 @@ object Utils {
     VirtualMachine.apply(b, Transformation.develop(b))
   }
 
-  def generateDevelopedTemporalActionAutomata(per: Int, actions: SequentialActions): Behavior = {
+  /**
+   * Compute a new developed temporal automata with a same action distributed on each state
+   * @param per Period
+   * @param actions Actions to distribute
+   * @return An automata with a per-Period and Actions distributed on each state
+   */
+  def generateDevelopedTemporalRepeatedAutomata(per: Int, actions: SequentialActions): Behavior = {
 
     val setActions = ArrayBuffer[Instruction]()
 
