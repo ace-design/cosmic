@@ -1,7 +1,7 @@
 package fr.unice.modalis.fsm.actions.unit
 
 import scala.util.Random
-import fr.unice.modalis.fsm.guard.Guard
+import fr.unice.modalis.fsm.guard.GuardAction
 
 /**
  * Initiate a serial port
@@ -9,13 +9,13 @@ import fr.unice.modalis.fsm.guard.Guard
  * @param result Serial Init result (reference to Serial Port)
  * @param guards Constraints list
  */
-case class SerialInitAction(val comPort: String, val result: SerialInitResult, val guards: List[Guard]) extends Action {
+case class SerialInitAction(val comPort: String, val result: SerialInitResult, val guards: List[GuardAction]) extends Action {
 
-  def this(comPort: String, result: SerialInitResult) = this(comPort, result, List[Guard]())
+  def this(comPort: String, result: SerialInitResult) = this(comPort, result, List[GuardAction]())
 
   override def toString(): String = "INIT SERIAL:" + comPort + "(" + result.name + ")"
 
-  override def addGuard(co: Guard): SerialInitAction = new SerialInitAction(comPort, result, co :: guards)
+  override def addGuard(co: GuardAction): SerialInitAction = new SerialInitAction(comPort, result, co :: guards)
 
 
 }

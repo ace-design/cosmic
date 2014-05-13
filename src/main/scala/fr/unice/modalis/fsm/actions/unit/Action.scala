@@ -1,6 +1,6 @@
 package fr.unice.modalis.fsm.actions.unit
 
-import fr.unice.modalis.fsm.guard.Guard
+import fr.unice.modalis.fsm.guard.GuardAction
 
 
 /**
@@ -8,14 +8,14 @@ import fr.unice.modalis.fsm.guard.Guard
  */
 trait Action {
 
-  val guards: List[Guard]
+  val guards: List[GuardAction]
 
   /**
    * Add guard on this action
    * @param g Guard
    * @return A copy of the current action object with the guard attached
    */
-  def addGuard(g: Guard): Action
+  def addGuard(g: GuardAction): Action
 
   override def toString(): String
 

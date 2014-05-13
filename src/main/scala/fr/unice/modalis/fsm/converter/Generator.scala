@@ -2,7 +2,7 @@ package fr.unice.modalis.fsm.converter
 
 import fr.unice.modalis.fsm.actions.unit.{Result, Action}
 import fr.unice.modalis.fsm.core.Transition
-import fr.unice.modalis.fsm.guard.Guard
+import fr.unice.modalis.fsm.guard.GuardAction
 
 /**
  * Action generator class
@@ -21,7 +21,7 @@ trait ActionTranslator {
    * @param cl Constrains list
    * @return Constraints translated
    */
-  def buildConstraints(cl: List[Guard]): String
+  def buildConstraints(cl: List[GuardAction]): String
 }
 
 trait TransitionTranslator {

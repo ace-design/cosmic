@@ -6,7 +6,7 @@ import fr.unice.modalis.fsm.actions.unit.ReadSerial
 import fr.unice.modalis.fsm.actions.unit.SerialInitAction
 import fr.unice.modalis.fsm.actions.unit.EmitAction
 import fr.unice.modalis.fsm.guard.constraint.ValueConstraint
-import fr.unice.modalis.fsm.guard.Guard
+import fr.unice.modalis.fsm.guard.GuardAction
 import fr.unice.modalis.fsm.guard.predicate.{NOTPredicate, ORPredicate, ANDPredicate}
 
 /**
@@ -35,10 +35,10 @@ object RaspberryActionTranslator extends ActionTranslator {
    * @param cl Constrains list
    * @return Constraints translated
    */
-  def buildConstraints(cl: List[Guard]): String = {
+  def buildConstraints(cl: List[GuardAction]): String = {
     if (cl.size > 0) {
 
-      def x(l: List[Guard]): String = {
+      def x(l: List[GuardAction]): String = {
         l match {
           case Nil => ""
           case a :: Nil => "(" + translateConstraint(a) + ")"
@@ -56,7 +56,7 @@ object RaspberryActionTranslator extends ActionTranslator {
    * @param c Constraint
    * @return Translated constraint
    */
-  private def translateConstraint(c: Guard): String = {
+  private def translateConstraint(c: GuardAction): String = {
     c match {
       case ValueConstraint(value, threshold, operator) => "int(" + value.name + ")" + operator + threshold
       case ANDPredicate(left, right) => translateConstraint(left) + " and " + translateConstraint(right)

@@ -2,7 +2,7 @@ package fr.unice.modalis.fsm.converter
 
 import fr.unice.modalis.fsm.core.{Node, Transition, Behavior}
 import fr.unice.modalis.fsm.condition.TickCondition
-import fr.unice.modalis.fsm.guard.Guard
+import fr.unice.modalis.fsm.guard.GuardAction
 
 /**
  * Graphviz translator
@@ -75,8 +75,8 @@ object ToGraphviz extends Converter {
 
   }
 
-  def printConstraints(a: String, l: List[Guard]): String = {
-    def printInternal(i: Int, c: List[Guard]): String = {
+  def printConstraints(a: String, l: List[GuardAction]): String = {
+    def printInternal(i: Int, c: List[GuardAction]): String = {
       c match {
         case Nil => ""
         case c :: l => "|<f" + i + ">" + c.toString + "\\n" + printInternal(i + 1, l)
