@@ -9,5 +9,6 @@ import fr.unice.modalis.fsm.core.Behavior
 trait Converter {
 
   def apply(b: Behavior): String = generateCode(b)
-  def generateCode(b:Behavior):String
+
+  def generateCode(b: Behavior): String
 }

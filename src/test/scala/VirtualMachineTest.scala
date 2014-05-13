@@ -7,22 +7,22 @@ import scala.collection.mutable.ArrayBuffer
 /**
  * Created by cyrilcecchinel on 31/03/2014.
  */
-class VirtualMachineTest extends SpecificationWithJUnit{
+class VirtualMachineTest extends SpecificationWithJUnit {
   "A Virtual machine" should {
-       "apply a action list on a behavior " in {
-         val n1:Node = new Node("A")
-         val n2:Node = new Node("B")
-         val n3:Node = new Node("C")
-         val b = new Behavior(n1).addNode(n2).addNode(n3)
+    "apply a action list on a behavior " in {
+      val n1: Node = new Node("A")
+      val n2: Node = new Node("B")
+      val n3: Node = new Node("C")
+      val b = new Behavior(n1).addNode(n2).addNode(n3)
 
-         val actions = ArrayBuffer[Instruction]()
-         actions += new DeleteNode(n3)
-         actions += new AddTransition(new Transition(n1, n2, new TickCondition(2)))
+      val actions = ArrayBuffer[Instruction]()
+      actions += new DeleteNode(n3)
+      actions += new AddTransition(new Transition(n1, n2, new TickCondition(2)))
 
 
-         val t:Behavior = VirtualMachine(b, actions.toList)
+      val t: Behavior = VirtualMachine(b, actions.toList)
 
-         (t.nodes.size must_== 2) and (t.transitions.size must_== 1)
-       }
+      (t.nodes.size must_== 2) and (t.transitions.size must_== 1)
+    }
   }
 }

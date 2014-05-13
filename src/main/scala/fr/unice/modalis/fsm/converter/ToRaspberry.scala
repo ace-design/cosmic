@@ -11,22 +11,23 @@ import fr.unice.modalis.fsm.converter.actions.RaspberryActionTranslator
  */
 object ToRaspberry extends Converter {
   val RASP_SERIAL_BAUD = 9600
-  var variables:Set[Result] = Set[Result]()
+  var variables: Set[Result] = Set[Result]()
+
   /**
    * Generate an Arduino code from a behavior
    * @param b Behavior
    * @return An arduino code
    */
-  def generateCode(b:Behavior):String = {
+  def generateCode(b: Behavior): String = {
     "\"\"\" Generated code\nDO NOT MODIFY\n" + Calendar.getInstance().getTime() + " \"\"\"\n" + generateSetup + generateLoop(b)
 
   }
 
-  private def generateTransitionCode(t:Transition) = {
+  private def generateTransitionCode(t: Transition) = {
     "# Processing transition " + t.toString() + "\n" + RaspberryTransitionTranslator.translate(t) + "\n"
   }
 
-  private def generateNodeCode(n:Node) = {
+  private def generateNodeCode(n: Node) = {
     val str: StringBuilder = new StringBuilder
     n.actions.actions.foreach(a => {
       val r = RaspberryActionTranslator.translate(a, variables);
@@ -36,18 +37,18 @@ object ToRaspberry extends Converter {
     "# Processing node " + n.name + "\n" + str.toString()
   }
 
-  private def generateSetup= { "import serial\nser = serial.Serial('/dev/ttyUSB0',"+ RASP_SERIAL_BAUD +", timeout=1)\n"}
+  private def generateSetup = {
+    "import serial\nser = serial.Serial('/dev/ttyUSB0'," + RASP_SERIAL_BAUD + ", timeout=1)\n"
+  }
 
 
-
-  def generateLoop(b:Behavior) = {
-    val loop:StringBuilder = new StringBuilder
+  def generateLoop(b: Behavior) = {
+    val loop: StringBuilder = new StringBuilder
 
     if (b.period() == 0) {
       b.nodes.foreach(n => loop.append(generateNodeCode(n)))
-    } else
-    {
-      for (i <- 0 to b.period() - 1){
+    } else {
+      for (i <- 0 to b.period() - 1) {
         if (b.newNodeAt(i)) {
           val currentNode = b.nodeAt(i)
 

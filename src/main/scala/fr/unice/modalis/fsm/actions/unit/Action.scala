@@ -1,20 +1,21 @@
 package fr.unice.modalis.fsm.actions.unit
 
-import fr.unice.modalis.fsm.actions.constraints.Constraint
+import fr.unice.modalis.fsm.guard.Guard
+
 
 /**
  * Action mother trait
  */
 trait Action {
 
-  val constraints:List[Constraint]
+  val guards: List[Guard]
 
   /**
-   * Add constraint on this action
-   * @param co Constraint
-   * @return A copy of the current action object with the contraint attached
+   * Add guard on this action
+   * @param g Guard
+   * @return A copy of the current action object with the guard attached
    */
-  def addConstrain(co:Constraint):Action
+  def addGuard(g: Guard): Action
 
   override def toString(): String
 
@@ -23,7 +24,9 @@ trait Action {
 /**
  * Result mother trait
  */
-trait Result { val name:String }
+trait Result {
+  val name: String
+}
 
 /**
  * Read result trait

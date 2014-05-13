@@ -5,24 +5,24 @@ import fr.unice.modalis.fsm.core.Behavior
 /**
  * Sensors which can be used to run scenario behaviors
  */
-class Sensors(b:Behavior) {
-  var behavior:Behavior = b
+class Sensors(b: Behavior) {
+  var behavior: Behavior = b
 
-  def addBehavior(newb:Behavior):Unit = behavior = behavior + newb
+  def addBehavior(newb: Behavior): Unit = behavior = behavior + newb
 }
 
-class TemperatureSensor(b:Behavior) extends Sensors(b){
-
-}
-
-class PollutionSensor(b:Behavior) extends Sensors(b){
+class TemperatureSensor(b: Behavior) extends Sensors(b) {
 
 }
 
-class PressureSensor(b:Behavior) extends Sensors(b){
+class PollutionSensor(b: Behavior) extends Sensors(b) {
 
 }
 
-class SonarSensor(b:Behavior) extends Sensors(b){
+class PressureSensor(b: Behavior) extends Sensors(b) {
+
+}
+
+class SonarSensor(b: Behavior) extends Sensors(b) {
 
 }

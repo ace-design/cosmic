@@ -9,38 +9,42 @@ import java.util.Calendar
 /**
  * Arduino translator
  */
-object ToArduino extends Converter{
+object ToArduino extends Converter {
   val ARDUINO_SERIAL_BAUD = 9600
-  var variables:Set[Result] = Set[Result]()
+  var variables: Set[Result] = Set[Result]()
 
   /**
    * Generate an Arduino code from a behavior
    * @param b Behavior
    * @return An arduino code
    */
-  def generateCode(b:Behavior):String = {
+  def generateCode(b: Behavior): String = {
     "/* Generated code\nDO NOT MODIFY\n" + Calendar.getInstance().getTime() + " */\n" + generateSetup + generateLoop(b)
 
   }
 
-  private def generateNodeCode(n:Node) = {
-    val str:StringBuilder = new StringBuilder
-    n.actions.actions.foreach(a=> {val r =ArduinoActionTranslator.translate(a,variables);
+  private def generateNodeCode(n: Node) = {
+    val str: StringBuilder = new StringBuilder
+    n.actions.actions.foreach(a => {
+      val r = ArduinoActionTranslator.translate(a, variables);
       str.append(r._1);
-      variables = r._2})
+      variables = r._2
+    })
     "// Processing node " + n.name + "\n" + str.toString()
   }
 
-  private def generateTransitionCode(t:Transition) = {
+  private def generateTransitionCode(t: Transition) = {
     "// Processing transition " + t.toString() + "\n" + ArduinoTransitionTranslator.translate(t) + "\n"
   }
 
-  private def generateSetup = { "void setup() {\nSerial.begin(" + ARDUINO_SERIAL_BAUD + ");\n}\n"}
+  private def generateSetup = {
+    "void setup() {\nSerial.begin(" + ARDUINO_SERIAL_BAUD + ");\n}\n"
+  }
 
-  def generateLoop(b:Behavior) = {
-    val loop:StringBuilder = new StringBuilder
+  def generateLoop(b: Behavior) = {
+    val loop: StringBuilder = new StringBuilder
 
-    for (i <- 0 to b.period() - 1){
+    for (i <- 0 to b.period() - 1) {
       if (b.newNodeAt(i)) {
         val currentNode = b.nodeAt(i)
 

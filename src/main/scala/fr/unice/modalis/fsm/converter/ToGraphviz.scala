@@ -2,7 +2,7 @@ package fr.unice.modalis.fsm.converter
 
 import fr.unice.modalis.fsm.core.{Node, Transition, Behavior}
 import fr.unice.modalis.fsm.condition.TickCondition
-import fr.unice.modalis.fsm.actions.constraints.Constraint
+import fr.unice.modalis.fsm.guard.Guard
 
 /**
  * Graphviz translator
@@ -24,7 +24,7 @@ object ToGraphviz extends Converter {
     b.nodes.filterNot(n => n.equals(b.entryPoint)).foreach(n => s.append(generateNodeCode(n) + ";\n"))
     b.transitions.foreach(t => s.append(generateTransitionCode(t)))
 
-    // Generate constraints
+    // Generate constraint
     s.append(generateNodeShape("record"))
 
     b.nodes.filter(n => n.constraintsAmount() > 0).foreach(n => s.append(generateConstraints(n)))
@@ -59,10 +59,10 @@ object ToGraphviz extends Converter {
 
     for (f <- n.actions.actions.toIterator) {
 
-      if (f.constraints.size > 0) {
+      if (f.guards.size > 0) {
         val box = n.name + "_CONSTRAINTS" + i
         s.append(box)
-        s.append(printConstraints(f.toString(), f.constraints))
+        s.append(printConstraints(f.toString(), f.guards))
         def a = box + "->" + n.name + " [dir=\"forward\",arrowhead=\"diamond\",arrowtail=\"normal\"];\n"
         s.append(a)
         i += 1
@@ -75,8 +75,8 @@ object ToGraphviz extends Converter {
 
   }
 
-  def printConstraints(a: String, l: List[Constraint]): String = {
-    def printInternal(i: Int, c: List[Constraint]): String = {
+  def printConstraints(a: String, l: List[Guard]): String = {
+    def printInternal(i: Int, c: List[Guard]): String = {
       c match {
         case Nil => ""
         case c :: l => "|<f" + i + ">" + c.toString + "\\n" + printInternal(i + 1, l)

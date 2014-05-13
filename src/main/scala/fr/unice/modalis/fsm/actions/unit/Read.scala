@@ -1,20 +1,21 @@
 package fr.unice.modalis.fsm.actions.unit
 
-import fr.unice.modalis.fsm.actions.constraints.Constraint
 import scala.util.Random
+import fr.unice.modalis.fsm.guard.Guard
 
 /**
  * Read data from a sensor
  * @param sensorId Sensor ID
  * @param result Read result
- * @param constraints Constraints list
+ * @param guards Constraints list
  */
-case class ReadSensorAction(val sensorId:String, val result:ReadSensorResult, val constraints:List[Constraint]) extends Action{
+case class ReadSensorAction(val sensorId: String, val result: ReadSensorResult, val guards: List[Guard]) extends Action {
 
-  def this(sensorId:String, result:ReadSensorResult) = this(sensorId, result, List[Constraint]())
+  def this(sensorId: String, result: ReadSensorResult) = this(sensorId, result, List[Guard]())
 
-  override def toString():String = "READ " + sensorId + " (" + result.name + ")"
-  override def addConstrain(co:Constraint):ReadSensorAction = new ReadSensorAction(sensorId, result, co :: constraints)
+  override def toString(): String = "READ " + sensorId + " (" + result.name + ")"
+
+  override def addGuard(co: Guard): ReadSensorAction = new ReadSensorAction(sensorId, result, co :: guards)
 
 
 }
@@ -23,6 +24,6 @@ case class ReadSensorAction(val sensorId:String, val result:ReadSensorResult, va
  * Read sensor Result
  * @param name Name
  */
-case class ReadSensorResult(val name:String) extends ReadResult{
-  def this() = this("var_"+ Random.alphanumeric.take(5).mkString)
+case class ReadSensorResult(val name: String) extends ReadResult {
+  def this() = this("var_" + Random.alphanumeric.take(5).mkString)
 }
