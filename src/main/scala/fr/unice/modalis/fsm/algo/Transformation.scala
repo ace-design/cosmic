@@ -213,12 +213,18 @@ object Transformation {
    * @return Forwarded behavior
    */
   def forward(b: Behavior): Behavior = {
-    Utils.generateDevelopedTemporalRepeatedAutomata(b.period(), b.entryPoint.actions)
+    val actionFlows = ArrayBuffer[SequentialActions]()
+    b.nodes.foreach(n => actionFlows += n.actions)
+
+    var newflow = new SequentialActions()
+    actionFlows.foreach(f => newflow = newflow.union(f))
+
+    Utils.generateDevelopedTemporalRepeatedAutomata(b.period(), newflow)
   }
 
   /**
    * Minimize a forwarded behavior
-   * @param b Forwarder behavior
+   * @param b Forwarded behavior
    * @return Minimized behavior
    */
   def minimize(b: Behavior): Behavior = {

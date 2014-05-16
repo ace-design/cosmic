@@ -18,5 +18,11 @@ class ActionsTest extends SpecificationWithJUnit {
 
       a.actions.size must_== 2
     }
+
+    "avoid duplicate action" in {
+      val a = new SequentialActions().add(new EmitAction("a", 0)).add(new EmitAction("a", 0))
+
+      a.actions.size must_== 1
+    }
   }
 }

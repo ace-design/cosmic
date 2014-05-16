@@ -145,7 +145,7 @@ class Behavior(entry: Node, nodesSet: Set[Node], transitionSet: Set[Transition])
     var nextNode: Node = null
     var i = 0
     while (nextNode != entryPoint) {
-      val tr = transitions.filter(x => x.source.equals(currentNode)).head
+      val tr = transitions.filter(x => x.source.equals(currentNode) && x.condition.isInstanceOf[TickCondition]).head
       tr.condition match {
         case TickCondition(n) => i += n
       }

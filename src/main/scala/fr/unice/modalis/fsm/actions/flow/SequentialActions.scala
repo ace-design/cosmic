@@ -6,16 +6,16 @@ import fr.unice.modalis.fsm.actions.unit.Action
  * SequentialActions
  * Represents sequential actions a1;a2; ...;an
  */
-case class SequentialActions(val actions: Seq[Action]) extends ActionFlow {
+case class SequentialActions(val actions: Set[Action]) extends ActionFlow {
 
-  def this() = this(Seq[Action]())
+  def this() = this(Set[Action]())
 
   /**
    * Add an action in the Sequence
    * @param a Action
    * @return Copy of the sequence with action added at the end
    */
-  def add(a: Action): SequentialActions = new SequentialActions(actions :+ a)
+  def add(a: Action): SequentialActions = new SequentialActions(actions + a)
 
   /**
    * Sequence size
@@ -36,7 +36,7 @@ case class SequentialActions(val actions: Seq[Action]) extends ActionFlow {
    */
   def foreach(f: (Action => Unit)) = actions.foreach(f)
 
-  def filter(f: (Action => Boolean)): Seq[Action] = actions.filter(f)
+  def filter(f: (Action => Boolean)): Set[Action] = actions.filter(f)
 
   def contains(a: Action) = actions.contains(a)
 }
