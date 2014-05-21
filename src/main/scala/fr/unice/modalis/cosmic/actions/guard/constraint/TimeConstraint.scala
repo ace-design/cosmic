@@ -9,7 +9,7 @@ import java.text.SimpleDateFormat
  * @param end end time (hh:mm)
  * @throws Exception when time format isn't valid
  */
-case class TimeConstraint(begin: String, end: String) extends Action {
+case class TimeConstraint(begin: String, end: String) extends Constraint {
   val f: SimpleDateFormat = new SimpleDateFormat("HH:MM")
   try {
     f.parse(begin)

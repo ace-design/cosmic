@@ -10,7 +10,7 @@ import fr.unice.modalis.cosmic.actions.unit.ReadResult
  * @param threshold Threshold
  * @param operator Operator
  */
-case class ValueConstraint(val value: ReadResult, val threshold: Int, val operator: String) extends Action {
+case class ValueConstraint(val value: ReadResult, val threshold: Int, val operator: String) extends Constraint {
 
   def isCorrect(o: String): Boolean = {
     o == ">" || o == "<" || o == "==" || o == ">=" || o == "<=" || o == "!="
