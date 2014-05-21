@@ -1,9 +1,9 @@
-import fr.unice.modalis.fsm.actions.unit.EmitAction
-import fr.unice.modalis.fsm.algo.Transformation
-import fr.unice.modalis.fsm.condition.{TimeCondition, TickCondition}
-import fr.unice.modalis.fsm.core.{Transition, Behavior, Node}
-import fr.unice.modalis.fsm.exceptions.NodeNotFoundException
-import fr.unice.modalis.fsm.vm.VirtualMachine
+import fr.unice.modalis.cosmic.actions.unit.EmitAction
+import fr.unice.modalis.cosmic.algo.Transformation
+import fr.unice.modalis.cosmic.core.condition.{TimeCondition, TickCondition}
+import fr.unice.modalis.cosmic.core.{Transition, Behavior, Node}
+import fr.unice.modalis.cosmic.exceptions.NodeNotFoundException
+import fr.unice.modalis.cosmic.algo.vm.VirtualMachine
 import org.specs2.mutable.SpecificationWithJUnit
 
 /**

@@ -1,9 +1,9 @@
-import fr.unice.modalis.fsm.actions.unit.{Action, EmitAction}
-import fr.unice.modalis.fsm.algo.{Utils, Transformation}
-import fr.unice.modalis.fsm.condition.TickCondition
-import fr.unice.modalis.fsm.core.{Behavior, Transition, Node}
-import fr.unice.modalis.fsm.scenario.{HeatingMonitoring, CarPooling, AirQuality}
-import fr.unice.modalis.fsm.vm.VirtualMachine
+import fr.unice.modalis.cosmic.actions.unit.{Action, EmitAction}
+import fr.unice.modalis.cosmic.algo.{Utils, Transformation}
+import fr.unice.modalis.cosmic.core.condition.TickCondition
+import fr.unice.modalis.cosmic.core.{Behavior, Transition, Node}
+import fr.unice.modalis.cosmic.scenario.{HeatingMonitoring, CarPooling, AirQuality}
+import fr.unice.modalis.cosmic.algo.vm.VirtualMachine
 import org.specs2.mutable.SpecificationWithJUnit
 
 /**

@@ -1,4 +1,4 @@
-import fr.unice.modalis.fsm.condition._
+import fr.unice.modalis.cosmic.core.condition._
 import org.specs2.mutable.SpecificationWithJUnit
 
 /**

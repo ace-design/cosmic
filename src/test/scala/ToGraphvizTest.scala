@@ -1,6 +1,6 @@
-import fr.unice.modalis.fsm.condition.TickCondition
-import fr.unice.modalis.fsm.converter.ToGraphviz
-import fr.unice.modalis.fsm.core.{Transition, Node}
+import fr.unice.modalis.cosmic.core.condition.TickCondition
+import fr.unice.modalis.cosmic.converter.ToGraphviz
+import fr.unice.modalis.cosmic.core.{Transition, Node}
 
 import org.specs2.mutable.Specification
 

@@ -1,12 +1,12 @@
-import fr.unice.modalis.fsm.actions.unit._
-import fr.unice.modalis.fsm.actions.unit.ReadSensorAction
-import fr.unice.modalis.fsm.actions.unit.ReadSensorResult
-import fr.unice.modalis.fsm.actions.unit.SendAction
-import fr.unice.modalis.fsm.actions.unit.SerialInitResult
-import fr.unice.modalis.fsm.condition.TickCondition
-import fr.unice.modalis.fsm.converter.{ToRaspberry, ToArduino, ToGraphviz}
-import fr.unice.modalis.fsm.core.{Behavior, Transition, Node}
-import fr.unice.modalis.fsm.guard.constraint.ValueConstraint
+import fr.unice.modalis.cosmic.actions.unit._
+import fr.unice.modalis.cosmic.actions.unit.ReadSensorAction
+import fr.unice.modalis.cosmic.actions.unit.ReadSensorResult
+import fr.unice.modalis.cosmic.actions.unit.WriteSerialAction
+import fr.unice.modalis.cosmic.actions.unit.InitSerialResult
+import fr.unice.modalis.cosmic.core.condition.TickCondition
+import fr.unice.modalis.cosmic.converter.{ToRaspberry, ToArduino, ToGraphviz}
+import fr.unice.modalis.cosmic.core.{Behavior, Transition, Node}
+import fr.unice.modalis.cosmic.actions.guard.constraint.ValueConstraint
 
 /**
  * Created by cyrilcecchinel on 23/04/2014.
@@ -19,17 +19,17 @@ object Demo extends App {
   println("--- ARDUINO ---")
 
   val refRead1 = new ReadSensorResult()
-  val n1 = new Node("Alice").addAction(new ReadSensorAction("1", refRead1)).addAction(new SendAction(refRead1, "Alice"))
+  val n1 = new Node("Alice").addAction(new ReadSensorAction("1", refRead1)).addAction(new WriteSerialAction(refRead1, "Alice"))
   val t1 = new Transition(n1, n1, new TickCondition(3))
   val b1 = new Behavior(n1).addTransition(t1)
 
   val refRead2 = new ReadSensorResult()
-  val n2 = new Node("Bob").addAction(new ReadSensorAction("1", refRead2)).addAction(new SendAction(refRead2, "Bob"))
+  val n2 = new Node("Bob").addAction(new ReadSensorAction("1", refRead2)).addAction(new WriteSerialAction(refRead2, "Bob"))
   val t2 = new Transition(n2, n2, new TickCondition(2))
   val b2 = new Behavior(n2).addTransition(t2)
 
   val refRead3 = new ReadSensorResult()
-  val n3 = new Node("Charlie").addAction(new ReadSensorAction("1", refRead3)).addAction(new SendAction(refRead3, "Charlie").addGuard(new ValueConstraint(refRead3, 300, "<")))
+  val n3 = new Node("Charlie").addAction(new ReadSensorAction("1", refRead3)).addAction(new WriteSerialAction(refRead3, "Charlie").addGuard(new ValueConstraint(refRead3, 300, "<")))
   val t3 = new Transition(n3, n3, new TickCondition(30))
   val b3 = new Behavior(n3).addTransition(t3)
 
@@ -74,13 +74,13 @@ object Demo extends App {
    * Raspberry Scenarios
    */
 
-  val refSerial1 = new SerialInitResult()
+  val refSerial1 = new InitSerialResult()
   val refSerialRead1 = new ReadSerialResult()
-  val rNode1 = new Node("A").addAction(new SerialInitAction("/dev/ttyUSB0", refSerial1)).addAction(new ReadSerial(refSerial1, refSerialRead1)).addAction(new EmitAction(refSerialRead1, "host", 9090))
+  val rNode1 = new Node("A").addAction(new InitSerialAction("/dev/ttyUSB0", refSerial1)).addAction(new ReadSerialAction(refSerial1, refSerialRead1)).addAction(new EmitAction(refSerialRead1, "host", 9090))
   val rTran1 = new Transition(rNode1, rNode1, new TickCondition(1))
   val raspB1 = new Behavior(rNode1).addTransition(rTran1)
 
-  val refSerial2 = new SerialInitResult()
+  val refSerial2 = new InitSerialResult()
   val refSerialRead2 = new ReadSerialResult()
   val rNode2 = new Node("B").addAction(new EmitAction(refSerialRead2, "i3s", 9090))
   val rTran2 = new Transition(rNode2, rNode2, new TickCondition(2))

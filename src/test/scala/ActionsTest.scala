@@ -1,5 +1,5 @@
-import fr.unice.modalis.fsm.actions.flow.SequentialActions
-import fr.unice.modalis.fsm.actions.unit.EmitAction
+import fr.unice.modalis.cosmic.actions.flow.SequentialActions
+import fr.unice.modalis.cosmic.actions.unit.EmitAction
 import org.specs2.mutable.SpecificationWithJUnit
 
 /**

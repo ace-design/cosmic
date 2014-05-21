@@ -1,6 +1,6 @@
-import fr.unice.modalis.fsm.actions.unit.EmitAction
-import fr.unice.modalis.fsm.core.Node
-import fr.unice.modalis.fsm.guard.constraint.TimeConstraint
+import fr.unice.modalis.cosmic.actions.unit.EmitAction
+import fr.unice.modalis.cosmic.core.Node
+import fr.unice.modalis.cosmic.actions.guard.constraint.TimeConstraint
 import org.specs2.mutable.SpecificationWithJUnit
 
 /**
