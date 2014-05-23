@@ -3,7 +3,7 @@ package fr.unice.modalis.cosmic.converter.actions.compatibility
 /**
  * Plateform enumeration
  */
-object Plateform extends Enumeration {
-  type Plateform = Value
+object Platform extends Enumeration {
+  type Platform = Value
   val BRIDGE, BOARD, ALL = Value
 }

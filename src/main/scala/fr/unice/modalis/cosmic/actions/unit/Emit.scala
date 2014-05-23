@@ -10,8 +10,8 @@ import fr.unice.modalis.cosmic.actions.guard.GuardAction
  * @param endpointPort Server port
  * @param guards Contraints list
  */
-case class EmitAction(val data: ReadSerialResult, val endpointURL: String, val endpointPort: Int, val guards: List[GuardAction]) extends Action {
-  def this(data: ReadSerialResult, url: String, port: Int) = this(data, url, port, List[GuardAction]())
+case class EmitAction(val data: ReadResult, val endpointURL: String, val endpointPort: Int, val guards: List[GuardAction]) extends Action {
+  def this(data: ReadResult, url: String, port: Int) = this(data, url, port, List[GuardAction]())
 
   def this(url: String, port: Int) = this(null, url, port, List[GuardAction]())
 

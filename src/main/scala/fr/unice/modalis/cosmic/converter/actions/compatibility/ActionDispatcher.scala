@@ -4,7 +4,7 @@ import fr.unice.modalis.cosmic.actions.unit._
 import fr.unice.modalis.cosmic.actions.unit.EmitAction
 import fr.unice.modalis.cosmic.actions.unit.ReadSensorAction
 import fr.unice.modalis.cosmic.actions.unit.InitSerialAction
-import fr.unice.modalis.cosmic.converter.actions.compatibility.Plateform._
+import fr.unice.modalis.cosmic.converter.actions.compatibility.Platform._
 import fr.unice.modalis.cosmic.actions.flow.ActionFlow
 
 /**
@@ -13,7 +13,7 @@ import fr.unice.modalis.cosmic.actions.flow.ActionFlow
  */
 object ActionDispatcher {
 
-  def apply(l: ActionFlow, p: Plateform) = dispatch(l.actions, p)
+  def apply(l: ActionFlow, p: Platform) = dispatch(l.actions, p)
 
   /**
    * Dispatch actions
@@ -21,7 +21,7 @@ object ActionDispatcher {
    * @param p Platform targeted
    * @return Two lists. The first one represent compatible action on the targeted plateform, the second one the incompatible ones
    */
-  def dispatch(l: Iterable[Action], p: Plateform) = {
+  def dispatch(l: Iterable[Action], p: Platform) = {
     if (p == BOARD) l.partition(a => boardCompatible(a))
     else if (p == BRIDGE) l.partition(a => bridgeCompatible(a))
     else l.partition(a => allCompatible(a))

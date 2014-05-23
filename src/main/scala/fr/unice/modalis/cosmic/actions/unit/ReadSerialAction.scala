@@ -9,12 +9,12 @@ import fr.unice.modalis.cosmic.actions.guard.GuardAction
  * @param result Read Serial result
  * @param guards Constraint list
  */
-case class ReadSerialAction(val comPort: InitSerialResult, val result: ReadSerialResult, val guards: List[GuardAction]) extends Action {
+case class ReadSerialAction(val comPort: InitSerialResult, val result: ReadResult, val guards: List[GuardAction]) extends Action {
 
-  def this(comPort: InitSerialResult, result: ReadSerialResult) = this(comPort, result, List[GuardAction]())
+  def this(comPort: InitSerialResult, result: ReadResult) = this(comPort, result, List[GuardAction]())
 
   // No initialization mandatory (ie. Arduino boards)
-  def this(result: ReadSerialResult) = this(new InitSerialResult(), result, List[GuardAction]())
+  def this(result: ReadResult) = this(new InitSerialResult(), result, List[GuardAction]())
 
   override def toString(): String = "READ SERIAL ref:" + comPort.name + " (" + result.name + ")"
 

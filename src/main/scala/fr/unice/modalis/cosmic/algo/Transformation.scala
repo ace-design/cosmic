@@ -3,9 +3,17 @@ package fr.unice.modalis.cosmic.algo
 import fr.unice.modalis.cosmic.core._
 import scala.collection.mutable.ArrayBuffer
 import fr.unice.modalis.cosmic.algo.vm._
-import fr.unice.modalis.cosmic.core.condition.TickCondition
-import fr.unice.modalis.cosmic.converter.actions.compatibility.{Plateform, ActionDispatcher}
+import fr.unice.modalis.cosmic.converter.actions.compatibility.{Platform, ActionDispatcher}
+import fr.unice.modalis.cosmic.actions.unit._
+import fr.unice.modalis.cosmic.algo.vm.DeleteTransition
 import fr.unice.modalis.cosmic.actions.flow.SequentialActions
+import fr.unice.modalis.cosmic.algo.vm.AddNode
+import fr.unice.modalis.cosmic.core.Transition
+import fr.unice.modalis.cosmic.algo.vm.DeleteNode
+import fr.unice.modalis.cosmic.actions.unit.EmitAction
+import fr.unice.modalis.cosmic.core.Node
+import fr.unice.modalis.cosmic.core.condition.TickCondition
+import fr.unice.modalis.cosmic.algo.vm.AddTransition
 
 
 /**
@@ -189,22 +197,52 @@ object Transformation {
    */
   def slice(b: Behavior): (Behavior, Behavior) = {
     val period = b.period()
-    // Slice actions
-    val actionsDispatched = ActionDispatcher(b.entryPoint.actions, Plateform.BOARD) //Get (board, non-board) actions
+
+    val actions = b.entryPoint.actions.actions.toList
+
+
+    // Step 1 : Dispatch
+    val (boardCmpt, boardIncmpt) = ActionDispatcher.dispatch(actions, Platform.BOARD)
+    val (bridgeCmpt, bridgeIncmpt) = ActionDispatcher.dispatch(actions, Platform.BRIDGE)
+
+    // Step 2 : Substitute
+
+    val boardSubt = ArrayBuffer[Action]()
+    val bridgeSubt = ArrayBuffer[Action]()
+
+    boardIncmpt.foreach(a => boardSubt.appendAll(Transformation.substitute(a)))
+    bridgeIncmpt.foreach(a => bridgeSubt.appendAll(Transformation.substitute(a)))
+
+    // Setp 3 : Merge
+    val boardAction = boardCmpt.toList ::: boardSubt.toList
+    val bridgeAction = bridgeSubt.toList ::: bridgeCmpt.toList
+
 
     // Build new actions flow
     var actionsFlowBoard = new SequentialActions()
     var actionsFlowBridge = new SequentialActions()
 
-    actionsDispatched._1.foreach(a => actionsFlowBoard = actionsFlowBoard.add(a))
-    actionsDispatched._2.foreach(a => actionsFlowBridge = actionsFlowBridge.add(a))
+    boardAction.foreach(a => actionsFlowBoard = actionsFlowBoard.add(a))
+    bridgeAction.foreach(a => actionsFlowBridge = actionsFlowBridge.add(a))
 
     // Build automata
     val boardAutomata = Utils.generateDevelopedTemporalRepeatedAutomata(period, actionsFlowBoard)
-    val bridgeAutomata = new SimpleTemporalBehavior(new Node("bridge", actionsFlowBridge), period)
+    //val bridgeAutomata = new SimpleTemporalBehavior(new Node("bridge", actionsFlowBridge), period)
+    val bridgeAutomata = Utils.generateDevelopedTemporalRepeatedAutomata(period, actionsFlowBridge)
 
     (boardAutomata, bridgeAutomata)
 
+  }
+
+  def substitute(a: Action):List[Action] = {
+    a match {
+      case EmitAction(res,_,_,guards) => List(new WriteSerialAction(res, "", guards))
+      case ReadSensorAction(_, res, guards) => {
+        val refSerial = new InitSerialResult()
+        List(new InitSerialAction("/dev/ttyUSB0", refSerial), new ReadSerialAction(refSerial, res))
+      }
+      case _ => throw new Exception("No substitute found!")
+    }
   }
 
   /**
