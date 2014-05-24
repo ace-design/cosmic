@@ -6,16 +6,16 @@ import fr.unice.modalis.cosmic.actions.unit.Action
  * SequentialActions
  * Represents sequential actions a1;a2; ...;an
  */
-case class SequentialActions(val actions: Set[Action]) extends ActionFlow {
+case class SequentialActions(val actions: List[Action]) extends ActionFlow {
 
-  def this() = this(Set[Action]())
+  def this() = this(List[Action]())
 
   /**
    * Add an action in the Sequence
    * @param a Action
    * @return Copy of the sequence with action added at the end
    */
-  def add(a: Action): SequentialActions = new SequentialActions(actions + a)
+  def add(a: Action): SequentialActions = if (!this.contains(a)) (new SequentialActions(actions :+ a)) else this
 
   /**
    * Sequence size
@@ -36,7 +36,7 @@ case class SequentialActions(val actions: Set[Action]) extends ActionFlow {
    */
   def foreach(f: (Action => Unit)) = actions.foreach(f)
 
-  def filter(f: (Action => Boolean)): Set[Action] = actions.filter(f)
+  def filter(f: (Action => Boolean)): List[Action] = actions.filter(f)
 
   def contains(a: Action) = actions.contains(a)
 }

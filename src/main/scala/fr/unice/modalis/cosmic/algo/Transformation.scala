@@ -5,11 +5,17 @@ import scala.collection.mutable.ArrayBuffer
 import fr.unice.modalis.cosmic.algo.vm._
 import fr.unice.modalis.cosmic.converter.actions.compatibility.{Platform, ActionDispatcher}
 import fr.unice.modalis.cosmic.actions.unit._
+import fr.unice.modalis.cosmic.converter.actions.compatibility.Platform._
 import fr.unice.modalis.cosmic.algo.vm.DeleteTransition
+import fr.unice.modalis.cosmic.actions.unit.ReadSerialAction
 import fr.unice.modalis.cosmic.actions.flow.SequentialActions
 import fr.unice.modalis.cosmic.algo.vm.AddNode
 import fr.unice.modalis.cosmic.core.Transition
+import fr.unice.modalis.cosmic.actions.unit.ReadSensorAction
+import fr.unice.modalis.cosmic.actions.unit.InitSerialAction
 import fr.unice.modalis.cosmic.algo.vm.DeleteNode
+import fr.unice.modalis.cosmic.actions.unit.InitSerialResult
+import fr.unice.modalis.cosmic.actions.unit.WriteSerialAction
 import fr.unice.modalis.cosmic.actions.unit.EmitAction
 import fr.unice.modalis.cosmic.core.Node
 import fr.unice.modalis.cosmic.core.condition.TickCondition
@@ -196,45 +202,39 @@ object Transformation {
    * @return Two automata sliced according their actions compatibility with final deployement
    */
   def slice(b: Behavior): (Behavior, Behavior) = {
-    val period = b.period()
+    val nodesSP = b.nodes.map(x => slice_node(x, Platform.BOARD))
+    val nodesBr = b.nodes.map(x => slice_node(x, Platform.BRIDGE))
 
-    val actions = b.entryPoint.actions.actions.toList
+    val transitionsSP = b.transitions.map(t => new Transition(nodesSP.find(n => n.name == t.source.name).get, nodesSP.find(n => n.name == t.destination.name).get, t.condition))
+    val transitionsBr = b.transitions.map(t => new Transition(nodesBr.find(n => n.name == t.source.name).get, nodesBr.find(n => n.name == t.destination.name).get, t.condition))
+    val boardAutomaton = new Behavior(nodesSP.head, nodesSP, transitionsSP)
+    val bridgeAutomaton = new Behavior(nodesBr.head, nodesBr, transitionsBr)
 
+    (boardAutomaton, bridgeAutomaton)
+  }
 
-    // Step 1 : Dispatch
-    val (boardCmpt, boardIncmpt) = ActionDispatcher.dispatch(actions, Platform.BOARD)
-    val (bridgeCmpt, bridgeIncmpt) = ActionDispatcher.dispatch(actions, Platform.BRIDGE)
+  private def slice_node(n:Node, p:Platform):Node = {
+    val (compatible, incompatible) = ActionDispatcher.dispatch(n.actions.actions, p)
 
-    // Step 2 : Substitute
+    val substitution = ArrayBuffer[Action]()
+    incompatible.foreach(a => substitution.appendAll(Transformation.substitute(a)))
 
-    val boardSubt = ArrayBuffer[Action]()
-    val bridgeSubt = ArrayBuffer[Action]()
-
-    boardIncmpt.foreach(a => boardSubt.appendAll(Transformation.substitute(a)))
-    bridgeIncmpt.foreach(a => bridgeSubt.appendAll(Transformation.substitute(a)))
-
-    // Setp 3 : Merge
-    val boardAction = boardCmpt.toList ::: boardSubt.toList
-    val bridgeAction = bridgeSubt.toList ::: bridgeCmpt.toList
-
-
-    // Build new actions flow
-    var actionsFlowBoard = new SequentialActions()
-    var actionsFlowBridge = new SequentialActions()
-
-    boardAction.foreach(a => actionsFlowBoard = actionsFlowBoard.add(a))
-    bridgeAction.foreach(a => actionsFlowBridge = actionsFlowBridge.add(a))
-
-    // Build automata
-    val boardAutomata = Utils.generateDevelopedTemporalRepeatedAutomata(period, actionsFlowBoard)
-    //val bridgeAutomata = new SimpleTemporalBehavior(new Node("bridge", actionsFlowBridge), period)
-    val bridgeAutomata = Utils.generateDevelopedTemporalRepeatedAutomata(period, actionsFlowBridge)
-
-    (boardAutomata, bridgeAutomata)
+    var actionFlow = new SequentialActions()
+    val iter = n.actions.actions.iterator
+    while(iter.hasNext){
+      val current = iter.next()
+      if (compatible.toList.contains(current))
+        actionFlow=actionFlow.add(current)
+      else{
+        val sub = Transformation.substitute(current)
+        sub.foreach(a => actionFlow=actionFlow.add(a))
+      }
+    }
+    new Node(n.name,actionFlow)
 
   }
 
-  def substitute(a: Action):List[Action] = {
+  private def substitute(a: Action):List[Action] = {
     a match {
       case EmitAction(res,_,_,guards) => List(new WriteSerialAction(res, "", guards))
       case ReadSensorAction(_, res, guards) => {
