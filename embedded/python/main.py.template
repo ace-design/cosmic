@@ -1,0 +1,40 @@
+import serial
+import re
+import threading
+import array
+import time
+import datetime
+import time
+ser = serial.Serial('/dev/ttyUSB0',9600, timeout=1)
+buffer = 0
+
+'''
+Read value on serial port
+'''
+def readValue():
+    while True:
+        x = ser.readline().decode("ascii")
+        x = x.split("\r\n")[0]
+        if re.match(r"v=[0-9]+",x):
+            bufferize(int(re.findall(r'\d+', x)[0]))
+
+'''
+Bufferize a value
+'''
+def bufferize(v):
+    global buffer
+    buffer = v
+
+def behavior():
+#@code@#
+
+'''
+Init
+'''
+serialRead = threading.Thread(None, readValue, "readValue")
+behavior = threading.Thread(None, behavior, None)
+
+serialRead.start()
+behavior.start()
+
+#END FILE

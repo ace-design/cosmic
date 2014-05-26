@@ -5,6 +5,7 @@ import java.util.Calendar
 import fr.unice.modalis.cosmic.actions.unit.Result
 import fr.unice.modalis.cosmic.converter.transition.RaspberryTransitionTranslator
 import fr.unice.modalis.cosmic.converter.actions.RaspberryActionTranslator
+import scala.io.Source
 
 /**
  * Created by cyrilcecchinel on 22/04/2014.
@@ -19,7 +20,15 @@ object ToRaspberry extends Converter {
    * @return An arduino code
    */
   def generateCode(b: Behavior): String = {
-    "\"\"\" Generated code\nDO NOT MODIFY\n" + Calendar.getInstance().getTime() + " \"\"\"\n" + generateSetup + generateLoop(b)
+    val str = new StringBuilder
+    str.append("\"\"\" Generated code\nDO NOT MODIFY\n" + Calendar.getInstance().getTime() +"\n" +"\"\"\"\n")
+
+    val behaviorCode = generateLoop(b)
+
+    val fromTemplate = Source.fromFile("embedded/python/main.py.template").getLines().mkString("\n").replace("#@code@#",behaviorCode)
+
+    str.append(fromTemplate)
+    str.toString()
 
   }
 
@@ -38,7 +47,7 @@ object ToRaspberry extends Converter {
   }
 
   private def generateSetup = {
-    "import serial\nser = serial.Serial('/dev/ttyUSB0'," + RASP_SERIAL_BAUD + ", timeout=1)\n"
+    ""
   }
 
 
@@ -60,6 +69,6 @@ object ToRaspberry extends Converter {
         }
       }
     }
-    "while True:\n\ttry:\n" + loop.toString() + "\texcept Exception:\n\t\tpass"
+    "\twhile True:\n" + loop.toString()
   }
 }

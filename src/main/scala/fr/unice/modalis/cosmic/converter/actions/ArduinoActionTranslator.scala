@@ -21,7 +21,7 @@ object ArduinoActionTranslator extends ActionTranslator {
 
   def translate(a: Action, v: Set[Result]): (String, Set[Result]) = {
     a match {
-      case WriteSerialAction(data, to, cl) => (buildConstraints(cl) + "Serial.println(" + data.name + ");" + (if (to != "") " // Send to " + to else "") + "\n", v)
+      case WriteSerialAction(data, to, cl) => (buildConstraints(cl) + "Serial.println(\"v=\" + String(" + data.name + "));" + (if (to != "") " // Send to " + to else "") + "\n", v)
       case ReadSensorAction(id, result, cl) => (buildConstraints(cl) + result.name + " = analogRead(" + convertId(id) + ");\n", v + result)
       case _ => throw new Exception("Action " + a + " not handled on Arduino")
     }
