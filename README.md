@@ -3,7 +3,7 @@ COSmIC framework
 
 The **COSmIC** (Composition Operators for Sensing InfrastuCture) is a tool aimed to support different users on a shared System Information by generating code deployed on each level composing the sensors network.
 
-This short README is intended to give a brief overview of the framework and to provide the minimal material to understand how it works.
+This short *HOWTO* is intended to give a brief overview of the framework and to provide the minimal material to understand how it works.
 
 Architecture
 ------------
