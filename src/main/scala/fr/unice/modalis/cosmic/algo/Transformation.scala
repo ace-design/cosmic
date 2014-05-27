@@ -197,13 +197,13 @@ object Transformation {
   }
 
   /**
-   * Slice a behavior into two distincts automata
+   * Decompose a behavior into two distinct automata
    * @param b Behavior
-   * @return Two automata sliced according their actions compatibility with final deployement
+   * @return Two automata decomposed according their actions compatibility with final deployment
    */
-  def slice(b: Behavior): (Behavior, Behavior) = {
-    val nodesSP = b.nodes.map(x => slice_node(x, Platform.BOARD))
-    val nodesBr = b.nodes.map(x => slice_node(x, Platform.BRIDGE))
+  def decompose(b: Behavior): (Behavior, Behavior) = {
+    val nodesSP = b.nodes.map(x => filter_node(x, Platform.BOARD))
+    val nodesBr = b.nodes.map(x => filter_node(x, Platform.BRIDGE))
 
     val transitionsSP = b.transitions.map(t => new Transition(nodesSP.find(n => n.name == t.source.name).get, nodesSP.find(n => n.name == t.destination.name).get, t.condition))
     val transitionsBr = b.transitions.map(t => new Transition(nodesBr.find(n => n.name == t.source.name).get, nodesBr.find(n => n.name == t.destination.name).get, t.condition))
@@ -213,7 +213,13 @@ object Transformation {
     (boardAutomaton, bridgeAutomaton)
   }
 
-  private def slice_node(n:Node, p:Platform):Node = {
+  /**
+   * Filter a node according to its final platform
+   * @param n Node
+   * @param p Target platform
+   * @return Filtered node
+   */
+  private def filter_node(n:Node, p:Platform):Node = {
     val (compatible, incompatible) = ActionDispatcher.dispatch(n.actions.actions, p)
 
     val substitution = ArrayBuffer[Action]()
@@ -234,9 +240,14 @@ object Transformation {
 
   }
 
+  /**
+   * Substitue an action
+   * @param a Action
+   * @return List of sustitution actions
+   */
   private def substitute(a: Action):List[Action] = {
     a match {
-      case EmitAction(res,_,_,guards) => List(new WriteSerialAction(res, "", guards))
+      case EmitAction(res,_,_,guards) => List(new WriteSerialAction(res, ""))
       case ReadSensorAction(_, res, guards) => {
         val refSerial = new InitSerialResult()
         List(new InitSerialAction("/dev/ttyUSB0", refSerial), new ReadSerialAction(refSerial, res))
@@ -275,9 +286,9 @@ object Transformation {
    * @return (Board behavior, Bridge behavior)
    */
   def deploy(b: Behavior): (Behavior, Behavior) = {
-    val sliceResult = slice(b)
+    val sliceResult = decompose(b)
 
-    val boardBehavior = minimize(forward(sliceResult._1))
+    val boardBehavior = sliceResult._1 //minimize(forward(sliceResult._1))
     val bridgeBehavior = sliceResult._2
 
     (boardBehavior, bridgeBehavior)

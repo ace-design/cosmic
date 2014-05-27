@@ -25,6 +25,17 @@ def bufferize(v):
     global buffer
     buffer = v
 
+'''
+Emit value
+'''
+def emit(v,user,port):
+    ts = time.time()
+    st = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S')
+    print("Emit " + str(v) + " to " + user + ":" + str(port) + " -- " + st)
+
+'''
+User behaviors
+'''
 def behavior():
 #@code@#
 

@@ -17,7 +17,7 @@ case class EmitAction(val data: ReadResult, val endpointURL: String, val endpoin
 
   override def addGuard(co: GuardAction): EmitAction = new EmitAction(data, endpointURL, endpointPort, co :: guards)
 
-  override def toString(): String = "EMIT (" + endpointURL + ":" + endpointPort + ")"
+  override def toString(): String = "EMIT " + (if (data != null) data.name else "") + " (" + endpointURL + ":" + endpointPort + ")"
 
 
 }

@@ -3,18 +3,18 @@ COSmIC framework
 
 The **COSmIC** (Composition Operators for Sensing InfrastuCture) is a tool aimed to support different users on a shared System Information by generating code deployed on each level composing the sensors network.
 
-This short README is intented to give a brief overview of the framework and to provide the minimal material to understand how it works.
+This short README is intended to give a brief overview of the framework and to provide the minimal material to understand how it works.
 
 Architecture
 ------------
 
-This framework is organised in differents packages:
+This framework is organised in different packages:
 
 * fr.unice.modalis.cosmic.**actions**: actions modelisation 
 * fr.unice.modalis.cosmic.**algo**: algorithms used to compose data collection behaviors (contains the COSmIC operators)
 * fr.unice.modalis.cosmic.**conveter**: code generators
 * fr.unice.modalis.cosmic.**core**: data structure used to build a user behavior
-* fr.unice.modalis.cosmic.**exceptions**: exceptions handleled by the framework
+* fr.unice.modalis.cosmic.**exceptions**: exceptions handled by the framework
 * fr.unice.modalis.cosmic.**scenario**: pre-defined scenarios which can be used to model basic user behaviors
 
 How-to: Build a data collection behavior?
@@ -23,9 +23,9 @@ How-to: Build a data collection behavior?
 A data collection behavior is defined as a simplification of classical timed automaton. It uses :
 
 * Nodes: Correspond to the automaton' states on which, actions can be attached
-* Transitions: Model the transition relation between two nodes. Theses transitions are conditionned by a time-to-wait (TickCondition) value before being parsed.
+* Transitions: Model the transition relation between two nodes. Theses transitions are conditioned by a time-to-wait (TickCondition) value before being parsed.
 
-To be valid, a behavior **MUST** be Cyclic, Deterministic and only contain transitions conditionned by a TickCondition. 
+To be valid, a behavior **MUST** be Cyclic, Deterministic and only contain transitions conditioned by a TickCondition. 
 
 The code bellow build a blank behavior (i.e. no actions performed) with 3 nodes and a 5 seconds period:
 
@@ -89,7 +89,7 @@ The code bellow presents how to:
   val emitAction = new EmitAction(readSerialResult, "http://myserver", 8080)
 ```
 
-*NB: In a further version, bridge serial initialisation and reading would be encapuslate in a SendToBridgeAction class.*
+*NB: In a further version, bridge serial initialisation and reading would be encapsulate in a SendToBridgeAction class.*
 
 Theses action can be attached to *nodes* thanks to the `addaction(a:Action)` method.
 
@@ -140,7 +140,7 @@ In the example presented bellow, we re-use the previous action definition to a m
 
 How-to: Compose two (or more) behaviors?
 ---------------------------------------
-**PRE-CONDITION:** Behaviors must be valid before applying the COSmIC algebrea (*i.e.* **Cyclic**, **Deterministic** and **only contain transitions conditionned by a TickCondition**)
+**PRE-CONDITION:** Behaviors must be valid before applying the COSmIC algebra (*i.e.* **Cyclic**, **Deterministic** and **only contain transitions conditioned by a TickCondition**)
 
 All algorithms used during the composition process are located in the **fr.unice.modalis.cosmic.algo.Transformation** object.
 
@@ -166,7 +166,7 @@ The validity of Alice and Bob behaviors can be asserted with the `isCorrectBehav
   assert(Utils.isCorrectBehavior(alice) && Utils.isCorrectBehavior(bob) == true)
 ```
 
-If the assertion is true, Alice and Bob behaviors can be composed together. The COSmIC framework provides syntaxic sugar for composition:
+If the assertion is true, Alice and Bob behaviors can be composed together. The COSmIC framework provides syntactic sugar for composition:
 
 ```scala
 // Without syntaxic sugar
@@ -178,21 +178,21 @@ val composed = Transformation.compose(alice, bob)
 How-to: Deploy a behavior on the sensor network?
 ------------------------------------------------
 
-The COSmIC framework provides code generators for sensor plateforms and bridges. In this first version, we provide an Arduino generator (Wiring) and Raspberry Pi generator (Python). 
+The COSmIC framework provides code generators for sensor platforms and bridges. In this first version, we provide an Arduino generator (Wiring) and Raspberry Pi generator (Python). 
 
-The deployement process is the following:
+The deployment process is the following:
 
-1. Compose the user colelct behaviors
+1. Compose the user collect behaviors
 2. Slice this composed behavior into two sub-behavior : (sensor platform behavior, bridge behavior)
 3. Forward the Sensor platform behavior (time synchronization is performed on the bridge)
 4. Minimize the Sensor platform behavior
-5. Generate code for the sensor platform behavior and the brige behavior
+5. Generate code for the sensor platform behavior and the bridge behavior
 
 ```scala
 /* Alice and Bob behaviors were defined previously */
   val composed = alice + bob // Step 1
 
-  val (spBehavior, brBehavior) = Transformation.slice(composed) // Step 2
+  val (spBehavior, brBehavior) = Transformation.decompose(composed) // Step 2
 
   val forwardedSP = Transformation.forward(spBehavior) // Step 3
   
@@ -202,7 +202,7 @@ The deployement process is the following:
   ToBridge(brBehavior) // Step 5 : generate Python code for Raspberry
 ```
 
-A sugar syntaxic trick allows the user to abstract this process:
+A sugar syntactic trick allows the user to abstract this process:
 
 ```scala
   val composed = alice + bob // Step 1
