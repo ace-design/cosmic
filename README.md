@@ -212,3 +212,16 @@ A sugar syntactic trick allows the user to abstract this process:
   ToSensorPlatform(spBehavior) // Step 5 : generate Wiring code for Arduino
   ToBridge(brBehavior) // Step 5 : generate Python code for Raspberry
 ```
+
+Video demonstration
+-------------------
+
+This video presents a practical application of the COSmIC framework. We perform the following operations: 
+- Behavior definition
+- Behavior composition
+- Behavior decomposition
+- Deployment process
+
+[![COSmIC framework presentation](http://img.youtube.com/vi/hYpVEDyy02M/0.jpg)](http://www.youtube.com/watch?v=hYpVEDyy02M)
+
+
