@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset='utf-8' />
+    <meta http-equiv="X-UA-Compatible" content="chrome=1" />
+    <meta name="description" content="Cosmic : COSmIC is a set of &quot;Composition Operators for Sensing Infrastructure&quot;" />
+
+    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
+
+    <title>Cosmic</title>
+  </head>
+
+  <body>
+
+    <!-- HEADER -->
+    <div id="header_wrap" class="outer">
+        <header class="inner">
+          <a id="forkme_banner" href="https://github.com/ace-design/cosmic">View on GitHub</a>
+
+          <h1 id="project_title">Cosmic</h1>
+          <h2 id="project_tagline">COSmIC is a set of &quot;Composition Operators for Sensing Infrastructure&quot;</h2>
+
+            <section id="downloads">
+              <a class="zip_download_link" href="https://github.com/ace-design/cosmic/zipball/master">Download this project as a .zip file</a>
+              <a class="tar_download_link" href="https://github.com/ace-design/cosmic/tarball/master">Download this project as a tar.gz file</a>
+            </section>
+        </header>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div id="main_content_wrap" class="outer">
+      <section id="main_content" class="inner">
+        <h1>
+<a name="cosmic-framework" class="anchor" href="#cosmic-framework"><span class="octicon octicon-link"></span></a>COSmIC framework</h1>
+
+<p>The <strong>COSmIC</strong> (Composition Operators for Sensing InfrastuCture) is a tool aimed to support different users on a shared System Information by generating code deployed on each level composing the sensors network.</p>
+
+<p>This short <em>HOWTO</em> is intended to give a brief overview of the framework and to provide the minimal material to understand how it works.</p>
+
+<h2>
+<a name="architecture" class="anchor" href="#architecture"><span class="octicon octicon-link"></span></a>Architecture</h2>
+
+<p>This framework is organised in different packages:</p>
+
+<ul>
+<li>fr.unice.modalis.cosmic.<strong>actions</strong>: actions modelisation </li>
+<li>fr.unice.modalis.cosmic.<strong>algo</strong>: algorithms used to compose data collection behaviors (contains the COSmIC operators)</li>
+<li>fr.unice.modalis.cosmic.<strong>conveter</strong>: code generators</li>
+<li>fr.unice.modalis.cosmic.<strong>core</strong>: data structure used to build a user behavior</li>
+<li>fr.unice.modalis.cosmic.<strong>exceptions</strong>: exceptions handled by the framework</li>
+<li>fr.unice.modalis.cosmic.<strong>scenario</strong>: pre-defined scenarios which can be used to model basic user behaviors</li>
+</ul><h2>
+<a name="how-to-build-a-data-collection-behavior" class="anchor" href="#how-to-build-a-data-collection-behavior"><span class="octicon octicon-link"></span></a>How-to: Build a data collection behavior?</h2>
+
+<p>A data collection behavior is defined as a simplification of classical timed automaton. It uses :</p>
+
+<ul>
+<li>Nodes: Correspond to the automaton' states on which, actions can be attached</li>
+<li>Transitions: Model the transition relation between two nodes. Theses transitions are conditioned by a time-to-wait (TickCondition) value before being parsed.</li>
+</ul><p>To be valid, a behavior <strong>MUST</strong> be Cyclic, Deterministic and only contain transitions conditioned by a TickCondition. </p>
+
+<p>The code bellow build a blank behavior (i.e. no actions performed) with 3 nodes and a 5 seconds period:</p>
+
+<div class="highlight highlight-scala"><pre>  <span class="cm">/* Define nodes modeling states */</span>
+  <span class="k">val</span> <span class="n">n1</span> <span class="k">=</span> <span class="k">new</span> <span class="nc">Node</span><span class="o">(</span><span class="s">"A"</span><span class="o">)</span>
+  <span class="k">val</span> <span class="n">n2</span> <span class="k">=</span> <span class="k">new</span> <span class="nc">Node</span><span class="o">(</span><span class="s">"B"</span><span class="o">)</span>
+  <span class="k">val</span> <span class="n">n3</span> <span class="k">=</span> <span class="k">new</span> <span class="nc">Node</span><span class="o">(</span><span class="s">"C"</span><span class="o">)</span>
+
+  <span class="cm">/* Define transitions */</span>
+  <span class="k">val</span> <span class="n">t1</span> <span class="k">=</span> <span class="k">new</span> <span class="nc">Transition</span><span class="o">(</span><span class="n">n1</span><span class="o">,</span><span class="n">n2</span><span class="o">,</span> <span class="k">new</span> <span class="nc">TickCondition</span><span class="o">(</span><span class="mi">1</span><span class="o">))</span> <span class="c1">// Wait 1s</span>
+  <span class="k">val</span> <span class="n">t2</span> <span class="k">=</span> <span class="k">new</span> <span class="nc">Transition</span><span class="o">(</span><span class="n">n2</span><span class="o">,</span><span class="n">n3</span><span class="o">,</span> <span class="k">new</span> <span class="nc">TickCondition</span><span class="o">(</span><span class="mi">2</span><span class="o">))</span> <span class="c1">// Wait 2s</span>
+  <span class="k">val</span> <span class="n">t3</span> <span class="k">=</span> <span class="k">new</span> <span class="nc">Transition</span><span class="o">(</span><span class="n">n3</span><span class="o">,</span><span class="n">n1</span><span class="o">,</span> <span class="k">new</span> <span class="nc">TickCondition</span><span class="o">(</span><span class="mi">2</span><span class="o">))</span> <span class="c1">// Wait 2s</span>
+
+  <span class="cm">/* Build behavior with n1 as entry point */</span>
+  <span class="k">val</span> <span class="n">b</span> <span class="k">=</span> <span class="k">new</span> <span class="nc">Behavior</span><span class="o">(</span><span class="n">n1</span><span class="o">).</span><span class="n">addNodes</span><span class="o">(</span><span class="nc">List</span><span class="o">(</span><span class="n">n1</span><span class="o">,</span><span class="n">n2</span><span class="o">,</span><span class="n">n3</span><span class="o">)).</span><span class="n">addTransitions</span><span class="o">(</span><span class="nc">List</span><span class="o">(</span><span class="n">t1</span><span class="o">,</span><span class="n">t2</span><span class="o">,</span><span class="n">t3</span><span class="o">))</span>
+</pre></div>
+
+<h2>
+<a name="how-to-use-actions-in-a-data-collection-behavior" class="anchor" href="#how-to-use-actions-in-a-data-collection-behavior"><span class="octicon octicon-link"></span></a>How-to: Use actions in a data collection behavior?</h2>
+
+<p>The COSmIC framework provides 5 kinds of actions (see in fr.unice.modalis.cosmic.actions.unit):</p>
+
+<ul>
+<li>ReadSensorAction: Read a value from a given sensor</li>
+<li>InitSerialAction: Initialize a serial port</li>
+<li>ReadSerialAction: Read a value on the serial port</li>
+<li>WriteSerialAction: Write a value on the serial port </li>
+<li>EmitAction: Emit a value to an external endpoint</li>
+</ul><p>Some of theses actions returns results which can be saved in:</p>
+
+<ul>
+<li>InitSerialResult: Store the reference to a serial port</li>
+<li>ReadSensorResult: Store the sensor read value</li>
+<li>ReadSerialResult: Store the value read on the serial port</li>
+</ul><p>The code bellow presents how to:</p>
+
+<ol>
+<li>Read value from a sensor</li>
+<li>Send this value to the bridge</li>
+<li>Emit the value to an external endpoint</li>
+</ol><div class="highlight highlight-scala"><pre>  <span class="c1">// Define result variables</span>
+  <span class="k">val</span> <span class="n">readSensorResult</span> <span class="k">=</span> <span class="k">new</span> <span class="nc">ReadSensorResult</span><span class="o">()</span>
+  <span class="k">val</span> <span class="n">refSerial</span> <span class="k">=</span> <span class="k">new</span> <span class="nc">InitSerialResult</span><span class="o">()</span>
+  <span class="k">val</span> <span class="n">readSerialResult</span> <span class="k">=</span> <span class="k">new</span> <span class="nc">ReadSerialResult</span><span class="o">()</span>
+
+  <span class="c1">// Define actions</span>
+
+  <span class="c1">// Read value from a sensor</span>
+  <span class="k">val</span> <span class="n">readSensorAction</span> <span class="k">=</span> <span class="k">new</span> <span class="nc">ReadSensorAction</span><span class="o">(</span><span class="s">"tempSensor"</span><span class="o">,</span> <span class="n">readSensorResult</span><span class="o">)</span>
+  <span class="c1">// Send this value to the bridge</span>
+  <span class="k">val</span> <span class="n">sendSerialAction</span> <span class="k">=</span> <span class="k">new</span> <span class="nc">WriteSerialAction</span><span class="o">(</span><span class="n">readSensorResult</span><span class="o">)</span>
+
+  <span class="c1">// Bridge serial init and read</span>
+  <span class="k">val</span> <span class="n">initSerialAction</span> <span class="k">=</span> <span class="k">new</span> <span class="nc">InitSerialAction</span><span class="o">(</span><span class="s">"COM1"</span><span class="o">,</span> <span class="n">refSerial</span><span class="o">)</span>
+  <span class="k">val</span> <span class="n">readSerialValue</span> <span class="k">=</span> <span class="k">new</span> <span class="nc">ReadSerialAction</span><span class="o">(</span><span class="n">refSerial</span><span class="o">,</span> <span class="n">readSerialResult</span><span class="o">)</span>
+
+  <span class="c1">// Emit value</span>
+  <span class="k">val</span> <span class="n">emitAction</span> <span class="k">=</span> <span class="k">new</span> <span class="nc">EmitAction</span><span class="o">(</span><span class="n">readSerialResult</span><span class="o">,</span> <span class="s">"http://myserver"</span><span class="o">,</span> <span class="mi">8080</span><span class="o">)</span>
+</pre></div>
+
+<p><em>NB: In a further version, bridge serial initialisation and reading would be encapsulate in a SendToBridgeAction class.</em></p>
+
+<p>Theses action can be attached to <em>nodes</em> thanks to the <code>addaction(a:Action)</code> method.</p>
+
+<div class="highlight highlight-scala"><pre>  <span class="cm">/* ... */</span>
+  <span class="k">val</span> <span class="n">node</span> <span class="k">=</span> <span class="k">new</span> <span class="nc">Node</span><span class="o">(</span><span class="s">"myNode"</span><span class="o">).</span><span class="n">addAction</span><span class="o">(</span><span class="n">readSensorAction</span><span class="o">)</span>
+                               <span class="o">.</span><span class="n">addAction</span><span class="o">(</span><span class="n">sendSerialAction</span><span class="o">)</span>
+                               <span class="o">.</span><span class="n">addAction</span><span class="o">(</span><span class="n">initSerialAction</span><span class="o">)</span>
+                               <span class="o">.</span><span class="n">addAction</span><span class="o">(</span><span class="n">readSerialValue</span><span class="o">)</span>
+                               <span class="o">.</span><span class="n">addAction</span><span class="o">(</span><span class="n">emitAction</span><span class="o">)</span>
+  <span class="cm">/* ... */</span>
+</pre></div>
+
+<h2>
+<a name="how-to-define-guards-on-actions" class="anchor" href="#how-to-define-guards-on-actions"><span class="octicon octicon-link"></span></a>How-to: Define guards on actions?</h2>
+
+<p>The COSmIC framework provides also a guard mechanism. We define a guard as a boolean equation which allow or disallow the action execution according to the current context.</p>
+
+<p>Guards are represented under a boolean equation of constraints. The COSmIC framework allows to model the following constraints:</p>
+
+<ul>
+<li>TimeConstraint: an action can be executed only in a given time set)</li>
+<li>ValueConstraint: the action execution depends on the comparison between a value and a threshold</li>
+</ul><p><em>NB: The code generator provided in the COSmIC Framework only handle ValueConstraint for the moment</em></p>
+
+<p>Different constraints can be mixed together to build a boolean equation with the following predicates:</p>
+
+<ul>
+<li>ANDPredicate: represents <code>constraint1 ∧ constraint2</code>
+</li>
+<li>ORPredicate: represents <code>constraint1 || constraint2</code>
+</li>
+<li>NOTPredicate: represents <code>~constraint</code>
+</li>
+</ul><p>The results of xPredicate statements are also <em>guards</em> which can be composed with others.</p>
+
+<p>In the example presented bellow, we re-use the previous action definition to a model a temperature collect behavior only if the measure is lower than 20° and occurs during work time:</p>
+
+<div class="highlight highlight-scala"><pre>  <span class="cm">/* ... */</span>
+
+  <span class="c1">// Define result variables</span>
+  <span class="o">...</span>
+
+  <span class="c1">// Define actions</span>
+  <span class="o">...</span>
+  <span class="k">val</span> <span class="n">emitAction</span> <span class="k">=</span> <span class="k">new</span> <span class="nc">EmitAction</span><span class="o">(</span><span class="n">readSerialResult</span><span class="o">,</span> <span class="s">"http://myserver"</span><span class="o">,</span> <span class="mi">8080</span><span class="o">)</span>
+                        <span class="o">.</span><span class="n">addGuard</span><span class="o">(</span><span class="k">new</span> <span class="nc">ANDPredicate</span><span class="o">(</span>
+                            <span class="k">new</span> <span class="nc">ValueConstraint</span><span class="o">(</span><span class="n">readSerialValue</span><span class="o">,</span> <span class="mi">20</span><span class="o">,</span> <span class="s">"&lt;"</span><span class="o">),</span> 
+                            <span class="k">new</span> <span class="nc">TimeConstraint</span><span class="o">(</span><span class="s">"08:00"</span><span class="o">,</span><span class="s">"18:00"</span><span class="o">))</span>
+                            <span class="o">)</span>
+</pre></div>
+
+<h2>
+<a name="how-to-compose-two-or-more-behaviors" class="anchor" href="#how-to-compose-two-or-more-behaviors"><span class="octicon octicon-link"></span></a>How-to: Compose two (or more) behaviors?</h2>
+
+<p><strong>PRE-CONDITION:</strong> Behaviors must be valid before applying the COSmIC algebra (<em>i.e.</em> <strong>Cyclic</strong>, <strong>Deterministic</strong> and <strong>only contain transitions conditioned by a TickCondition</strong>)</p>
+
+<p>All algorithms used during the composition process are located in the <strong>fr.unice.modalis.cosmic.algo.Transformation</strong> object.</p>
+
+<p>This class provides in particular the <code>+</code>-operator (compose(b1:Behavior,b2:Behavior):Behavior) to compose two behaviors. As an example, we define the well-known Alice &amp; Bob behaviors and we compose them:</p>
+
+<div class="highlight highlight-scala"><pre>  <span class="k">val</span> <span class="n">refRead1</span> <span class="k">=</span> <span class="k">new</span> <span class="nc">ReadSensorResult</span><span class="o">()</span>
+  <span class="k">val</span> <span class="n">n1</span> <span class="k">=</span> <span class="k">new</span> <span class="nc">Node</span><span class="o">(</span><span class="s">"Alice"</span><span class="o">).</span><span class="n">addAction</span><span class="o">(</span><span class="k">new</span> <span class="nc">ReadSensorAction</span><span class="o">(</span><span class="s">"temp"</span><span class="o">,</span> <span class="n">refRead1</span><span class="o">))</span>
+                            <span class="o">.</span><span class="n">addAction</span><span class="o">(</span><span class="k">new</span> <span class="nc">WriteSerialAction</span><span class="o">(</span><span class="n">refRead1</span><span class="o">,</span> <span class="s">"Alice"</span><span class="o">))</span>
+  <span class="k">val</span> <span class="n">t1</span> <span class="k">=</span> <span class="k">new</span> <span class="nc">Transition</span><span class="o">(</span><span class="n">n1</span><span class="o">,</span> <span class="n">n1</span><span class="o">,</span> <span class="k">new</span> <span class="nc">TickCondition</span><span class="o">(</span><span class="mi">3</span><span class="o">))</span>
+  <span class="k">val</span> <span class="n">alice</span> <span class="k">=</span> <span class="k">new</span> <span class="nc">Behavior</span><span class="o">(</span><span class="n">n1</span><span class="o">).</span><span class="n">addTransition</span><span class="o">(</span><span class="n">t1</span><span class="o">)</span> <span class="c1">//Alice behavior</span>
+
+  <span class="k">val</span> <span class="n">refRead2</span> <span class="k">=</span> <span class="k">new</span> <span class="nc">ReadSensorResult</span><span class="o">()</span>
+  <span class="k">val</span> <span class="n">n2</span> <span class="k">=</span> <span class="k">new</span> <span class="nc">Node</span><span class="o">(</span><span class="s">"Bob"</span><span class="o">).</span><span class="n">addAction</span><span class="o">(</span><span class="k">new</span> <span class="nc">ReadSensorAction</span><span class="o">(</span><span class="s">"temp"</span><span class="o">,</span> <span class="n">refRead2</span><span class="o">))</span>
+                          <span class="o">.</span><span class="n">addAction</span><span class="o">(</span><span class="k">new</span> <span class="nc">WriteSerialAction</span><span class="o">(</span><span class="n">refRead2</span><span class="o">,</span> <span class="s">"Bob"</span><span class="o">))</span>
+  <span class="k">val</span> <span class="n">t2</span> <span class="k">=</span> <span class="k">new</span> <span class="nc">Transition</span><span class="o">(</span><span class="n">n2</span><span class="o">,</span> <span class="n">n2</span><span class="o">,</span> <span class="k">new</span> <span class="nc">TickCondition</span><span class="o">(</span><span class="mi">2</span><span class="o">))</span>
+  <span class="k">val</span> <span class="n">bob</span> <span class="k">=</span> <span class="k">new</span> <span class="nc">Behavior</span><span class="o">(</span><span class="n">n2</span><span class="o">).</span><span class="n">addTransition</span><span class="o">(</span><span class="n">t2</span><span class="o">)</span> <span class="c1">// Bob behavior</span>
+</pre></div>
+
+<p>The validity of Alice and Bob behaviors can be asserted with the <code>isCorrectBehavior(b: Behavior)</code> method in the <strong>fr.unice.modalis.cosmic.algo.Utils</strong> object:</p>
+
+<div class="highlight highlight-scala"><pre>  <span class="n">assert</span><span class="o">(</span><span class="nc">Utils</span><span class="o">.</span><span class="n">isCorrectBehavior</span><span class="o">(</span><span class="n">alice</span><span class="o">)</span> <span class="o">&amp;&amp;</span> <span class="nc">Utils</span><span class="o">.</span><span class="n">isCorrectBehavior</span><span class="o">(</span><span class="n">bob</span><span class="o">)</span> <span class="o">==</span> <span class="kc">true</span><span class="o">)</span>
+</pre></div>
+
+<p>If the assertion is true, Alice and Bob behaviors can be composed together. The COSmIC framework provides syntactic sugar for composition:</p>
+
+<div class="highlight highlight-scala"><pre><span class="c1">// Without syntaxic sugar</span>
+<span class="k">val</span> <span class="n">composed</span> <span class="k">=</span> <span class="nc">Transformation</span><span class="o">.</span><span class="n">compose</span><span class="o">(</span><span class="n">alice</span><span class="o">,</span> <span class="n">bob</span><span class="o">)</span>
+<span class="c1">// With syntaxic sugar</span>
+ <span class="k">val</span> <span class="n">composed</span> <span class="k">=</span> <span class="n">alice</span> <span class="o">+</span> <span class="n">bob</span>
+</pre></div>
+
+<h2>
+<a name="how-to-deploy-a-behavior-on-the-sensor-network" class="anchor" href="#how-to-deploy-a-behavior-on-the-sensor-network"><span class="octicon octicon-link"></span></a>How-to: Deploy a behavior on the sensor network?</h2>
+
+<p>The COSmIC framework provides code generators for sensor platforms and bridges. In this first version, we provide an Arduino generator (Wiring) and Raspberry Pi generator (Python). </p>
+
+<p>The deployment process is the following:</p>
+
+<ol>
+<li>Compose the user collect behaviors</li>
+<li>Slice this composed behavior into two sub-behavior : (sensor platform behavior, bridge behavior)</li>
+<li>Forward the Sensor platform behavior (time synchronization is performed on the bridge)</li>
+<li>Minimize the Sensor platform behavior</li>
+<li>Generate code for the sensor platform behavior and the bridge behavior</li>
+</ol><div class="highlight highlight-scala"><pre><span class="cm">/* Alice and Bob behaviors were defined previously */</span>
+  <span class="k">val</span> <span class="n">composed</span> <span class="k">=</span> <span class="n">alice</span> <span class="o">+</span> <span class="n">bob</span> <span class="c1">// Step 1</span>
+
+  <span class="k">val</span> <span class="o">(</span><span class="n">spBehavior</span><span class="o">,</span> <span class="n">brBehavior</span><span class="o">)</span> <span class="k">=</span> <span class="nc">Transformation</span><span class="o">.</span><span class="n">decompose</span><span class="o">(</span><span class="n">composed</span><span class="o">)</span> <span class="c1">// Step 2</span>
+
+  <span class="k">val</span> <span class="n">forwardedSP</span> <span class="k">=</span> <span class="nc">Transformation</span><span class="o">.</span><span class="n">forward</span><span class="o">(</span><span class="n">spBehavior</span><span class="o">)</span> <span class="c1">// Step 3</span>
+
+  <span class="k">val</span> <span class="n">minimizedSP</span> <span class="k">=</span> <span class="nc">Transformation</span><span class="o">.</span><span class="n">minimize</span><span class="o">(</span><span class="n">forwardedSP</span><span class="o">)</span> <span class="c1">// Step 4</span>
+
+  <span class="nc">ToSensorPlatform</span><span class="o">(</span><span class="n">minimizedSP</span><span class="o">)</span> <span class="c1">// Step 5 : generate Wiring code for Arduino</span>
+  <span class="nc">ToBridge</span><span class="o">(</span><span class="n">brBehavior</span><span class="o">)</span> <span class="c1">// Step 5 : generate Python code for Raspberry</span>
+</pre></div>
+
+<p>A sugar syntactic trick allows the user to abstract this process:</p>
+
+<div class="highlight highlight-scala"><pre>  <span class="k">val</span> <span class="n">composed</span> <span class="k">=</span> <span class="n">alice</span> <span class="o">+</span> <span class="n">bob</span> <span class="c1">// Step 1</span>
+
+  <span class="k">val</span> <span class="o">(</span><span class="n">spBehavior</span><span class="o">,</span> <span class="n">brBehavior</span><span class="o">)</span> <span class="k">=</span> <span class="n">composed</span><span class="o">.</span><span class="n">deploy</span><span class="o">()</span> <span class="c1">//Step 2,3,4</span>
+
+  <span class="nc">ToSensorPlatform</span><span class="o">(</span><span class="n">spBehavior</span><span class="o">)</span> <span class="c1">// Step 5 : generate Wiring code for Arduino</span>
+  <span class="nc">ToBridge</span><span class="o">(</span><span class="n">brBehavior</span><span class="o">)</span> <span class="c1">// Step 5 : generate Python code for Raspberry</span>
+</pre></div>
+
+<h2>
+<a name="video-demonstration" class="anchor" href="#video-demonstration"><span class="octicon octicon-link"></span></a>Video demonstration</h2>
+
+<p>This video presents a practical application of the COSmIC framework. We perform the following operations: </p>
+
+<ul>
+<li>Behavior definition</li>
+<li>Behavior composition</li>
+<li>Behavior decomposition</li>
+<li>Deployment process</li>
+</ul><p><a href="http://www.youtube.com/watch?v=hYpVEDyy02M"><img src="http://img.youtube.com/vi/hYpVEDyy02M/0.jpg" alt="COSmIC framework presentation"></a></p>
+      </section>
+    </div>
+
+    <!-- FOOTER  -->
+    <div id="footer_wrap" class="outer">
+      <footer class="inner">
+        <p class="copyright">Cosmic maintained by <a href="https://github.com/ace-design">ace-design</a></p>
+        <p>Published with <a href="http://pages.github.com">GitHub Pages</a></p>
+      </footer>
+    </div>
+
+    
+
+  </body>
+</html>
