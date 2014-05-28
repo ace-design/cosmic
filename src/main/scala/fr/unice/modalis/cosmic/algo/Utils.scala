@@ -38,6 +38,8 @@ object Utils {
    */
   def lcmm(args: List[Int]): Int =
     args match {
+      case Nil => throw new Exception("The lcd computation needs two operands")
+      case a :: Nil => throw new Exception("The lcd computation needs two operands")
       case a :: b :: Nil => lcm(a, b)
       case a :: b :: tail => lcmm(lcm(a, b) :: tail)
     }
