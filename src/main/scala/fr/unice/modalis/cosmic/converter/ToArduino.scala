@@ -5,6 +5,7 @@ import fr.unice.modalis.cosmic.converter.actions.ArduinoActionTranslator
 import fr.unice.modalis.cosmic.converter.transition.ArduinoTransitionTranslator
 import fr.unice.modalis.cosmic.actions.unit.Result
 import java.util.Calendar
+import scala.io.Source
 
 /**
  * Arduino translator
@@ -19,7 +20,16 @@ object ToArduino extends Converter {
    * @return An arduino code
    */
   def generateCode(b: Behavior): String = {
-    "/* Generated code\nDO NOT MODIFY\n" + Calendar.getInstance().getTime() + " */\n" + generateSetup + generateLoop(b)
+    val str = new StringBuilder
+
+    str.append("/* Generated code\nDO NOT MODIFY\n" + Calendar.getInstance().getTime() + " */\n")
+
+    val behaviorCode = generateLoop(b)
+
+    val fromTemplate = Source.fromFile("embedded/python/main.ino.template").getLines().mkString("\n").replace("#@code@#",behaviorCode)
+
+    str.append(fromTemplate)
+    str.toString()
 
   }
 
@@ -35,10 +45,6 @@ object ToArduino extends Converter {
 
   private def generateTransitionCode(t: Transition) = {
     "// Processing transition " + t.toString() + "\n" + ArduinoTransitionTranslator.translate(t) + "\n"
-  }
-
-  private def generateSetup = {
-    "void setup() {\nSerial.begin(" + ARDUINO_SERIAL_BAUD + ");\n}\n"
   }
 
   def generateLoop(b: Behavior) = {
@@ -60,6 +66,6 @@ object ToArduino extends Converter {
     val vari = new StringBuilder
     variables.foreach(r => vari.append("int " + r.name + ";"))
 
-    "void loop() {\n" + vari.toString() + "\n" + loop.toString() + "}"
+    vari.toString() + "\n" + loop.toString()
   }
 }

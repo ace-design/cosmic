@@ -1,7 +1,7 @@
 package fr.unice.modalis.cosmic.converter.actions
 
 import fr.unice.modalis.cosmic.actions.unit._
-import fr.unice.modalis.cosmic.converter.ActionTranslator
+import fr.unice.modalis.cosmic.converter.{Utils, ActionTranslator}
 import fr.unice.modalis.cosmic.actions.unit.ReadSensorAction
 import fr.unice.modalis.cosmic.actions.unit.WriteSerialAction
 import fr.unice.modalis.cosmic.actions.guard.constraint.ValueConstraint
@@ -22,7 +22,7 @@ object ArduinoActionTranslator extends ActionTranslator {
   def translate(a: Action, v: Set[Result]): (String, Set[Result]) = {
     a match {
       case WriteSerialAction(data, to, cl) => (buildConstraints(cl) + "Serial.println(\"v=\" + String(" + data.name + "));" + (if (to != "") " // Send to " + to else "") + "\n", v)
-      case ReadSensorAction(id, result, cl) => (buildConstraints(cl) + result.name + " = analogRead(" + convertId(id) + ");\n", v + result)
+      case ReadSensorAction(id, result, cl) => (buildConstraints(cl) + result.name + " = analogRead(" + convertId(Utils.lookupSensorAssignment(id)) + ");\n", v + result)
       case _ => throw new Exception("Action " + a + " not handled on Arduino")
     }
   }

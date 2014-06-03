@@ -1,0 +1,5 @@
+common_name,pin,platform_name,platform_type,description
+TEMP,1,ARDUINO442,ARDUINO,Temperature sensor
+BUTTON,2,ARDUINO442,ARDUINO,Button sensor
+TEMP442,3,ARDUINO442,ARDUINO,Temperature sensor
+ROTATION,4,ARDUINO442,ARDUINO,Rotation sensor
