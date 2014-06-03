@@ -26,7 +26,7 @@ object ToArduino extends Converter {
 
     val behaviorCode = generateLoop(b)
 
-    val fromTemplate = Source.fromFile("embedded/python/main.ino.template").getLines().mkString("\n").replace("#@code@#",behaviorCode)
+    val fromTemplate = Source.fromFile("embedded/wiring/main.ino.template").getLines().mkString("\n").replace("#@code@#",behaviorCode)
 
     str.append(fromTemplate)
     str.toString()
