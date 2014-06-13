@@ -178,7 +178,7 @@ static void hardware_init()
     // Enable Interrupts
     eint();
 
-    // Initialize the timer for the LEDs
+    // Initialize the timer for the behavior
     timerA_init();
     timerA_start_ACLK_div(TIMERA_DIV_8); // TimerA clock is at 512Hz
     timerA_set_alarm_from_now(TIMERA_ALARM_CCR0, 512, 512); // 1s period

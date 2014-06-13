@@ -8,16 +8,16 @@ import fr.unice.modalis.cosmic.converter.actions.RaspberryActionTranslator
 import scala.io.Source
 
 /**
- * Created by cyrilcecchinel on 22/04/2014.
+ * Raspberry translator
  */
 object ToRaspberry extends Converter {
   val RASP_SERIAL_BAUD = 9600
   var variables: Set[Result] = Set[Result]()
 
   /**
-   * Generate an Arduino code from a behavior
+   * Generate a Python code from a behavior
    * @param b Behavior
-   * @return An arduino code
+   * @return A Python code
    */
   def generateCode(b: Behavior): String = {
     val str = new StringBuilder

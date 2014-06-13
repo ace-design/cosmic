@@ -3,7 +3,7 @@ package fr.unice.modalis.cosmic.converter
 import scala.io.Source
 
 /**
- * Utils functions for action convertion
+ * Utils functions for action conversion
  */
 object Utils {
 
