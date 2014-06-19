@@ -1,74 +1,73 @@
 package fr.unice.modalis.cosmic.converter
 
-import fr.unice.modalis.cosmic.core.{Node, Transition, Behavior}
-import java.util.Calendar
-import fr.unice.modalis.cosmic.actions.unit.Result
-import fr.unice.modalis.cosmic.converter.transition.RaspberryTransitionTranslator
-import fr.unice.modalis.cosmic.converter.actions.RaspberryActionTranslator
-import scala.io.Source
+import fr.unice.modalis.cosmic.actions.unit._
+import fr.unice.modalis.cosmic.actions.guard.GuardAction
+import fr.unice.modalis.cosmic.actions.unit.ReadSerialAction
+import fr.unice.modalis.cosmic.core.condition.TickCondition
+import fr.unice.modalis.cosmic.actions.guard.predicate.ANDPredicate
+import fr.unice.modalis.cosmic.core.Transition
+import fr.unice.modalis.cosmic.actions.guard.predicate.ORPredicate
+import fr.unice.modalis.cosmic.actions.guard.predicate.NOTPredicate
+import fr.unice.modalis.cosmic.actions.unit.EmitAction
+import fr.unice.modalis.cosmic.actions.guard.constraint.ValueConstraint
 
 /**
- * Raspberry translator
+ * Created by cyrilcecchinel on 17/06/2014.
  */
-object ToRaspberry extends Converter {
-  val RASP_SERIAL_BAUD = 9600
-  var variables: Set[Result] = Set[Result]()
+object ToRaspberry extends CodeGenerator{
 
-  /**
-   * Generate a Python code from a behavior
-   * @param b Behavior
-   * @return A Python code
-   */
-  def generateCode(b: Behavior): String = {
-    val str = new StringBuilder
-    str.append("\"\"\" Generated code\nDO NOT MODIFY\n" + Calendar.getInstance().getTime() +"\n" +"\"\"\"\n")
+  val templateFile = "embedded/python/raspberry.py.template"
 
-    val behaviorCode = generateLoop(b)
-
-    val fromTemplate = Source.fromFile("embedded/python/main.py.template").getLines().mkString("\n").replace("#@code@#",behaviorCode)
-
-    str.append(fromTemplate)
-    str.toString()
-
+  def translateAction(a:Action):(String,Set[Result]) = {
+    buildAction(a)
   }
 
-  private def generateTransitionCode(t: Transition) = {
-    "# Processing transition " + t.toString() + "\n" + RaspberryTransitionTranslator.translate(t) + "\n"
+  def translateTransition(t:Transition):String = {
+    t.condition match {
+      case TickCondition(n) => "\t\ttime.sleep(" + n + ");\n"
+      case _ => throw new Exception("Transition " + t + " not handled on Raspberry plateform")
+    }
   }
 
-  private def generateNodeCode(n: Node) = {
-    val str: StringBuilder = new StringBuilder
-    n.actions.actions.foreach(a => {
-      val r = RaspberryActionTranslator.translate(a, variables);
-      str.append(r._1);
-      variables = r._2
-    })
-    "# Processing node " + n.name + "\n" + str.toString()
-  }
-
-  private def generateSetup = {
-    ""
+  def translateGuard(g:GuardAction):String = {
+    g match {
+      case ValueConstraint(value, threshold, operator) => "int(" + value.name + ")" + operator + threshold
+      case ANDPredicate(left, right) => translateGuard(left) + " and " + translateGuard(right)
+      case ORPredicate(left, right) => translateGuard(left) + " or " + translateGuard(right)
+      case NOTPredicate(exp) => "not " + translateGuard(exp)
+      case _ => throw new Exception("Guard " + g + " not handled on Raspberry plateform")
+    }
   }
 
 
-  def generateLoop(b: Behavior) = {
-    val loop: StringBuilder = new StringBuilder
+  def buildGuards(l:List[GuardAction]):String = {
+    if (l.size> 0) {
 
-    if (b.period() == 0) {
-      b.nodes.foreach(n => loop.append(generateNodeCode(n)))
-    } else {
-      for (i <- 0 to b.period() - 1) {
-        if (b.newNodeAt(i)) {
-          val currentNode = b.nodeAt(i)
-
-          // Generate actions
-          loop.append(generateNodeCode(currentNode))
-
-          // Generate transition
-          loop.append(generateTransitionCode(b.transitions.filter(t => t.source == currentNode).head))
+      def x(l: List[GuardAction]): String = {
+        l match {
+          case Nil => ""
+          case a :: Nil => "(" + translateGuard(a) + ")"
+          case a :: l => translateGuard(a) + " and " + x(l)
         }
       }
+      "if " + x(l) + ":\n\t\t\t"
     }
-    "\twhile True:\n" + loop.toString()
+    else
+      ""
   }
+
+  def buildAction(a:Action):(String,Set[Result]) = {
+    a match {
+      case EmitAction(data, url, port, cl) => ("\t\t" + buildGuards(cl) + "emit("+data.name + ",\"" + url + "\"," + port + ")", Set())
+      case ReadSerialAction(ref, result, cl) => ("\t\t" + buildGuards(cl) + result.name + " = " + "buffer", Set(result))
+      case InitSerialAction(comPort, result, cl) => ("",Set())
+      case _ => throw new Exception("Action " + a + " not handled on Raspberry")
+    }
+  }
+
+  def buildVariables():String = {
+   "" // N/A
+  }
+
+
 }

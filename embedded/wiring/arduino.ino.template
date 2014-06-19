@@ -1,0 +1,14 @@
+/*
+ *  GENERATED CODE
+ *  DO NOT MODIFY
+ *  Generated: #@time@#
+ *  Language: Processing
+*/
+void setup() {
+Serial.begin(9600);
+}
+void loop() {
+#@variables@#
+#@behavior@#
+}
+// END FILE

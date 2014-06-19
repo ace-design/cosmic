@@ -7,7 +7,10 @@ import fr.unice.modalis.cosmic.actions.guard.GuardAction
 /**
  * Graphviz translator
  */
-object ToGraphviz extends Converter {
+object ToGraphviz {
+
+  def apply(b: Behavior): String = generateCode(b)
+
   /**
    * Generate a Graphviz script from a behavior
    * @param b Behavior

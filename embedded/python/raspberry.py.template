@@ -1,3 +1,9 @@
+'''
+   GENERATED CODE
+   DO NOT MODIFY
+   Generated: #@time@#
+   Language: Python
+'''
 import serial
 import re
 import threading
@@ -37,7 +43,8 @@ def emit(v,user,port):
 User behaviors
 '''
 def behavior():
-#@code@#
+    while True:
+#@behavior@#
 
 '''
 Init

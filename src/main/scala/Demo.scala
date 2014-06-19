@@ -4,7 +4,7 @@ import fr.unice.modalis.cosmic.actions.unit.ReadSensorResult
 import fr.unice.modalis.cosmic.actions.unit.WriteSerialAction
 import fr.unice.modalis.cosmic.actions.unit.InitSerialResult
 import fr.unice.modalis.cosmic.core.condition.TickCondition
-import fr.unice.modalis.cosmic.converter.{ToRaspberry, ToArduino, ToGraphviz}
+import fr.unice.modalis.cosmic.converter.{ToRaspberry, ToGraphviz, ToArduino}
 import fr.unice.modalis.cosmic.core.{Behavior, Transition, Node}
 import fr.unice.modalis.cosmic.actions.guard.constraint.ValueConstraint
 
@@ -53,7 +53,7 @@ object Demo extends App {
   println(ToGraphviz(scenario2))
 
   /* Translate to: Arduino */
-  println(ToArduino.generateCode(scenario2))
+  println(ToArduino(scenario2))
 
   println("Scenario 2: Period=" + scenario2.period())
 
