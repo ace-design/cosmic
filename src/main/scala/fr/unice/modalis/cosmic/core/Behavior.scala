@@ -3,6 +3,7 @@ package fr.unice.modalis.cosmic.core
 import fr.unice.modalis.cosmic.exceptions.NodeNotFoundException
 import fr.unice.modalis.cosmic.core.condition.TickCondition
 import fr.unice.modalis.cosmic.algo.Transformation
+import scala.util.Random
 
 /**
  * A user behavior
@@ -18,6 +19,7 @@ class Behavior(entry: Node, nodesSet: Set[Node], transitionSet: Set[Transition])
 
   val entryPoint: Node = entry // FSM Entry point
 
+  val id:String = Random.alphanumeric.take(5).mkString //Behavior id
 
   /**
    * Add a node

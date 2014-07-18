@@ -1,4 +1,4 @@
-import fr.unice.modalis.cosmic.actions.unit.{Action, EmitAction}
+import fr.unice.modalis.cosmic.actions.unit.{ReadSensorAction, ReadSensorResult, Action, EmitAction}
 import fr.unice.modalis.cosmic.algo.{Utils, Transformation}
 import fr.unice.modalis.cosmic.core.condition.TickCondition
 import fr.unice.modalis.cosmic.core.{Behavior, Transition, Node}
@@ -10,6 +10,45 @@ import org.specs2.mutable.SpecificationWithJUnit
  * Created by cyrilcecchinel on 14/04/2014.
  */
 class AlgorithmsTest extends SpecificationWithJUnit {
+  def alice():Behavior = {
+    // Alice whishes to read and receive temperature measures every two seconds
+    val v_t = new ReadSensorResult()
+
+    val read = new ReadSensorAction("TEMP", v_t)
+    val emit = new EmitAction(v_t, "alice", 8080)
+
+    val n = new Node("Alice").addAction(read).addAction(emit)
+    val t = new Transition(n,n, new TickCondition(2))
+
+    new Behavior(n).addTransition(t)
+  }
+
+  def bob():Behavior = {
+    // Bob whishes to read and receive temperature measures every three seconds
+    val v_t = new ReadSensorResult()
+
+    val read = new ReadSensorAction("TEMP", v_t)
+    val emit = new EmitAction(v_t, "bob", 2525)
+
+    val n = new Node("Bob").addAction(read).addAction(emit)
+    val t = new Transition(n,n, new TickCondition(3))
+
+    new Behavior(n).addTransition(t)
+  }
+
+  def charlie():Behavior = {
+    // Bob whishes to read and receive temperature measures every three seconds
+    val v_t = new ReadSensorResult()
+
+    val read = new ReadSensorAction("TEMP", v_t)
+    val emit = new EmitAction(v_t, "charlie", 2525)
+
+    val n = new Node("charlie").addAction(read).addAction(emit)
+    val t = new Transition(n,n, new TickCondition(10))
+
+    new Behavior(n).addTransition(t)
+  }
+
   "A development must maintain behavior properties (correctness and period)" in {
     val n1: Node = new Node("A");
     val n2: Node = new Node("B");
@@ -112,4 +151,29 @@ class AlgorithmsTest extends SpecificationWithJUnit {
     (asynch + asynch) must_== (asynch)
   }
 
+  "A composition should be historized (1)" in {
+    val a = alice(); val b = bob(); val c = charlie();
+
+    val result = a + b + c
+    val history = Transformation.getCompositionHistory(result)
+
+    (history.size must_== 3)
+  }
+
+  "A composition should be historized (2)" in {
+    val a = alice(); val b = bob(); val c = charlie();
+
+    val result = a + b + c
+    val history = Transformation.getCompositionHistory(result)
+
+    (history.contains(a) && history.contains(b) && history.contains(c)) must_== true
+  }
+
+  "A composition should be historized (3)" in {
+    val a = alice();
+
+    val history = Transformation.getCompositionHistory(a)
+
+    (history.size must_== 1) && (history.contains(a))
+  }
 }

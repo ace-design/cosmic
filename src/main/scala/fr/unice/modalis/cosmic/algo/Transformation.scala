@@ -20,12 +20,16 @@ import fr.unice.modalis.cosmic.actions.unit.EmitAction
 import fr.unice.modalis.cosmic.core.Node
 import fr.unice.modalis.cosmic.core.condition.TickCondition
 import fr.unice.modalis.cosmic.algo.vm.AddTransition
+import scala.collection.mutable.Map
 
 
 /**
  * This object contains algorithms used to transform behaviors
  */
 object Transformation {
+
+  // Composition history
+  val compositionHistory = Map[String, (Behavior, Behavior)]()
 
   /**
    * Compose two behavior
@@ -87,7 +91,13 @@ object Transformation {
 
     // Factorize composed automata
     val factorizeList = Transformation.factorize(composed)
-    VirtualMachine.apply(composed, factorizeList)
+    val result = VirtualMachine.apply(composed, factorizeList)
+
+    // Keep the composition in memory
+    compositionHistory += (result.id -> (b1, b2))
+
+    // Return composition result
+    result
   }
   /**
    * Factorize a behavior
@@ -292,6 +302,20 @@ object Transformation {
     val bridgeBehavior = sliceResult._2
 
     (boardBehavior, bridgeBehavior)
+  }
+
+  /**
+   * Get the composition history for a given behavior
+   * @param b Behavior
+   * @return All behaviors involved in the composition
+   */
+  def getCompositionHistory(b:Behavior):List[Behavior] = {
+    // Find behavior in history
+    compositionHistory.get(b.id) match {
+      case Some(b) => getCompositionHistory(b._1) ++ getCompositionHistory(b._2)
+      case None => List[Behavior](b)
+    }
+
   }
 
 }
