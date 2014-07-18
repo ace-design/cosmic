@@ -7,7 +7,7 @@ import scala.io.Source
 import java.util.Calendar
 
 /**
- * Created by cyrilcecchinel on 17/06/2014.
+ * Code generator trait
  */
 trait CodeGenerator {
 
