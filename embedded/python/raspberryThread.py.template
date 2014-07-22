@@ -1,0 +1,87 @@
+'''
+   GENERATED CODE
+   DO NOT MODIFY
+   Generated: #@time@#
+   Language: Python
+'''
+import serial
+import re
+import threading
+import array
+from datetime import time
+
+
+'''''''''''''''''''''''''''''''''
+        Global variables
+'''''''''''''''''''''''''''''''''
+
+ser = serial.Serial('/dev/ttyUSB0',9600, timeout=1)
+buffer = 0
+currentTime = 0
+
+'''''''''''''''''''''''''''''''''
+        Common methods
+'''''''''''''''''''''''''''''''''
+
+'''
+Read value from serial
+'''
+def readValue():
+    while True:
+        x = ser.readline().decode("ascii")
+        x = x.split("\r\n")[0]
+        if re.match(r"v=[0-9]+",x):
+            bufferize(int(re.findall(r'\d+', x)[0]))
+
+'''
+Bufferize a value
+'''
+def bufferize(v):
+    global buffer
+    buffer = v
+
+'''
+Emit value
+'''
+def emit(v,user,port):
+    ts = time.time()
+    st = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S')
+    print("Emit " + str(v) + " to " + user + ":" + str(port) + " -- " + st)
+
+
+'''
+Update current time
+'''
+def updateTime():
+    while True:
+        global currentTime
+        currentTime = datetime.now().time()
+        time.sleep(1)
+
+'''
+Check if current time is in range
+'''
+def checkTime(time1, time2):
+    if time1 <= time2:
+        time1 <= currentTime <= time2
+    else:
+        time1 <= currentTime <= time(23,59,59) or time(0,0,0) <= currentTime <= time2
+
+'''''''''''''''''''''''''''''''''
+        Util threads
+'''''''''''''''''''''''''''''''''
+serialReadThread = threading.Thread(None, readValue, "readValue")
+updateTimeThread = threading.Thread(None, updateTime, "updateTime")
+serialReadThread.start()
+updateTimeThread.start()
+'''''''''''''''''''''''''''''''''
+        User behaviors
+'''''''''''''''''''''''''''''''''
+#@behavior@#
+
+'''''''''''''''''''''''''''''''''
+        Auto-start
+'''''''''''''''''''''''''''''''''
+#@threadsInit@#
+
+#END FILE
