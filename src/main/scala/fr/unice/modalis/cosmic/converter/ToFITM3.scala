@@ -22,7 +22,7 @@ object ToFITM3 extends CodeGenerator{
 
   def translateTransition(t:Transition):String = {
     t.condition match {
-      case TickCondition(n) => indent(3) + "time.sleep(" + n + ");"
+      case TickCondition(n) => indent(4) + "time.sleep(" + n + ");"
       case _ => throw new Exception("Transition " + t + " not handled on FIT M3 platform")
     }
   }
@@ -48,7 +48,7 @@ object ToFITM3 extends CodeGenerator{
           case a :: l => translateGuard(a) + " and " + x(l)
         }
       }
-      "if " + x(l) + ":\n" + indent(3)
+      "if " + x(l) + ":\n" + indent(5)
     }
     else
       ""
@@ -56,8 +56,8 @@ object ToFITM3 extends CodeGenerator{
 
   def buildAction(a:Action):(String,Set[Result]) = {
     a match {
-      case EmitAction(data, url, port, cl) => (indent(3) + buildGuards(cl) + "emit("+data.name + ",\"" + url + "\"," + port + ")", Set())
-      case ReadSensorAction(id, result, gl) => (indent(3) + buildGuards(gl) + result.name + " = get_measure(\"" + Utils.lookupSensorAssignment(id) + "\");", Set(result))
+      case EmitAction(data, url, port, cl) => (indent(4) + buildGuards(cl) + "emit("+data.name + ",\"" + url + "\"," + port + ")", Set())
+      case ReadSensorAction(id, result, gl) => (indent(4) + buildGuards(gl) + result.name + " = get_measure(\"" + Utils.lookupSensorAssignment(id) + "\");", Set(result))
       case _ => throw new Exception("Action " + a + " not handled on FIT M3 platform")
     }
   }

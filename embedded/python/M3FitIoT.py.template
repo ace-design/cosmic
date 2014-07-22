@@ -14,14 +14,19 @@ import time
 import re
 import json
 import threading
+from datetime import datetime
 
 
+currentTime = 0
 dataSensor = None #Last data
 s = None #Socket
 
-host = 'aaaa::323:4501:3679:343'; #Border router IPv6 address. ==ADAPT IT==
+host = 'aaaa::323:4501:2172:343'; #Border router IPv6 address. ==ADAPT IT==
 port = 80; #Boder router HTTP Port. ==ADAPT IT==
 
+'''
+Initialisation
+'''
 def init():
     global s
     try:
@@ -36,7 +41,9 @@ def init():
 
 
 
-# Extract JSON function (return json object)
+'''
+Extract value from JSON
+'''
 def extract_json(text):
 	#Identify JSON string
 	json_search = re.search('<pre>(.*?)</pre>', text, re.IGNORECASE|re.MULTILINE|re.DOTALL)
@@ -47,9 +54,15 @@ def extract_json(text):
 		print('NO JSON FOUND')
 
 
+'''
+Emit value
+'''
+def emit(v,user,port):
+    print("Emit " + str(v) + " to " + user + ":" + str(port))
 
-
-# Receive function
+'''
+Receive value
+'''
 def recv_timeout(the_socket,timeout=2):
     #make socket non blocking
     the_socket.setblocking(0)
@@ -76,7 +89,9 @@ def recv_timeout(the_socket,timeout=2):
     #join all parts to make final string
     return ''.join(total_data)
 
-# Update values
+'''
+Update value
+'''
 def update():
     global dataSensor
     global s
@@ -94,23 +109,42 @@ def update():
         s.close()
         time.sleep(1)
 
+'''
+Update current time
+'''
+def updateTime():
+    while True:
+        global currentTime
+        currentTime = datetime.now().time()
+        time.sleep(1)
+
+'''
+Check if current time is in range
+'''
+def checkTime(time1, time2):
+    if time1 <= time2:
+        time1 <= currentTime <= time2
+    else:
+        time1 <= currentTime <= datetime.time(23,59,59) or datetime.time(0,0,0) <= currentTime <= time2
+
+
 # Get mesure
 def get_measure(key):
     try:
         return dataSensor[key]
     except Exception:
-        print('Can\'t get measure')
+        pass
 
 
 # User behaviors
 def behavior():
-    try:
-        while True:
+    while True:
+        try:
 #@behavior@#
-    except Exception:
-        pass
+        except Exception:
+            pass
 
-
+threading.Thread(None, updateTime, "updateTime").start()
 threading.Thread(None, update, "update").start()
 threading.Thread(None, behavior, "behavior").start()
 
