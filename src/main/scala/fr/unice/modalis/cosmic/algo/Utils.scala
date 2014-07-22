@@ -5,6 +5,8 @@ import fr.unice.modalis.cosmic.algo.vm.{Instruction, AddTransition, AddNode, Vir
 import fr.unice.modalis.cosmic.core.condition.TickCondition
 import fr.unice.modalis.cosmic.actions.flow.SequentialActions
 import scala.collection.mutable.ArrayBuffer
+import org.joda.time.DateTime
+import org.joda.time.format.DateTimeFormat
 
 /**
  * Utils methods
@@ -144,5 +146,34 @@ object Utils {
     } catch {
       case e: StackOverflowError => false
     }
+
+  /**
+   * Parse a string time (HH:mm) into a DateTime
+   * @param time Time
+   * @return A DateTime object with the given time set
+   */
+  def parseTime(time:String):DateTime = {
+    val formatter = DateTimeFormat.forPattern("HH:mm")
+    formatter.parseDateTime(time)
+  }
+
+  /**
+   * Combine a set elements
+   * @param set Set of elements
+   * @tparam A Type of elements in the set
+   * @return Set of combinations
+   */
+  def combine[A](set: Set[A]):Set[Set[A]] = {
+    def internal(s: Set[A], depth: Int): Set[Set[A]] = depth match {
+      case 0 => Set(Set())
+      case 1 => s map { Set(_) }
+      case n => {
+        val others = internal(s,n-1)
+        val these = for( e <- s; o <- others ) yield o+e
+        these ++ others
+      }
+    }
+    internal(set, set.size)
+  }
 
 }
