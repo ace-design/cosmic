@@ -14,6 +14,7 @@ object ToArduinoContiki extends ArduinoGenerator{
   val templateFile: String = "embedded/C/contikiarduino.c.template"
 
 
+  val processPrefix = "process_"
   /**
    * Translate a transition into the target language
    * @param t Transition
@@ -60,7 +61,7 @@ object ToArduinoContiki extends ArduinoGenerator{
   def processes_header(names:List[String]):String =
   {
     val header = new StringBuilder
-    names.foreach(n => header.append("PROCESS(" + n + ", \"" + n + " process\");\n"))
+    names.foreach(n => header.append("PROCESS(" + n + ", \"" + n + "\");\n"))
     header.toString()
   }
 
@@ -75,14 +76,14 @@ object ToArduinoContiki extends ArduinoGenerator{
     "AUTOSTART_PROCESSES(" + names.map(s => "&"+s).mkString(",") + ");\n"
   }
 
-  /* OVEERIDED METHODS */
+  /* OVERRIDED METHODS */
 
   override def buildBehavior(b:Behavior):String = {
     // Get composition history for b
     val list = Transformation.getCompositionHistory(b)
 
     val processes = new StringBuilder
-    list.foreach(b => processes.append(process_builder(b.id, super.buildBehavior(b))))
+    list.foreach(b => processes.append(process_builder(processPrefix + b.id, super.buildBehavior(b))))
 
 
     processes.toString()
@@ -91,7 +92,7 @@ object ToArduinoContiki extends ArduinoGenerator{
 
   override def generate(b:Behavior):String = {
     val r = super.generate(b)
-    val nameList = Transformation.getCompositionHistory(b).map(b => b.id)
+    val nameList = Transformation.getCompositionHistory(b).map(b => b.id).map(b => processPrefix + b)
 
     replace("threadsInit", processes_header(nameList) + processes_autostart(nameList), r)
 
