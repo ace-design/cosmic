@@ -16,14 +16,12 @@ import fr.unice.modalis.cosmic.core.condition.TickCondition
 import fr.unice.modalis.cosmic.actions.guard.predicate.ANDPredicate
 
 /**
- * Created by cyrilcecchinel on 22/07/2014.
+ * RaspberryPi translator - Multithreaded
  */
 object ToRaspberryThreaded extends CodeGenerator{
 
   // Path to template file
   val templateFile: String = "embedded/python/raspberryThread.py.template"
-
-
   val processPrefix = "process_"
   /**
    * Translate a transition into the target language
@@ -42,8 +40,8 @@ object ToRaspberryThreaded extends CodeGenerator{
     g match {
       case ValueConstraint(value, threshold, operator) => "int(" + value.name + ")" + operator + threshold
       case TimeConstraint(begin, end) => {
-        val time1 = "time(" + begin.getHourOfDay + "," + begin.getMinuteOfHour + ", 0)"
-        val time2 = "time(" + end.getHourOfDay + "," + end.getMinuteOfHour + ", 0)"
+        val time1 = "datetime.time(" + begin.getHourOfDay + "," + begin.getMinuteOfHour + ", 0)"
+        val time2 = "datetime.time(" + end.getHourOfDay + "," + end.getMinuteOfHour + ", 0)"
         "checkTime(" + time1 + "," + time2 +")"
       }
       case ANDPredicate(left, right) => translateGuard(left) + " and " + translateGuard(right)
@@ -90,7 +88,7 @@ object ToRaspberryThreaded extends CodeGenerator{
    */
   def process_builder(name:String, code:String):String =
   {
-    "def " + name + ":\n\twhile True:\t" + code + "\n"
+    "def " + name + "():\n\twhile True:\t" + code + "\n"
   }
 
   /**
