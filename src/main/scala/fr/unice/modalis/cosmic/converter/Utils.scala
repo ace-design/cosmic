@@ -1,6 +1,7 @@
 package fr.unice.modalis.cosmic.converter
 
 import scala.io.Source
+import java.io.PrintWriter
 
 /**
  * Utils functions for action conversion
@@ -30,5 +31,16 @@ object Utils {
       case Some(s) => s(1)
       case None => throw new Exception("Sensor " + name + " not found")
     }
+  }
+
+  /**
+   * Write text to a file located in the out/ directory
+   * @param name Name of the file (will be completed with the current timestap)
+   * @param text Text
+   */
+  def writefile(name:String, text:String):Unit = {
+    val file = new PrintWriter("out/"+ name + System.currentTimeMillis())
+    file.println(text)
+    file.close()
   }
 }

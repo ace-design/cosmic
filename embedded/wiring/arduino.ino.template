@@ -2,7 +2,7 @@
  *  GENERATED CODE
  *  DO NOT MODIFY
  *  Generated: #@time@#
- *  Language: Processing
+ *  Language: C
 */
 void setup() {
 Serial.begin(9600);
