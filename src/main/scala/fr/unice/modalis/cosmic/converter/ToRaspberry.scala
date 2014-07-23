@@ -9,14 +9,15 @@ import fr.unice.modalis.cosmic.core.Transition
 import fr.unice.modalis.cosmic.actions.guard.predicate.ORPredicate
 import fr.unice.modalis.cosmic.actions.guard.predicate.NOTPredicate
 import fr.unice.modalis.cosmic.actions.unit.EmitAction
-import fr.unice.modalis.cosmic.actions.guard.constraint.ValueConstraint
+import fr.unice.modalis.cosmic.actions.guard.constraint.{TimeConstraint, ValueConstraint}
 
 /**
- * Created by cyrilcecchinel on 17/06/2014.
+ * RaspberryPi translator
  */
 object ToRaspberry extends CodeGenerator{
 
   val templateFile = "embedded/python/raspberry.py.template"
+  val processPrefix = "process_"
 
   def translateAction(a:Action):(String,Set[Result]) = {
     buildAction(a)
@@ -32,6 +33,11 @@ object ToRaspberry extends CodeGenerator{
   def translateGuard(g:GuardAction):String = {
     g match {
       case ValueConstraint(value, threshold, operator) => "int(" + value.name + ")" + operator + threshold
+      case TimeConstraint(begin, end) => {
+        val time1 = "datetime.time(" + begin.getHourOfDay + "," + begin.getMinuteOfHour + ", 0)"
+        val time2 = "datetime.time(" + end.getHourOfDay + "," + end.getMinuteOfHour + ", 0)"
+        "checkTime(" + time1 + "," + time2 +")"
+      }
       case ANDPredicate(left, right) => translateGuard(left) + " and " + translateGuard(right)
       case ORPredicate(left, right) => translateGuard(left) + " or " + translateGuard(right)
       case NOTPredicate(exp) => "not " + translateGuard(exp)
