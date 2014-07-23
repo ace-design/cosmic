@@ -14,15 +14,25 @@ import time
 import re
 import json
 import threading
-from datetime import datetime
+import datetime
 
+'''''''''''''''''''''''''''''''''
+       /!\ Configuration
+'''''''''''''''''''''''''''''''''
+host = 'aaaa::323:4501:2172:343'; #Border router IPv6 address. ==ADAPT IT==
+port = 80; #Boder router HTTP Port. ==ADAPT IT==
 
-currentTime = 0
+'''''''''''''''''''''''''''''''''
+        Global variables
+'''''''''''''''''''''''''''''''''
+currentTime = datetime.datetime.now().time()
 dataSensor = None #Last data
 s = None #Socket
 
-host = 'aaaa::323:4501:2172:343'; #Border router IPv6 address. ==ADAPT IT==
-port = 80; #Boder router HTTP Port. ==ADAPT IT==
+
+'''''''''''''''''''''''''''''''''
+        Common methods
+'''''''''''''''''''''''''''''''''
 
 '''
 Initialisation
@@ -115,7 +125,7 @@ Update current time
 def updateTime():
     while True:
         global currentTime
-        currentTime = datetime.now().time()
+        currentTime = datetime.datetime.now().time()
         time.sleep(1)
 
 '''
@@ -123,20 +133,30 @@ Check if current time is in range
 '''
 def checkTime(time1, time2):
     if time1 <= time2:
-        time1 <= currentTime <= time2
+        return time1 <= currentTime <= time2
     else:
-        time1 <= currentTime <= datetime.time(23,59,59) or datetime.time(0,0,0) <= currentTime <= time2
+        return time1 <= currentTime <= datetime.time(23,59,59) or datetime.time(0,0,0) <= currentTime <= time2
 
 
-# Get mesure
+'''
+Get measure from JSON file
+'''
 def get_measure(key):
     try:
         return dataSensor[key]
     except Exception:
         pass
 
+'''''''''''''''''''''''''''''''''
+        Util threads
+'''''''''''''''''''''''''''''''''
+threading.Thread(None, updateTime, "updateTime").start()
+threading.Thread(None, update, "update").start()
 
-# User behaviors
+
+'''''''''''''''''''''''''''''''''
+        User behaviors
+'''''''''''''''''''''''''''''''''
 def behavior():
     while True:
         try:
@@ -144,8 +164,11 @@ def behavior():
         except Exception:
             pass
 
-threading.Thread(None, updateTime, "updateTime").start()
-threading.Thread(None, update, "update").start()
+'''''''''''''''''''''''''''''''''
+        Auto-start
+'''''''''''''''''''''''''''''''''
 threading.Thread(None, behavior, "behavior").start()
 
-#END FILE
+'''''''''''''''''''''''''''''''''
+        END FILE
+'''''''''''''''''''''''''''''''''

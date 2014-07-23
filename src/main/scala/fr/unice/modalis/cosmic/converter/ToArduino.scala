@@ -5,7 +5,7 @@ import fr.unice.modalis.cosmic.core.Transition
 import fr.unice.modalis.cosmic.core.condition.TickCondition
 
 /**
- * Arduino (processing) generator
+ * Arduino generator
  */
 object ToArduino extends ArduinoGenerator{
 

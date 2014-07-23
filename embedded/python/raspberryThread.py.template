@@ -8,8 +8,8 @@ import serial
 import re
 import threading
 import array
-from datetime import time
-
+import time
+import datetime
 
 '''''''''''''''''''''''''''''''''
         Global variables
@@ -17,7 +17,7 @@ from datetime import time
 
 ser = serial.Serial('/dev/ttyUSB0',9600, timeout=1)
 buffer = 0
-currentTime = 0
+currentTime = datetime.datetime.now().time()
 
 '''''''''''''''''''''''''''''''''
         Common methods
@@ -44,9 +44,7 @@ def bufferize(v):
 Emit value
 '''
 def emit(v,user,port):
-    ts = time.time()
-    st = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S')
-    print("Emit " + str(v) + " to " + user + ":" + str(port) + " -- " + st)
+    print("Emit " + str(v) + " to " + user + ":" + str(port))
 
 
 '''
@@ -55,7 +53,7 @@ Update current time
 def updateTime():
     while True:
         global currentTime
-        currentTime = datetime.now().time()
+        currentTime = datetime.datetime.now().time()
         time.sleep(1)
 
 '''
@@ -63,9 +61,9 @@ Check if current time is in range
 '''
 def checkTime(time1, time2):
     if time1 <= time2:
-        time1 <= currentTime <= time2
+        return time1 <= currentTime <= time2
     else:
-        time1 <= currentTime <= time(23,59,59) or time(0,0,0) <= currentTime <= time2
+        return time1 <= currentTime <= datetime.time(23,59,59) or datetime.time(0,0,0) <= currentTime <= time2
 
 '''''''''''''''''''''''''''''''''
         Util threads
@@ -83,5 +81,6 @@ updateTimeThread.start()
         Auto-start
 '''''''''''''''''''''''''''''''''
 #@threadsInit@#
-
-#END FILE
+'''''''''''''''''''''''''''''''''
+        END FILE
+'''''''''''''''''''''''''''''''''
