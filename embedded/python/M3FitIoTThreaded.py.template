@@ -1,0 +1,170 @@
+'''
+   GENERATED CODE
+   DO NOT MODIFY (except host,port)
+   Generated: #@time@#
+   Language: Python
+
+    /!\ Attended to be used on Fit-IoT platform
+    https://www.iot-lab.info/
+'''
+import socket
+import sys
+import struct
+import time
+import re
+import json
+import threading
+import datetime
+
+'''''''''''''''''''''''''''''''''
+       /!\ Configuration
+'''''''''''''''''''''''''''''''''
+host = 'aaaa::323:4501:2172:343'; #Border router IPv6 address. ==ADAPT IT==
+port = 80; #Boder router HTTP Port. ==ADAPT IT==
+
+'''''''''''''''''''''''''''''''''
+        Global variables
+'''''''''''''''''''''''''''''''''
+currentTime = datetime.datetime.now().time()
+dataSensor = None #Last data
+s = None #Socket
+
+
+'''''''''''''''''''''''''''''''''
+        Common methods
+'''''''''''''''''''''''''''''''''
+
+'''
+Initialisation
+'''
+def init():
+    global s
+    try:
+        s = socket.socket(socket.AF_INET6, socket.SOCK_STREAM)
+    except socket.error:
+        print('Failed to create socket')
+        sys.exit()
+    s.connect((host , port, 0, 0))
+    if (s == None):
+        print('NOT Connected. Retry...')
+        init()
+
+
+
+'''
+Extract value from JSON
+'''
+def extract_json(text):
+	#Identify JSON string
+	json_search = re.search('<pre>(.*?)</pre>', text, re.IGNORECASE|re.MULTILINE|re.DOTALL)
+	if json_search:
+		json_text = json_search.group(1)
+		return json.loads(json_text)
+	else:
+		print('NO JSON FOUND')
+
+
+'''
+Emit value
+'''
+def emit(v,user,port):
+    print("Emit " + str(v) + " to " + user + ":" + str(port))
+
+'''
+Receive value
+'''
+def recv_timeout(the_socket,timeout=2):
+    #make socket non blocking
+    the_socket.setblocking(0)
+    #total data partwise in an array
+    total_data=[];
+    data='';
+    #beginning time
+    begin=time.time()
+    while True:
+        if total_data and time.time()-begin > timeout:
+            break
+        elif time.time()-begin > timeout*2:
+            break
+
+        try:
+            data = the_socket.recv(8192)
+            if data:
+                total_data.append(data)
+                begin=time.time()
+            else:
+                time.sleep(0.1)
+        except:
+            pass
+    #join all parts to make final string
+    return ''.join(total_data)
+
+'''
+Update value
+'''
+def update():
+    global dataSensor
+    global s
+
+    while True:
+        init()
+        message = "GET / HTTP/1.1\r\n\r\n"
+        try :
+            s.sendall(message)
+            recv = recv_timeout(s)
+            dataSensor = extract_json(recv)
+        except socket.error:
+            print('Send failed')
+
+        s.close()
+        time.sleep(1)
+
+'''
+Update current time
+'''
+def updateTime():
+    while True:
+        global currentTime
+        currentTime = datetime.datetime.now().time()
+        time.sleep(1)
+
+'''
+Check if current time is in range
+'''
+def checkTime(time1, time2):
+    if time1 <= time2:
+        return time1 <= currentTime <= time2
+    else:
+        return time1 <= currentTime <= datetime.time(23,59,59) or datetime.time(0,0,0) <= currentTime <= time2
+
+
+'''
+Get measure from JSON file
+'''
+def get_measure(key):
+    try:
+        return dataSensor[key]
+    except Exception:
+        pass
+
+'''''''''''''''''''''''''''''''''
+        Util threads
+'''''''''''''''''''''''''''''''''
+threading.Thread(None, updateTime, "updateTime").start()
+threading.Thread(None, update, "update").start()
+
+
+'''''''''''''''''''''''''''''''''
+        User behaviors
+'''''''''''''''''''''''''''''''''
+#@behavior@#
+
+
+'''''''''''''''''''''''''''''''''
+        Auto-start
+'''''''''''''''''''''''''''''''''
+#@threadsInit@#
+
+'''''''''''''''''''''''''''''''''
+        END FILE
+'''''''''''''''''''''''''''''''''
