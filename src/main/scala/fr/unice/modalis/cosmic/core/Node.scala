@@ -2,6 +2,7 @@ package fr.unice.modalis.cosmic.core
 
 import fr.unice.modalis.cosmic.actions.unit.Action
 import fr.unice.modalis.cosmic.actions.flow.SequentialActions
+import scala.util.Random
 
 /**
  * Node class
@@ -11,6 +12,7 @@ case class Node(val name: String, val actions: SequentialActions) {
 
   def this(nodeName: String) = this(nodeName, new SequentialActions)
 
+  def this() = this("node_" + Random.alphanumeric.take(5).mkString)
   /**
    * Add an action for the current Node
    * @param action Action to add
