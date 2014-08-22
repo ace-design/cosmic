@@ -1,26 +1,14 @@
-import fr.unice.modalis.cosmic.actions.guard.constraint.TimeConstraint
-import fr.unice.modalis.cosmic.actions.guard.constraint.ValueConstraint
 import fr.unice.modalis.cosmic.actions.guard.constraint.{TimeConstraint, ValueConstraint}
-import fr.unice.modalis.cosmic.actions.guard.predicate.ANDPredicate
-import fr.unice.modalis.cosmic.actions.guard.predicate.ORPredicate
 import fr.unice.modalis.cosmic.actions.guard.predicate.{ANDPredicate, ORPredicate}
-import fr.unice.modalis.cosmic.actions.unit.EmitAction
-import fr.unice.modalis.cosmic.actions.unit.EmitAction
-import fr.unice.modalis.cosmic.actions.unit.ReadSensorResult
-import fr.unice.modalis.cosmic.actions.unit.ReadSensorResult
 import fr.unice.modalis.cosmic.actions.unit.{EmitAction, ReadSensorAction, ReadSensorResult}
-import fr.unice.modalis.cosmic.algo.Transformation
 import fr.unice.modalis.cosmic.converter._
-import fr.unice.modalis.cosmic.core.condition.TickCondition
 import fr.unice.modalis.cosmic.core._
 import fr.unice.modalis.cosmic.core.Node
-import fr.unice.modalis.cosmic.core.Transition
-import java.io.PrintWriter
 
 /**
  * Created by cyrilcecchinel on 22/07/2014.
  */
-object DemoICSR2 extends App{
+object DemoICSR_Benchmark_LoC extends App{
 
 
 
@@ -33,7 +21,7 @@ object DemoICSR2 extends App{
 
     val emit = new EmitAction(v_p, "SECURITY_SERVER", 8080).addGuard(new ANDPredicate(new ValueConstraint(v_p, 320, ">="), new ANDPredicate(new ValueConstraint(v_p, 1, "=="), new TimeConstraint("20:00", "06:00"))))
 
-    val n1 = new Node().addAction(readLight).addAction(readPresence).addAction(emit)
+    val n1 = new Node("a").addAction(readLight).addAction(readPresence).addAction(emit)
 
 
     new SimpleTemporalBehavior(n1,60)
@@ -45,7 +33,7 @@ object DemoICSR2 extends App{
     val readTemp = new ReadSensorAction("TEMP442", v_t)
     val emit = new EmitAction(v_t, "INSPECTOR_SERVER", 8080).addGuard(new ValueConstraint(v_t, 50, ">="))
 
-    val n1 = new Node().addAction(readTemp).addAction(emit)
+    val n1 = new Node("b").addAction(readTemp).addAction(emit)
 
     new SimpleTemporalBehavior(n1,30)
   }
@@ -57,7 +45,7 @@ object DemoICSR2 extends App{
     val emit = new EmitAction(v_t, "CAMPUS_MANAGER_SERVER", 8080).addGuard(new ORPredicate(
       new ValueConstraint(v_t, 24, ">"), new ValueConstraint(v_t, 16, "<")))
 
-    val n1 = new Node().addAction(read).addAction(emit)
+    val n1 = new Node("c").addAction(read).addAction(emit)
 
     new SimpleTemporalBehavior(n1, 150)
   }
@@ -71,7 +59,7 @@ object DemoICSR2 extends App{
 
     val emit = new EmitAction(v_p, "QUALITY_SERVER", 8080).addGuard(new ANDPredicate(new ValueConstraint(v_p, 320, ">="), new ANDPredicate(new ValueConstraint(v_p, 0, "=="), new TimeConstraint("20:00", "06:00"))))
 
-    val n1 = new Node().addAction(readLight).addAction(readPresence).addAction(emit)
+    val n1 = new Node("d").addAction(readLight).addAction(readPresence).addAction(emit)
 
 
     new SimpleTemporalBehavior(n1,300)
@@ -91,10 +79,10 @@ object DemoICSR2 extends App{
   fr.unice.modalis.cosmic.converter.Utils.writefile("arduinonativeS3", ToArduino(s3Sp))
   fr.unice.modalis.cosmic.converter.Utils.writefile("arduinonativeS4", ToArduino(s4Sp))
 
-  fr.unice.modalis.cosmic.converter.Utils.writefile("arduinocontikiS1", ToArduino(s1Sp))
-  fr.unice.modalis.cosmic.converter.Utils.writefile("arduinocontikiS2", ToArduino(s2Sp))
-  fr.unice.modalis.cosmic.converter.Utils.writefile("arduinocontikiS3", ToArduino(s3Sp))
-  fr.unice.modalis.cosmic.converter.Utils.writefile("arduinocontikiS4", ToArduino(s4Sp))
+  fr.unice.modalis.cosmic.converter.Utils.writefile("arduinocontikiS1", ToArduinoContiki(s1Sp))
+  fr.unice.modalis.cosmic.converter.Utils.writefile("arduinocontikiS2", ToArduinoContiki(s2Sp))
+  fr.unice.modalis.cosmic.converter.Utils.writefile("arduinocontikiS3", ToArduinoContiki(s3Sp))
+  fr.unice.modalis.cosmic.converter.Utils.writefile("arduinocontikiS4", ToArduinoContiki(s4Sp))
 
   fr.unice.modalis.cosmic.converter.Utils.writefile("raspberryS1", ToRaspberryThreaded(s1Br))
   fr.unice.modalis.cosmic.converter.Utils.writefile("raspberryS2", ToRaspberryThreaded(s2Br))
