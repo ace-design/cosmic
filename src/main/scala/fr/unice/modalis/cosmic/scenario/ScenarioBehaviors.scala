@@ -1,9 +1,9 @@
 package fr.unice.modalis.cosmic.scenario
 
-import fr.unice.modalis.cosmic.core.{Behavior, Transition, Node}
-import fr.unice.modalis.cosmic.core.condition.TickCondition
-import fr.unice.modalis.cosmic.actions.unit.EmitAction
 import fr.unice.modalis.cosmic.actions.guard.constraint.TimeConstraint
+import fr.unice.modalis.cosmic.actions.unit.EmitAction
+import fr.unice.modalis.cosmic.core.condition.TickCondition
+import fr.unice.modalis.cosmic.core.{Behavior, Node, Transition}
 
 /**
  * Scenario basis

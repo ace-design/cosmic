@@ -1,11 +1,8 @@
 package fr.unice.modalis.cosmic.converter.actions.compatibility
 
-import fr.unice.modalis.cosmic.actions.unit._
-import fr.unice.modalis.cosmic.actions.unit.EmitAction
-import fr.unice.modalis.cosmic.actions.unit.ReadSensorAction
-import fr.unice.modalis.cosmic.actions.unit.InitSerialAction
-import fr.unice.modalis.cosmic.converter.actions.compatibility.Platform._
 import fr.unice.modalis.cosmic.actions.flow.ActionFlow
+import fr.unice.modalis.cosmic.actions.unit.{EmitAction, InitSerialAction, ReadSensorAction, _}
+import fr.unice.modalis.cosmic.converter.actions.compatibility.Platform._
 
 /**
  * Action dispatcher

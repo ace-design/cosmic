@@ -1,7 +1,8 @@
 package fr.unice.modalis.cosmic.actions.unit
 
-import scala.util.Random
 import fr.unice.modalis.cosmic.actions.guard.GuardAction
+
+import scala.util.Random
 
 /**
  * Read data from a sensor
@@ -9,9 +10,9 @@ import fr.unice.modalis.cosmic.actions.guard.GuardAction
  * @param result Read result
  * @param guards Constraints list
  */
-case class ReadSensorAction(val sensorId: String, val result: ReadSensorResult, val guards: List[GuardAction]) extends Action {
+case class ReadSensorAction(val sensorId: String, val result: ReadSensorVariable, val guards: List[GuardAction]) extends Action {
 
-  def this(sensorId: String, result: ReadSensorResult) = this(sensorId, result, List[GuardAction]())
+  def this(sensorId: String, result: ReadSensorVariable) = this(sensorId, result, List[GuardAction]())
 
   override def toString(): String = "READ " + sensorId + " (" + result.name + ")"
 
@@ -24,6 +25,6 @@ case class ReadSensorAction(val sensorId: String, val result: ReadSensorResult, 
  * Read sensor Result
  * @param name Name
  */
-case class ReadSensorResult(val name: String) extends ReadResult {
+case class ReadSensorVariable(val name: String) extends ReadVariable {
   def this() = this("var_" + Random.alphanumeric.take(5).mkString)
 }

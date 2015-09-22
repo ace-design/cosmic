@@ -1,7 +1,8 @@
 package fr.unice.modalis.cosmic.actions.unit
 
-import scala.util.Random
 import fr.unice.modalis.cosmic.actions.guard.GuardAction
+
+import scala.util.Random
 
 /**
  * Emit actin
@@ -10,8 +11,8 @@ import fr.unice.modalis.cosmic.actions.guard.GuardAction
  * @param endpointPort Server port
  * @param guards Contraints list
  */
-case class EmitAction(val data: ReadResult, val endpointURL: String, val endpointPort: Int, val guards: List[GuardAction]) extends Action {
-  def this(data: ReadResult, url: String, port: Int) = this(data, url, port, List[GuardAction]())
+case class EmitAction(val data: ReadVariable, val endpointURL: String, val endpointPort: Int, val guards: List[GuardAction]) extends Action {
+  def this(data: ReadVariable, url: String, port: Int) = this(data, url, port, List[GuardAction]())
 
   def this(url: String, port: Int) = this(null, url, port, List[GuardAction]())
 
@@ -26,7 +27,7 @@ case class EmitAction(val data: ReadResult, val endpointURL: String, val endpoin
  * Emit result
  * @param name Name
  */
-class EmitResult(val name: String) extends Result {
+class EmitVariable(val name: String) extends Variable {
   def this() = this("var_" + Random.alphanumeric.take(5).mkString)
 
 }

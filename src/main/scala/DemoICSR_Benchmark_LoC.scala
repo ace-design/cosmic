@@ -1,9 +1,8 @@
 import fr.unice.modalis.cosmic.actions.guard.constraint.{TimeConstraint, ValueConstraint}
 import fr.unice.modalis.cosmic.actions.guard.predicate.{ANDPredicate, ORPredicate}
-import fr.unice.modalis.cosmic.actions.unit.{EmitAction, ReadSensorAction, ReadSensorResult}
+import fr.unice.modalis.cosmic.actions.unit.{EmitAction, ReadSensorAction, ReadSensorVariable}
 import fr.unice.modalis.cosmic.converter._
-import fr.unice.modalis.cosmic.core._
-import fr.unice.modalis.cosmic.core.Node
+import fr.unice.modalis.cosmic.core.{Node, _}
 
 /**
  * Created by cyrilcecchinel on 22/07/2014.
@@ -13,8 +12,8 @@ object DemoICSR_Benchmark_LoC extends App{
 
 
   val s1 = {
-    val v_l = new ReadSensorResult()
-    val v_p = new ReadSensorResult()
+    val v_l = new ReadSensorVariable()
+    val v_p = new ReadSensorVariable()
 
     val readLight = new ReadSensorAction("LIGHT442", v_l)
     val readPresence = new ReadSensorAction("PRESENCE442", v_p)
@@ -29,7 +28,7 @@ object DemoICSR_Benchmark_LoC extends App{
   }
 
   val s2 = {
-    val v_t = new ReadSensorResult()
+    val v_t = new ReadSensorVariable()
     val readTemp = new ReadSensorAction("TEMP442", v_t)
     val emit = new EmitAction(v_t, "INSPECTOR_SERVER", 8080).addGuard(new ValueConstraint(v_t, 50, ">="))
 
@@ -39,7 +38,7 @@ object DemoICSR_Benchmark_LoC extends App{
   }
 
   val s3 = {
-    val v_t = new ReadSensorResult()
+    val v_t = new ReadSensorVariable()
 
     val read = new ReadSensorAction("TEMP442", v_t)
     val emit = new EmitAction(v_t, "CAMPUS_MANAGER_SERVER", 8080).addGuard(new ORPredicate(
@@ -51,8 +50,8 @@ object DemoICSR_Benchmark_LoC extends App{
   }
 
   val s4 = {
-    val v_l = new ReadSensorResult()
-    val v_p = new ReadSensorResult()
+    val v_l = new ReadSensorVariable()
+    val v_p = new ReadSensorVariable()
 
     val readLight = new ReadSensorAction("LIGHT442", v_l)
     val readPresence = new ReadSensorAction("PRESENCE442", v_p)

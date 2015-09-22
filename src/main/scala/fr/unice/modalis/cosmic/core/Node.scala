@@ -1,7 +1,8 @@
 package fr.unice.modalis.cosmic.core
 
-import fr.unice.modalis.cosmic.actions.unit.Action
 import fr.unice.modalis.cosmic.actions.flow.SequentialActions
+import fr.unice.modalis.cosmic.actions.unit.Action
+
 import scala.util.Random
 
 /**

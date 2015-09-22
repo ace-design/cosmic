@@ -1,6 +1,6 @@
 package fr.unice.modalis.cosmic.converter
 
-import fr.unice.modalis.cosmic.actions.unit.{ReadSensorAction, WriteSerialAction, Result, Action}
+import fr.unice.modalis.cosmic.actions.unit.{Action, ReadSensorAction, Variable, WriteSerialAction}
 import fr.unice.modalis.cosmic.core.Transition
 import fr.unice.modalis.cosmic.core.condition.TickCondition
 
@@ -20,7 +20,7 @@ object ToArduino extends ArduinoGenerator{
   }
 
 
-  def buildAction(a:Action):(String,Set[Result]) = {
+  def buildAction(a:Action):(String,Set[Variable]) = {
     a match {
       case WriteSerialAction(data, to, gl) => (buildGuards(gl) + "Serial.println(\"v=\" + String(" + data.name + "));" + (if (to != "") " // Send to " + to else ""), Set())
       case ReadSensorAction(id, result, gl) => (buildGuards(gl) + result.name + " = analogRead(" + convertId(Utils.lookupSensorAssignment(id)) + ");", Set(result))

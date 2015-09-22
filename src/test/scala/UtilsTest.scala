@@ -2,7 +2,7 @@ import fr.unice.modalis.cosmic.actions.flow.SequentialActions
 import fr.unice.modalis.cosmic.actions.unit.EmitAction
 import fr.unice.modalis.cosmic.algo.Utils
 import fr.unice.modalis.cosmic.core.condition.TickCondition
-import fr.unice.modalis.cosmic.core.{SimpleTemporalBehavior, Behavior, Transition, Node}
+import fr.unice.modalis.cosmic.core.{Behavior, Node, SimpleTemporalBehavior, Transition}
 import org.specs2.mutable.SpecificationWithJUnit
 
 /**

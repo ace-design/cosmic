@@ -2,14 +2,14 @@ package fr.unice.modalis.cosmic.converter
 
 import fr.unice.modalis.cosmic.actions.guard.GuardAction
 import fr.unice.modalis.cosmic.actions.guard.constraint.ValueConstraint
-import fr.unice.modalis.cosmic.actions.guard.predicate.{NOTPredicate, ORPredicate, ANDPredicate}
-import fr.unice.modalis.cosmic.actions.unit.{Result, Action}
+import fr.unice.modalis.cosmic.actions.guard.predicate.{ANDPredicate, NOTPredicate, ORPredicate}
+import fr.unice.modalis.cosmic.actions.unit.{Action, Variable}
 
 /**
  * Common methods for Arduino code generation
  */
 trait ArduinoGenerator extends CodeGenerator{
-  def translateAction(a:Action):(String,Set[Result]) = {
+  def translateAction(a:Action):(String,Set[Variable]) = {
     buildAction(a)
   }
 

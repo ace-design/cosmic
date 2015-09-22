@@ -1,8 +1,9 @@
 package fr.unice.modalis.cosmic.core
 
-import fr.unice.modalis.cosmic.exceptions.NodeNotFoundException
-import fr.unice.modalis.cosmic.core.condition.TickCondition
 import fr.unice.modalis.cosmic.algo.Transformation
+import fr.unice.modalis.cosmic.core.condition.TickCondition
+import fr.unice.modalis.cosmic.exceptions.NodeNotFoundException
+
 import scala.util.Random
 
 /**

@@ -1,8 +1,8 @@
 package fr.unice.modalis.cosmic.converter
 
-import fr.unice.modalis.cosmic.core.{Node, Transition, Behavior}
-import fr.unice.modalis.cosmic.core.condition.TickCondition
 import fr.unice.modalis.cosmic.actions.guard.GuardAction
+import fr.unice.modalis.cosmic.core.condition.TickCondition
+import fr.unice.modalis.cosmic.core.{Behavior, Node, Transition}
 
 /**
  * Graphviz translator

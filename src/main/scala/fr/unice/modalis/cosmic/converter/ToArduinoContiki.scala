@@ -1,9 +1,9 @@
 package fr.unice.modalis.cosmic.converter
 
-import fr.unice.modalis.cosmic.actions.unit.{ReadSensorAction, WriteSerialAction, Result, Action}
-import fr.unice.modalis.cosmic.core.{Behavior, Transition}
-import fr.unice.modalis.cosmic.core.condition.TickCondition
+import fr.unice.modalis.cosmic.actions.unit.{Action, ReadSensorAction, Variable, WriteSerialAction}
 import fr.unice.modalis.cosmic.algo.Transformation
+import fr.unice.modalis.cosmic.core.condition.TickCondition
+import fr.unice.modalis.cosmic.core.{Behavior, Transition}
 
 /**
  * To Arduino (Contiki generator)
@@ -33,7 +33,7 @@ object ToArduinoContiki extends ArduinoGenerator{
    * @param a Action
    * @return Action builded
    */
-  def buildAction(a:Action):(String,Set[Result]) = //Action builder (ie. Action + guard)
+  def buildAction(a:Action):(String,Set[Variable]) = //Action builder (ie. Action + guard)
   {
     a match {
       case WriteSerialAction(data, to, gl) => (buildGuards(gl) + "printf(\"%d\"," + data.name + ");" + (if (to != "") " // Send to " + to else ""), Set())

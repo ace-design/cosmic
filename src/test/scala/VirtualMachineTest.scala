@@ -1,7 +1,8 @@
+import fr.unice.modalis.cosmic.algo.vm.{AddTransition, DeleteNode, Instruction, VirtualMachine}
 import fr.unice.modalis.cosmic.core.condition.TickCondition
-import fr.unice.modalis.cosmic.core.{Transition, Node, Behavior}
-import fr.unice.modalis.cosmic.algo.vm.{VirtualMachine, Instruction, AddTransition, DeleteNode}
+import fr.unice.modalis.cosmic.core.{Behavior, Node, Transition}
 import org.specs2.mutable.SpecificationWithJUnit
+
 import scala.collection.mutable.ArrayBuffer
 
 /**

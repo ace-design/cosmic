@@ -1,7 +1,8 @@
 package fr.unice.modalis.cosmic.actions.unit
 
-import scala.util.Random
 import fr.unice.modalis.cosmic.actions.guard.GuardAction
+
+import scala.util.Random
 
 /**
  * Initiate a serial port
@@ -9,9 +10,9 @@ import fr.unice.modalis.cosmic.actions.guard.GuardAction
  * @param result Serial Init result (reference to Serial Port)
  * @param guards Constraints list
  */
-case class InitSerialAction(val comPort: String, val result: InitSerialResult, val guards: List[GuardAction]) extends Action {
+case class InitSerialAction(val comPort: String, val result: InitSerialVariable, val guards: List[GuardAction]) extends Action {
 
-  def this(comPort: String, result: InitSerialResult) = this(comPort, result, List[GuardAction]())
+  def this(comPort: String, result: InitSerialVariable) = this(comPort, result, List[GuardAction]())
 
   override def toString(): String = "INIT SERIAL:" + comPort + "(" + result.name + ")"
 
@@ -24,6 +25,6 @@ case class InitSerialAction(val comPort: String, val result: InitSerialResult, v
  * Serial Init Result
  * @param name Name
  */
-case class InitSerialResult(val name: String) extends Result {
+case class InitSerialVariable(val name: String) extends Variable {
   def this() = this("var_" + Random.alphanumeric.take(5).mkString)
 }

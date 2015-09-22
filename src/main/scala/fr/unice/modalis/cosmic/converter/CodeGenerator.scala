@@ -1,10 +1,12 @@
 package fr.unice.modalis.cosmic.converter
 
-import fr.unice.modalis.cosmic.actions.unit.{Result, Action}
-import fr.unice.modalis.cosmic.core.{Node, Behavior, Transition}
-import fr.unice.modalis.cosmic.actions.guard.GuardAction
-import scala.io.Source
 import java.util.Calendar
+
+import fr.unice.modalis.cosmic.actions.guard.GuardAction
+import fr.unice.modalis.cosmic.actions.unit.{Action, Variable}
+import fr.unice.modalis.cosmic.core.{Behavior, Node, Transition}
+
+import scala.io.Source
 
 /**
  * Code generator trait
@@ -22,7 +24,7 @@ trait CodeGenerator {
    * @param a Action
    * @return Action translated
    */
-  def translateAction(a:Action):(String,Set[Result]) //Action translator
+  def translateAction(a:Action):(String,Set[Variable]) //Action translator
 
   /**
    * Translate a transition into the target language
@@ -43,7 +45,7 @@ trait CodeGenerator {
    * @param a Action
    * @return Action builded
    */
-  def buildAction(a:Action):(String,Set[Result]) //Action builder (ie. Action + guard)
+  def buildAction(a:Action):(String,Set[Variable]) //Action builder (ie. Action + guard)
 
   /**
    * Build a guard condition into the target language
@@ -61,7 +63,7 @@ trait CodeGenerator {
 
   /* Framework methods */
   def apply(b:Behavior) = generate(b)
-  var variables: Set[Result] = Set[Result]()
+  var variables: Set[Variable] = Set[Variable]()
 
 
   def buildBehavior(b:Behavior):String = {

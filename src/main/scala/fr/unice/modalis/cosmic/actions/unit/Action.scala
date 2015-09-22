@@ -24,12 +24,12 @@ trait Action {
 /**
  * Result mother trait
  */
-trait Result {
+trait Variable {
   val name: String
 }
 
 /**
  * Read result trait
  */
-trait ReadResult extends Result {}
+trait ReadVariable extends Variable {}
 

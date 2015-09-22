@@ -1,7 +1,6 @@
 package fr.unice.modalis.cosmic.algo.vm
 
-import fr.unice.modalis.cosmic.core.Behavior
-import fr.unice.modalis.cosmic.core.Node
+import fr.unice.modalis.cosmic.core.{Behavior, Node}
 
 /**
  * DeleteNode class

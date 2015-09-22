@@ -1,15 +1,11 @@
 package fr.unice.modalis.cosmic.converter
 
-import fr.unice.modalis.cosmic.actions.unit._
 import fr.unice.modalis.cosmic.actions.guard.GuardAction
-import fr.unice.modalis.cosmic.actions.unit.ReadSerialAction
-import fr.unice.modalis.cosmic.core.condition.TickCondition
-import fr.unice.modalis.cosmic.actions.guard.predicate.ANDPredicate
-import fr.unice.modalis.cosmic.core.Transition
-import fr.unice.modalis.cosmic.actions.guard.predicate.ORPredicate
-import fr.unice.modalis.cosmic.actions.guard.predicate.NOTPredicate
-import fr.unice.modalis.cosmic.actions.unit.EmitAction
 import fr.unice.modalis.cosmic.actions.guard.constraint.{TimeConstraint, ValueConstraint}
+import fr.unice.modalis.cosmic.actions.guard.predicate.{ANDPredicate, NOTPredicate, ORPredicate}
+import fr.unice.modalis.cosmic.actions.unit.{EmitAction, ReadSerialAction, _}
+import fr.unice.modalis.cosmic.core.Transition
+import fr.unice.modalis.cosmic.core.condition.TickCondition
 
 /**
  * RaspberryPi translator
@@ -19,7 +15,7 @@ object ToRaspberry extends CodeGenerator{
   val templateFile = "embedded/python/raspberry.py.template"
   val processPrefix = "process_"
 
-  def translateAction(a:Action):(String,Set[Result]) = {
+  def translateAction(a:Action):(String,Set[Variable]) = {
     buildAction(a)
   }
 
@@ -62,7 +58,7 @@ object ToRaspberry extends CodeGenerator{
       ""
   }
 
-  def buildAction(a:Action):(String,Set[Result]) = {
+  def buildAction(a:Action):(String,Set[Variable]) = {
     a match {
       case EmitAction(data, url, port, cl) => ("\t\t" + buildGuards(cl) + "emit("+data.name + ",\"" + url + "\"," + port + ")", Set())
       case ReadSerialAction(ref, result, cl) => ("\t\t" + buildGuards(cl) + result.name + " = " + "buffer", Set(result))

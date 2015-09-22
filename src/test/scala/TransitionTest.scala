@@ -1,5 +1,5 @@
-import fr.unice.modalis.cosmic.core.condition.TickCondition
 import fr.unice.modalis.cosmic.core._
+import fr.unice.modalis.cosmic.core.condition.TickCondition
 import org.specs2.mutable.SpecificationWithJUnit
 
 /**

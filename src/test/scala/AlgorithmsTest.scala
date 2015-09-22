@@ -1,9 +1,9 @@
-import fr.unice.modalis.cosmic.actions.unit.{ReadSensorAction, ReadSensorResult, Action, EmitAction}
-import fr.unice.modalis.cosmic.algo.{Utils, Transformation}
-import fr.unice.modalis.cosmic.core.condition.TickCondition
-import fr.unice.modalis.cosmic.core.{Behavior, Transition, Node}
-import fr.unice.modalis.cosmic.scenario.{HeatingMonitoring, CarPooling, AirQuality}
+import fr.unice.modalis.cosmic.actions.unit._
 import fr.unice.modalis.cosmic.algo.vm.VirtualMachine
+import fr.unice.modalis.cosmic.algo.{Transformation, Utils}
+import fr.unice.modalis.cosmic.core.condition.TickCondition
+import fr.unice.modalis.cosmic.core.{Behavior, Node, Transition}
+import fr.unice.modalis.cosmic.scenario.{AirQuality, CarPooling, HeatingMonitoring}
 import org.specs2.mutable.SpecificationWithJUnit
 
 /**
@@ -12,7 +12,7 @@ import org.specs2.mutable.SpecificationWithJUnit
 class AlgorithmsTest extends SpecificationWithJUnit {
   def alice():Behavior = {
     // Alice whishes to read and receive temperature measures every two seconds
-    val v_t = new ReadSensorResult()
+    val v_t = new ReadSensorVariable()
 
     val read = new ReadSensorAction("TEMP", v_t)
     val emit = new EmitAction(v_t, "alice", 8080)
@@ -25,7 +25,7 @@ class AlgorithmsTest extends SpecificationWithJUnit {
 
   def bob():Behavior = {
     // Bob whishes to read and receive temperature measures every three seconds
-    val v_t = new ReadSensorResult()
+    val v_t = new ReadSensorVariable()
 
     val read = new ReadSensorAction("TEMP", v_t)
     val emit = new EmitAction(v_t, "bob", 2525)
@@ -38,7 +38,7 @@ class AlgorithmsTest extends SpecificationWithJUnit {
 
   def charlie():Behavior = {
     // Bob whishes to read and receive temperature measures every three seconds
-    val v_t = new ReadSensorResult()
+    val v_t = new ReadSensorVariable()
 
     val read = new ReadSensorAction("TEMP", v_t)
     val emit = new EmitAction(v_t, "charlie", 2525)

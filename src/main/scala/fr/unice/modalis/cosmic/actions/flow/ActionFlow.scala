@@ -1,6 +1,7 @@
 package fr.unice.modalis.cosmic.actions.flow
 
 import fr.unice.modalis.cosmic.actions.unit.Action
+
 import scala.util.Random
 
 /**

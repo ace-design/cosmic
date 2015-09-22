@@ -1,26 +1,14 @@
 package fr.unice.modalis.cosmic.algo
 
-import fr.unice.modalis.cosmic.core._
-import scala.collection.mutable.ArrayBuffer
-import fr.unice.modalis.cosmic.algo.vm._
-import fr.unice.modalis.cosmic.converter.actions.compatibility.{Platform, ActionDispatcher}
-import fr.unice.modalis.cosmic.actions.unit._
-import fr.unice.modalis.cosmic.converter.actions.compatibility.Platform._
-import fr.unice.modalis.cosmic.algo.vm.DeleteTransition
-import fr.unice.modalis.cosmic.actions.unit.ReadSerialAction
 import fr.unice.modalis.cosmic.actions.flow.SequentialActions
-import fr.unice.modalis.cosmic.algo.vm.AddNode
-import fr.unice.modalis.cosmic.core.Transition
-import fr.unice.modalis.cosmic.actions.unit.ReadSensorAction
-import fr.unice.modalis.cosmic.actions.unit.InitSerialAction
-import fr.unice.modalis.cosmic.algo.vm.DeleteNode
-import fr.unice.modalis.cosmic.actions.unit.InitSerialResult
-import fr.unice.modalis.cosmic.actions.unit.WriteSerialAction
-import fr.unice.modalis.cosmic.actions.unit.EmitAction
-import fr.unice.modalis.cosmic.core.Node
+import fr.unice.modalis.cosmic.actions.unit.{EmitAction, InitSerialAction, ReadSensorAction, ReadSerialAction, WriteSerialAction, _}
+import fr.unice.modalis.cosmic.algo.vm.{AddNode, AddTransition, DeleteNode, DeleteTransition, _}
+import fr.unice.modalis.cosmic.converter.actions.compatibility.Platform._
+import fr.unice.modalis.cosmic.converter.actions.compatibility.{ActionDispatcher, Platform}
+import fr.unice.modalis.cosmic.core.{Node, Transition, _}
 import fr.unice.modalis.cosmic.core.condition.TickCondition
-import fr.unice.modalis.cosmic.algo.vm.AddTransition
-import scala.collection.mutable.Map
+
+import scala.collection.mutable.{ArrayBuffer, Map}
 
 
 /**
@@ -259,7 +247,7 @@ object Transformation {
     a match {
       case EmitAction(res,_,_,guards) => List(new WriteSerialAction(res, ""))
       case ReadSensorAction(_, res, guards) => {
-        val refSerial = new InitSerialResult()
+        val refSerial = new InitSerialVariable()
         List(new InitSerialAction("/dev/ttyUSB0", refSerial), new ReadSerialAction(refSerial, res))
       }
       case _ => throw new Exception("No substitute found!")

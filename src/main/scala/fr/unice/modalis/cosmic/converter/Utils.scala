@@ -1,7 +1,8 @@
 package fr.unice.modalis.cosmic.converter
 
-import scala.io.Source
 import java.io.PrintWriter
+
+import scala.io.Source
 
 /**
  * Utils functions for action conversion

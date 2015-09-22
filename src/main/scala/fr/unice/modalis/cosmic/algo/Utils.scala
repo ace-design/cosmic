@@ -1,12 +1,13 @@
 package fr.unice.modalis.cosmic.algo
 
-import fr.unice.modalis.cosmic.core.{Transition, Node, Behavior}
-import fr.unice.modalis.cosmic.algo.vm.{Instruction, AddTransition, AddNode, VirtualMachine}
-import fr.unice.modalis.cosmic.core.condition.TickCondition
 import fr.unice.modalis.cosmic.actions.flow.SequentialActions
-import scala.collection.mutable.ArrayBuffer
+import fr.unice.modalis.cosmic.algo.vm.{AddNode, AddTransition, Instruction, VirtualMachine}
+import fr.unice.modalis.cosmic.core.condition.TickCondition
+import fr.unice.modalis.cosmic.core.{Behavior, Node, Transition}
 import org.joda.time.DateTime
 import org.joda.time.format.DateTimeFormat
+
+import scala.collection.mutable.ArrayBuffer
 
 /**
  * Utils methods

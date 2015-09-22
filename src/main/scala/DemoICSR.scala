@@ -1,12 +1,7 @@
-import fr.unice.modalis.cosmic.actions.guard.constraint.ValueConstraint
-import fr.unice.modalis.cosmic.actions.unit.ReadSensorResult
-import fr.unice.modalis.cosmic.actions.unit.ReadSensorResult
-import fr.unice.modalis.cosmic.actions.unit.{EmitAction, ReadSensorAction, ReadSensorResult}
+import fr.unice.modalis.cosmic.actions.unit._
 import fr.unice.modalis.cosmic.converter._
+import fr.unice.modalis.cosmic.core.{Transition, _}
 import fr.unice.modalis.cosmic.core.condition.TickCondition
-import fr.unice.modalis.cosmic.core._
-import fr.unice.modalis.cosmic.core.condition.TickCondition
-import fr.unice.modalis.cosmic.core.Transition
 
 /**
  * Created by cyrilcecchinel on 22/07/2014.
@@ -14,7 +9,7 @@ import fr.unice.modalis.cosmic.core.Transition
 object DemoICSR extends App {
   val pa = {
     // Variable definition
-    val v_t = new ReadSensorResult()
+    val v_t = new ReadSensorVariable()
 
     // Action definition
     val read = new ReadSensorAction("TEMP_SENSOR", v_t)
@@ -34,7 +29,7 @@ object DemoICSR extends App {
 
   val bob_temperature = {
     // Variable definition
-    val v_t = new ReadSensorResult()
+    val v_t = new ReadSensorVariable()
 
     // Action definition
     val read = new ReadSensorAction("TEMP_SENSOR", v_t)
@@ -52,7 +47,7 @@ object DemoICSR extends App {
 
   val bob_humidity = {
     // Variable definition
-    val v_h = new ReadSensorResult()
+    val v_h = new ReadSensorVariable()
 
     // Action definition
     val read = new ReadSensorAction("HUM_SENSOR", v_h)

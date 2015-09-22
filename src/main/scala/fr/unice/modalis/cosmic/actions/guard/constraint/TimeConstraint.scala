@@ -1,8 +1,9 @@
 package fr.unice.modalis.cosmic.actions.guard.constraint
 
-import org.joda.time.DateTime
 import java.text.SimpleDateFormat
+
 import fr.unice.modalis.cosmic.algo.Utils
+import org.joda.time.DateTime
 
 /**
  * Time constrain

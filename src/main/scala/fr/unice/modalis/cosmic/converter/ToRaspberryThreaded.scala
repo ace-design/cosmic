@@ -1,19 +1,12 @@
 package fr.unice.modalis.cosmic.converter
 
-import fr.unice.modalis.cosmic.core.Behavior
-import fr.unice.modalis.cosmic.actions.unit._
-import fr.unice.modalis.cosmic.algo.Transformation
 import fr.unice.modalis.cosmic.actions.guard.GuardAction
-import fr.unice.modalis.cosmic.actions.guard.constraint._
-import fr.unice.modalis.cosmic.actions.unit.ReadSerialAction
-import fr.unice.modalis.cosmic.core.Transition
-import fr.unice.modalis.cosmic.actions.unit.InitSerialAction
-import fr.unice.modalis.cosmic.actions.guard.predicate.ORPredicate
-import fr.unice.modalis.cosmic.actions.guard.predicate.NOTPredicate
-import fr.unice.modalis.cosmic.actions.unit.EmitAction
-import fr.unice.modalis.cosmic.actions.guard.constraint.ValueConstraint
+import fr.unice.modalis.cosmic.actions.guard.constraint.{ValueConstraint, _}
+import fr.unice.modalis.cosmic.actions.guard.predicate.{ANDPredicate, NOTPredicate, ORPredicate}
+import fr.unice.modalis.cosmic.actions.unit.{EmitAction, InitSerialAction, ReadSerialAction, _}
+import fr.unice.modalis.cosmic.algo.Transformation
+import fr.unice.modalis.cosmic.core.{Behavior, Transition}
 import fr.unice.modalis.cosmic.core.condition.TickCondition
-import fr.unice.modalis.cosmic.actions.guard.predicate.ANDPredicate
 
 /**
  * RaspberryPi translator - Multithreaded
@@ -71,7 +64,7 @@ object ToRaspberryThreaded extends CodeGenerator{
    * @param a Action
    * @return Action builded
    */
-  def buildAction(a:Action):(String,Set[Result]) = {
+  def buildAction(a:Action):(String,Set[Variable]) = {
     a match {
       case EmitAction(data, url, port, cl) => ("\t\t" + buildGuards(cl) + "emit("+data.name + ",\"" + url + "\"," + port + ")", Set())
       case ReadSerialAction(ref, result, cl) => ("\t\t" + buildGuards(cl) + result.name + " = " + "buffer", Set(result))
@@ -119,7 +112,7 @@ object ToRaspberryThreaded extends CodeGenerator{
     "" // N/A
   }
 
-  def translateAction(a:Action):(String,Set[Result]) = {
+  def translateAction(a:Action):(String,Set[Variable]) = {
     buildAction(a)
   }
 
