@@ -58,9 +58,9 @@ object Bob extends DemoPolicy{
 object Charlie extends DemoPolicy{
 
   val read_return = ReadSensorVariable("v")
-  val read_action = ReadSensorAction("HUM_SENSOR", read_return, List(ValueConstraint(read_return, 75, ">")))
+  val read_action = ReadSensorAction("HUM_SENSOR", read_return, List())
 
-  val sendAction = EmitAction(read_return, "charlie", 8080, List())
+  val sendAction = EmitAction(read_return, "charlie", 8080, List(ValueConstraint(read_return, 75, ">")))
 
   val policy = new SimpleTemporalBehavior(new Node().addAction(read_action).addAction(sendAction), 60)
 }
